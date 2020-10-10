@@ -4,36 +4,24 @@ import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
 
-// this method is called when your extension is activated
-// your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
 
-  // Use the console to output diagnostic information (console.log) and errors (console.error)
-  // This line of code will only be executed once when your extension is activated
-  console.log('Congratulations, your extension "angulartools" is now active!');
-
-  // The command has been defined in the package.json file
-  // Now provide the implementation of the command with registerCommand
-  // The commandId parameter must match the command field in package.json
+  // Implementation of the commands that has been defined in the package.json file
   const listAllImportsDisposable = vscode.commands.registerCommand('angulartools.listAllImports', () => {
     // The code you place here will be executed every time your command is executed
     var directoryPath: string = getWorkspaceFolder();
     const excludeDirectories = ['bin', 'obj', 'node_modules', 'dist', 'packages', '.git', '.vs', '.github'];
     const isTypescriptFile = (filename: string): boolean => filename.endsWith('.ts') && !filename.endsWith('index.ts');
     const files = listFiles(directoryPath, excludeDirectories, isTypescriptFile);
-    console.log('files:' + files.length);
-    writeResult('imports.txt', files);
-    // Display a message box to the user
-    //vscode.window.showInformationMessage('Hello World from AngularTools!\n' + directoryPath + '\n');
+    writeResult('ReadMe-Imports.md', files);
   });
   context.subscriptions.push(listAllImportsDisposable);
 
   const projectDirectoryStructureDisposable = vscode.commands.registerCommand('angulartools.projectDirectoryStructure', () => {
-    var directoryPath: string = getWorkspaceFolder();
+    var workspaceDirectory: string = getWorkspaceFolder();
     const excludeDirectories = ['bin', 'obj', 'node_modules', 'dist', 'packages', '.git', '.vs', '.github'];
-    const gDirectories: string[] = listDirectories(directoryPath, excludeDirectories);
-    writeDirectoryStructure(directoryPath, 'projectDirectoryStructure.txt', gDirectories);
-    vscode.window.showInformationMessage('Hello World from AngularTools!\n');
+    const directories: string[] = listDirectories(workspaceDirectory, excludeDirectories);
+    writeDirectoryStructure(workspaceDirectory, 'ReadMe-ProjectDirectoryStructure.md', directories);
   });
   context.subscriptions.push(projectDirectoryStructureDisposable);
 }
@@ -67,14 +55,17 @@ function writeResult(filename: string, results: string[]) {
       }
     });
   }
-  var directoryPath: string = getWorkspaceFolder();
-  var output = `Imports for files in workspace: ${directoryPath}\n`;
+  var workspaceDirectory: string = getWorkspaceFolder();
+  var output = `# Imports for files in workspace: ${workspaceDirectory}\n\n`+ 
+    'The number following each import in the list is the number of occurrences of the package import.\n\n' + 
+    "```text\n";
   for (const key of Object.keys(imports).sort()) {
     console.log(`${key}: ${imports[key]}`);
     output = output + `${key}: ${imports[key]}\n`;
   }
-  console.log('open file ' + path.join(directoryPath, filename));
-  writeFileAndOpen(path.join(directoryPath, filename), output);
+  output = output + "```\n";
+  console.log('open file ' + path.join(workspaceDirectory, filename));
+  writeFileAndOpen(path.join(workspaceDirectory, filename), output);
 };
 
 function listFiles(
@@ -95,11 +86,12 @@ function listFiles(
 }
 
 function writeDirectoryStructure(workSpaceDirectory: string, filename: string, directories: string[]) {
-  var output: string = `Workspace directory: ${workSpaceDirectory}\nDirectories:\n`;
+  var output: string = `# Project Directory Structure\n\nWorkspace directory: ${workSpaceDirectory}\n\n## Directories\n\n` + "```text\n";
   directories?.forEach(directoryFullPath => {
     var directoryName = directoryFullPath.replace(workSpaceDirectory, '.');
     output = output + directoryName + '\n';
   });
+  output = output +  "```\n";
   var directoryPath: string = getWorkspaceFolder();
   writeFileAndOpen(path.join(directoryPath, filename), output);
 }

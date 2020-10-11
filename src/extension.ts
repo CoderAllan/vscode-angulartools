@@ -55,17 +55,15 @@ function writeResult(filename: string, results: string[]) {
       }
     });
   }
-  var workspaceDirectory: string = getWorkspaceFolder();
-  var output = `# Imports for files in workspace: ${workspaceDirectory}\n\n`+ 
-    'The number following each import in the list is the number of occurrences of the package import.\n\n' + 
-    "```text\n";
+  const workspaceDirectory: string = getWorkspaceFolder();
+  const angularToolsOutput = vscode.window.createOutputChannel("Angular Tools");
+  angularToolsOutput.clear();
+  angularToolsOutput.appendLine(`Imports for files in workspace: ${workspaceDirectory}`);
+  angularToolsOutput.appendLine('The number following each import in the list is the number of occurrences of the package import.\n');
   for (const key of Object.keys(imports).sort()) {
-    console.log(`${key}: ${imports[key]}`);
-    output = output + `${key}: ${imports[key]}\n`;
+    angularToolsOutput.appendLine(`${key}: ${imports[key]}`);
   }
-  output = output + "```\n";
-  console.log('open file ' + path.join(workspaceDirectory, filename));
-  writeFileAndOpen(path.join(workspaceDirectory, filename), output);
+  angularToolsOutput.show();
 };
 
 function listFiles(
@@ -86,14 +84,25 @@ function listFiles(
 }
 
 function writeDirectoryStructure(workSpaceDirectory: string, filename: string, directories: string[]) {
-  var output: string = `# Project Directory Structure\n\nWorkspace directory: ${workSpaceDirectory}\n\n## Directories\n\n` + "```text\n";
+  const angularToolsOutput = vscode.window.createOutputChannel("Angular Tools");
+  angularToolsOutput.clear();
+  angularToolsOutput.appendLine('Project Directory Structure');
+  angularToolsOutput.appendLine(`Workspace directory: ${workSpaceDirectory}\n`);
+  angularToolsOutput.appendLine('Directories:');
   directories?.forEach(directoryFullPath => {
     var directoryName = directoryFullPath.replace(workSpaceDirectory, '.');
-    output = output + directoryName + '\n';
+    angularToolsOutput.appendLine(directoryName);
   });
-  output = output +  "```\n";
-  var directoryPath: string = getWorkspaceFolder();
-  writeFileAndOpen(path.join(directoryPath, filename), output);
+  angularToolsOutput.show();
+
+  // var output: string = `# Project Directory Structure\n\nWorkspace directory: ${workSpaceDirectory}\n\n## Directories\n\n` + "```text\n";
+  // directories?.forEach(directoryFullPath => {
+  //   var directoryName = directoryFullPath.replace(workSpaceDirectory, '.');
+  //   output = output + directoryName + '\n';
+  // });
+  // output = output +  "```\n";
+  // var directoryPath: string = getWorkspaceFolder();
+  // writeFileAndOpen(path.join(directoryPath, filename), output);
 }
 
 const isDirectory = (directoryName: any) => fs.lstatSync(directoryName).isDirectory();

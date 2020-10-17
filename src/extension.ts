@@ -3,9 +3,9 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
+const fetch = require('node-fetch');
 
 export function activate(context: vscode.ExtensionContext) {
-
   // Implementation of the commands that has been defined in the package.json file
   const listAllImportsDisposable = vscode.commands.registerCommand('angulartools.listAllImports', () => {
     // The code you place here will be executed every time your command is executed
@@ -13,7 +13,7 @@ export function activate(context: vscode.ExtensionContext) {
     const excludeDirectories = ['bin', 'obj', 'node_modules', 'dist', 'packages', '.git', '.vs', '.github'];
     const isTypescriptFile = (filename: string): boolean => filename.endsWith('.ts') && !filename.endsWith('index.ts');
     const files = listFiles(directoryPath, excludeDirectories, isTypescriptFile);
-    writeResult('ReadMe-Imports.md', files);
+    writeResult(files);
   });
   context.subscriptions.push(listAllImportsDisposable);
 
@@ -24,6 +24,15 @@ export function activate(context: vscode.ExtensionContext) {
     writeDirectoryStructure(workspaceDirectory, 'ReadMe-ProjectDirectoryStructure.md', directories);
   });
   context.subscriptions.push(projectDirectoryStructureDisposable);
+
+  const packageJsonToMarkdownDisposable = vscode.commands.registerCommand('angulartools.packageJsonToMarkdown', () => {
+    var directoryPath: string = getWorkspaceFolder();
+    const excludeDirectories = ['bin', 'obj', 'node_modules', 'dist', 'packages', '.git', '.vs', '.github'];
+    const isPackageJson = (filename: string): boolean => filename.toLowerCase().endsWith('package.json');
+    const files = listFiles(directoryPath, excludeDirectories, isPackageJson);
+    writeMarkdownFile(files);
+  });
+  context.subscriptions.push(packageJsonToMarkdownDisposable);
 }
 
 function getWorkspaceFolder(): string {
@@ -36,7 +45,7 @@ function getWorkspaceFolder(): string {
 }
 
 const imports: { [module: string]: number } = {};
-function writeResult(filename: string, results: string[]) {
+function writeResult(results: string[]) {
   if (!results) { return; }
   for (let i = 0; i < results.length; i++) {
     var file = results[i];
@@ -69,15 +78,16 @@ function writeResult(filename: string, results: string[]) {
 function listFiles(
   dir: string,
   excludeDirectories: string[],
-  isTypescriptFile: (filename: string) => boolean
+  isMatchingFile: (filename: string) => boolean
 ): string[] {
   const directories = listDirectories(dir, excludeDirectories);
+  directories.push(dir);
   let files: string[] = [];
   directories.forEach(directory => {
     const filesInDirectory = fs.readdirSync(directory)
       .map(name => path.join(directory, name))
       .filter((name: any) => fs.lstatSync(name).isFile())
-      .filter((name: string) => isTypescriptFile(name));
+      .filter((name: string) => isMatchingFile(name));
     files = files.concat(filesInDirectory);
   });
   return files;
@@ -94,15 +104,6 @@ function writeDirectoryStructure(workSpaceDirectory: string, filename: string, d
     angularToolsOutput.appendLine(directoryName);
   });
   angularToolsOutput.show();
-
-  // var output: string = `# Project Directory Structure\n\nWorkspace directory: ${workSpaceDirectory}\n\n## Directories\n\n` + "```text\n";
-  // directories?.forEach(directoryFullPath => {
-  //   var directoryName = directoryFullPath.replace(workSpaceDirectory, '.');
-  //   output = output + directoryName + '\n';
-  // });
-  // output = output +  "```\n";
-  // var directoryPath: string = getWorkspaceFolder();
-  // writeFileAndOpen(path.join(directoryPath, filename), output);
 }
 
 const isDirectory = (directoryName: any) => fs.lstatSync(directoryName).isDirectory();
@@ -128,6 +129,100 @@ function listDirectories(
   }
   return result;
 };
+
+function writeMarkdownFile(packageJsonFiles: string[]) {
+  let devDependencies: string[] = [];
+  let dependencies: string[] = [];
+  let peerDependencies: string[] = [];
+  packageJsonFiles.forEach(packageJsonFile => {
+    // console.log('Package file: ' + packageJsonFile);
+    const contents = fs.readFileSync(packageJsonFile).toString('utf8');
+    const packageJson = JSON.parse(contents);
+    if (packageJson.devDependencies) {
+      devDependencies = [...new Set([...devDependencies, ...Object.keys(packageJson.devDependencies)])]
+    }
+    if (packageJson.dependencies) {
+      dependencies = [...new Set([...dependencies, ...Object.keys(packageJson.dependencies)])]
+    }
+    if (packageJson.peerDependencies) {
+      peerDependencies = [...new Set([...peerDependencies, ...Object.keys(packageJson.peerDependencies)])]
+    }
+  });
+  // console.log('Dependencies: ' + dependencies.length);
+  // console.log('Dev dependencies: ' + devDependencies.length);
+  // console.log('Peer dependencies: ' + peerDependencies.length);
+
+  let dependenciesMarkdown = '';
+  let devDependenciesMarkdown = '';
+  let peerDependenciesMarkdown = '';
+  const dependenciesRequests: Promise<{ name: string, description: string }>[] = [];
+  dependencies.sort().forEach(pckName => {
+    dependenciesRequests.push(makeRequest(pckName));
+  });
+  Promise.all(dependenciesRequests).then(responses => {
+    responses.forEach(response => {
+      if (response) {
+        dependenciesMarkdown += `| ${response.name} | ${response.description} |\n`;
+      }
+    });
+  }).then(() => {
+    const devDependenciesRequests: Promise<{ name: string, description: string }>[] = [];
+    devDependencies.sort().forEach(pckName => {
+      devDependenciesRequests.push(makeRequest(pckName));
+    });
+    Promise.all(devDependenciesRequests).then(responses => {
+      responses.forEach(response => {
+        if (response) {
+          devDependenciesMarkdown += `| ${response.name} | ${response.description} |\n`;
+        }
+      });
+    }).then(() => {
+      const peerDependenciesRequests: Promise<{ name: string, description: string }>[] = [];
+      peerDependencies.sort().forEach(pckName => {
+        peerDependenciesRequests.push(makeRequest(pckName));
+      });
+      Promise.all(peerDependenciesRequests).then(responses => {
+        responses.forEach(response => {
+          if (response) {
+            peerDependenciesMarkdown += `| ${response.name} | ${response.description} |\n`;
+          }
+        });
+      }).then(() => {
+        const markdownContent =
+          '# Package.json\n\n' +
+          '## Dependencies\n\n' +
+          '| Name | Description|\n' +
+          '| ---- |:-----------|\n' +
+          dependenciesMarkdown + '\n' +
+          '## Dev dependencies\n\n' +
+          '| Name | Description|\n' +
+          '| ---- |:-----------|\n' +
+          devDependenciesMarkdown + '\n' +
+          '## Peer dependencies\n\n' +
+          '| Name | Description|\n' +
+          '| ---- |:-----------|\n' +
+          peerDependenciesMarkdown
+        const workspaceFolder: string = getWorkspaceFolder();
+        writeFileAndOpen(path.join(workspaceFolder, 'ReadMe-PackagesJson.md'), markdownContent);
+      });
+    });
+  });
+}
+
+function makeRequest(pckName: string): Promise<{ name: string, description: string }> {
+  const uri = 'https://api.npms.io/v2/search?q=' + pckName + '%20not:deprecated,insecure,unstable';
+  const request = fetch(uri).then((res: any) => res.json())
+    .then((json: any) => {
+      if (json.results[0] && json.results[0].package) {
+        const packageName = json.results[0].package.name;
+        const packageDescription = json.results[0].package.description;
+        return { name: packageName, description: packageDescription };
+      } else {
+        console.log('Package not found: ' + pckName);
+      }
+    });
+  return request;
+}
 
 function writeFileAndOpen(filename: string, content: string) {
   fs.writeFile(filename, content, function (err) {

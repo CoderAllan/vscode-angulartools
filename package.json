@@ -10,8 +10,9 @@
 		"Other"
 	],
 	"activationEvents": [
-    "onCommand:angulartools.listAllImports",
-    "onCommand:angulartools.projectDirectoryStructure"
+		"onCommand:angulartools.listAllImports",
+		"onCommand:angulartools.projectDirectoryStructure",
+		"onCommand:angulartools.packageJsonToMarkdown"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -19,12 +20,15 @@
 			{
 				"command": "angulartools.listAllImports",
 				"title": "AngularTools: List all imports"
-      },
-      {
+			},
+			{
 				"command": "angulartools.projectDirectoryStructure",
 				"title": "AngularTools: Show the project directory structure"
+			},
+			{
+				"command": "angulartools.packageJsonToMarkdown",
+				"title": "AngularTools: Generate Markdown file from package.json files in the workspace."
 			}
-
 		]
 	},
 	"scripts": {
@@ -49,5 +53,6 @@
 		"vscode-test": "^1.4.0"
 	},
 	"dependencies": {
+		"node-fetch": "^2.6.1"
 	}
 }

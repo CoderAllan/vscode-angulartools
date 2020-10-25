@@ -61,15 +61,21 @@ export class FileSystemUtils {
     return directoryPath;
   }
 
-  public writeFileAndOpen(filename: string, content: string) {
+  public writeFile(filename: string, content: string, callback: () => void) {
     fs.writeFile(filename, content, function (err) {
       if (err) {
         return console.error(err);
       }
+      callback();
+    });
+  }
+
+  public writeFileAndOpen(filename: string, content: string) {
+    this.writeFile(filename, content, () => {
       var openPath = vscode.Uri.parse("file:///" + filename);
       vscode.workspace.openTextDocument(openPath).then(doc => {
         vscode.window.showTextDocument(doc);
       });
     });
-  };
+  }
 }

@@ -2,6 +2,7 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import { 
+  ComponentHierarchyDgml,
   ListAllImports,
   PackageJsonToMarkdown,
   ProjectDirectoryStructure
@@ -28,6 +29,12 @@ export function activate(context: vscode.ExtensionContext) {
     command.execute();
   });
   context.subscriptions.push(packageJsonToMarkdownDisposable);
+
+  const componentHierarchyDgmlDisposable = vscode.commands.registerCommand(`${cmdPrefix}.${ComponentHierarchyDgml.commandName}`, () => {
+    const command = new ComponentHierarchyDgml();
+    command.execute();
+  });
+  context.subscriptions.push(componentHierarchyDgmlDisposable);
 }
 
 // this method is called when your extension is deactivated

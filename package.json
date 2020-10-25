@@ -10,6 +10,7 @@
 		"Other"
 	],
 	"activationEvents": [
+		"onCommand:angulartools.componentHierarchyDgml",
 		"onCommand:angulartools.listAllImports",
 		"onCommand:angulartools.projectDirectoryStructure",
 		"onCommand:angulartools.packageJsonToMarkdown"
@@ -28,6 +29,10 @@
 			{
 				"command": "angulartools.packageJsonToMarkdown",
 				"title": "AngularTools: Generate Markdown file from package.json files in the workspace."
+			},
+			{
+				"command": "angulartools.componentHierarchyDgml",
+				"title": "AngularTools: Generate a Directed Graph file (dgml) showing the components in the current project."
 			}
 		]
 	},
@@ -53,6 +58,9 @@
 		"vscode-test": "^1.4.0"
 	},
 	"dependencies": {
-		"node-fetch": "^2.6.1"
+		"@types/xmldom": "^0.1.30",
+		"node-fetch": "^2.6.1",
+		"xmldom": "^0.3.0",
+		"xmlserializer": "^0.6.1"
 	}
 }

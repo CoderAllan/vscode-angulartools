@@ -60,6 +60,7 @@
 	"dependencies": {
 		"@types/xmldom": "^0.1.30",
 		"node-fetch": "^2.6.1",
+		"prettify-xml": "^1.2.0",
 		"xmldom": "^0.3.0",
 		"xmlserializer": "^0.6.1"
 	}

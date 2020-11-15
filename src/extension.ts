@@ -5,7 +5,8 @@ import {
   ComponentHierarchyDgml,
   ListAllImports,
   PackageJsonToMarkdown,
-  ProjectDirectoryStructure
+  ProjectDirectoryStructure,
+  ShowComponentHierarchy
 } from './commands';
 
 export function activate(context: vscode.ExtensionContext) {
@@ -35,7 +36,23 @@ export function activate(context: vscode.ExtensionContext) {
     command.execute();
   });
   context.subscriptions.push(componentHierarchyDgmlDisposable);
-}
+
+  const showComponentHierarchyDisposable = vscode.commands.registerCommand(`${cmdPrefix}.${ShowComponentHierarchy.commandName}`, () => {
+    const componentHierarchyPanel = vscode.window.createWebviewPanel(
+      'angularTools_showComponentHierarchy',
+      'Angular component hierarchy',
+      vscode.ViewColumn.One,
+      {
+        enableScripts: true
+      }
+    );
+    componentHierarchyPanel.onDidDispose(() => {  
+
+    }, null, context.subscriptions );
+    const command = new ShowComponentHierarchy(context);
+    command.execute(componentHierarchyPanel.webview);
+  });
+  context.subscriptions.push(showComponentHierarchyDisposable);}
 
 // this method is called when your extension is deactivated
 export function deactivate() { }

@@ -1,0 +1,9 @@
+#network {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  left: 0px;
+  display: block;
+  border: 1px solid lightgray;
+}

@@ -234,7 +234,6 @@ export class ComponentHierarchyDgml {
     if (isRoot) {
       nodeElement.setAttribute("Category", "RootComponent");
     }
-    const componentType = component.isRoot ? 'root ' : '';
     this.addNode(nodesElement, nodeElement);
     if (components.length > 0) {
       components.forEach((subComponent) => {

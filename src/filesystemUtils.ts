@@ -61,7 +61,7 @@ export class FileSystemUtils {
     return directoryPath;
   }
 
-  public writeFile(filename: string, content: string, callback: () => void) {
+  public writeFile(filename: string, content: string | Uint8Array, callback: () => void) {
     fs.writeFile(filename, content, function (err) {
       if (err) {
         return console.error(err);

@@ -1,9 +1,36 @@
-#network {
+.fullScreen {
   position: absolute;
   top: 0px;
   right: 0px;
   bottom: 0px;
   left: 0px;
   display: block;
-  border: 1px solid lightgray;
+}
+
+#buttons {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  border : 1px solid #000;
+  border-radius: 5px;
+  background-color: #aaa;
+  z-index: 100;
+  padding: 5px 5px 5px 10px;
+  margin: 5px;
+}
+
+#helpText {
+  display: none;
+  color: #000;
+  z-index: 300;
+}
+
+input[type=button] {
+  margin-right: 10px;
+}
+
+#selectionLayer {
+  display: none;
+  background-color: rgba(240, 240, 240, 0.4);
+  z-index: 200;
 }

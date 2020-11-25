@@ -13,8 +13,8 @@
 		"onCommand:angulartools.componentHierarchyDgml",
 		"onCommand:angulartools.listAllImports",
 		"onCommand:angulartools.projectDirectoryStructure",
-    "onCommand:angulartools.packageJsonToMarkdown",
-    "onCommand:angulartools.showComponentHierarchy"
+		"onCommand:angulartools.packageJsonToMarkdown",
+		"onCommand:angulartools.showComponentHierarchy"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -34,11 +34,11 @@
 			{
 				"command": "angulartools.componentHierarchyDgml",
 				"title": "AngularTools: Generate a Directed Graph file (dgml) showing the components in the current project."
-      },
-      {
-        "command": "angulartools.showComponentHierarchy",
-        "title": "AngularTools: Show a graph representing the component hierarchy."
-      }
+			},
+			{
+				"command": "angulartools.showComponentHierarchy",
+				"title": "AngularTools: Show a graph representing the component hierarchy."
+			}
 		]
 	},
 	"scripts": {
@@ -64,6 +64,7 @@
 	},
 	"dependencies": {
 		"@types/xmldom": "^0.1.30",
+		"js-base64": "^3.6.0",
 		"node-fetch": "^2.6.1",
 		"prettify-xml": "^1.2.0",
 		"xmldom": "^0.3.0",

@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
 import { FileSystemUtils } from "../../filesystemUtils";
+import { Base64 } from 'js-base64';
 
 class Component {
 
@@ -51,16 +52,29 @@ class Edge {
 export class ShowComponentHierarchy {
 
   private extensionContext: vscode.ExtensionContext;
+  private fsUtils = new FileSystemUtils();
   constructor(context: vscode.ExtensionContext) {
     this.extensionContext = context;
   }
   public static get commandName(): string { return 'showComponentHierarchy'; }
 
   public execute(webview: vscode.Webview) {
-    const fsUtils = new FileSystemUtils();
-    var directoryPath: string = fsUtils.getWorkspaceFolder();
+
+    webview.onDidReceiveMessage(
+      message => {
+        switch (message.command) {
+          case 'saveAsPng':
+            this.saveAsPng(message.text);
+            return;
+        }
+      },
+      undefined,
+      this.extensionContext.subscriptions
+    );
+
+    var directoryPath: string = this.fsUtils.getWorkspaceFolder();
     const excludeDirectories = ['bin', 'obj', 'node_modules', 'dist', 'packages', '.git', '.vs', '.github'];
-    const componentFilenames = fsUtils.listFiles(directoryPath, excludeDirectories, this.isComponentFile);
+    const componentFilenames = this.fsUtils.listFiles(directoryPath, excludeDirectories, this.isComponentFile);
     const components = this.findComponents(componentFilenames);
     this.enrichComponentsFromComponentTemplates(components);
 
@@ -98,8 +112,8 @@ export class ShowComponentHierarchy {
       const outputJsFilename = 'showComponentHierarchy/showComponentHierarchy.js';
       let htmlContent = this.generateHtmlContent(webview, outputJsFilename);
 
-      fsUtils.writeFile(this.extensionContext?.asAbsolutePath(path.join('src', 'commands', 'showComponentHierarchy/showComponentHierarchy.html')), htmlContent, () => { } ); // For debugging
-      fsUtils.writeFile(
+      this.fsUtils.writeFile(this.extensionContext?.asAbsolutePath(path.join('src', 'commands', 'showComponentHierarchy/showComponentHierarchy.html')), htmlContent, () => { }); // For debugging
+      this.fsUtils.writeFile(
         this.extensionContext?.asAbsolutePath(path.join('src', 'commands', outputJsFilename)),
         jsContent,
         () => {
@@ -251,5 +265,21 @@ export class ShowComponentHierarchy {
     const jsUri = webview.asWebviewUri(jsPath);
     htmlContent = htmlContent.replace('showComponentHierarchy.js', jsUri.toString());
     return htmlContent;
+  }
+
+  private saveAsPng(messageText: string) {
+    const dataUrl = messageText.split(',');
+    if (dataUrl.length > 0) {
+      const u8arr = Base64.toUint8Array(dataUrl[1]);
+
+      const workspaceDirectory = this.fsUtils.getWorkspaceFolder();
+      const newFilePath = path.join(workspaceDirectory, 'ComponentHierarchy.png');
+      this.fsUtils.writeFile(newFilePath, u8arr, () => {});
+
+      const angularToolsOutput = vscode.window.createOutputChannel("Angular Tools");
+      angularToolsOutput.clear();
+      angularToolsOutput.appendLine(`The file ComponentHierarchy.png has been created in the root of the workspace.\n`);
+      angularToolsOutput.show();      
+    }
   }
 }

@@ -40,6 +40,8 @@
   // add button event listeners
   const saveAsPngButton = document.getElementById('saveAsPngButton');
   saveAsPngButton.addEventListener('click', saveAsPng);
+  const saveSelectionAsPngButton = document.getElementById('saveSelectionAsPngButton');
+  saveSelectionAsPngButton.addEventListener('click', saveSelectionAsPng);
   const copyToClipboardButton = document.getElementById('copyToClipboardButton');
   copyToClipboardButton.addEventListener('click', copyToClipboard);
   copyToClipboardButton.style['display'] = 'none'; // TODO: Remove when copyToClipboard is implemented
@@ -59,7 +61,9 @@
       command: 'saveAsPng',
       text: finalSelectionCanvas.toDataURL()
     });
+    // Remove the temporary canvas
     finalSelectionCanvas.remove();
+    // Reset the state variables
     selectionCanvasContext = undefined;
     selection = {};
     // hide the help text
@@ -98,7 +102,7 @@
     }
   }
 
-  function saveAsPng() {
+  function saveSelectionAsPng() {
     // show the help text
     helpTextDiv.style['display'] = 'block';
 
@@ -117,8 +121,80 @@
     selectionLayer.addEventListener("mousemove", mouseMoveEventListener, true);
   }
 
+  function saveAsPng() {
+    // Calculate the bounding box of all the elements on the canvas
+    const boundingBox = getBoundingBox();
+
+    // copy the imagedata within the bounding box
+    const finalSelectionCanvas = document.createElement('canvas');
+    finalSelectionCanvas.width = boundingBox.width;
+    finalSelectionCanvas.height = boundingBox.height;
+    const finalSelectionCanvasContext = finalSelectionCanvas.getContext('2d');
+    finalSelectionCanvasContext.drawImage(graphCanvas, boundingBox.top , boundingBox.left , boundingBox.width, boundingBox.height , 0, 0, boundingBox.width, boundingBox.height);
+
+    // Call back to the extension context to save the image of the graph to the workspace folder.
+    vscode.postMessage({
+      command: 'saveAsPng',
+      text: finalSelectionCanvas.toDataURL()
+    });
+
+    // Remove the temporary canvas
+    finalSelectionCanvas.remove();
+  }
+
+  function getBoundingBox() {
+    var ctx = graphCanvas.getContext('2d');
+    const imgData = ctx.getImageData(0, 0, graphCanvas.width, graphCanvas.height);
+    var bytesPerPixels = 4;
+    var cWidth = graphCanvas.width * bytesPerPixels;
+    var cHeight = graphCanvas.height;
+    var minY = minX = maxY = maxX = -1;
+    for (var y = cHeight; y > 0  && maxY === -1; y--) {
+      for (var x = 0; x < cWidth; x += bytesPerPixels) {
+        var arrayPos = x + y * cWidth;
+        if (imgData.data[arrayPos + 3] > 0 && maxY === -1) {
+          maxY = y;
+          break;
+        }
+      }
+    }
+    for (var x = cWidth; x >= 0 && maxX === -1; x -= bytesPerPixels) {
+      for (var y = 0; y < maxY; y++) {
+        var arrayPos = x + y * cWidth;
+        if (imgData.data[arrayPos + 3] > 0 && maxX === -1) {
+          maxX = x / bytesPerPixels;
+          break;
+        }
+      }
+    }
+    for (var x = 0; x < maxX * bytesPerPixels && minX === -1; x += bytesPerPixels) {
+      for (var y = 0; y < maxY; y++) {
+        var arrayPos = x + y * cWidth;
+        if (imgData.data[arrayPos + 3] > 0 && minX === -1) {
+          minX = x / bytesPerPixels;
+          break;
+        }
+      }
+    }
+    for (var y = 0; y < maxY && minY === -1; y++) {
+      for (var x = minX * bytesPerPixels; x < maxX * bytesPerPixels; x += bytesPerPixels) {
+        var arrayPos = x + y * cWidth;
+        if (imgData.data[arrayPos + 3] > 0 && minY === -1) {
+          minY = y;
+          break;
+        }
+      }
+    }
+    return {
+      'top': minX,
+      'left': minY,
+      'width': maxX-minX,
+      'height': maxY-minY
+    };
+  }
+
   function copyToClipboard() {
     console.log('Not implemented yet...');
   }
-
+  
 }());

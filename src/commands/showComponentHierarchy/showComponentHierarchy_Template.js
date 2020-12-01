@@ -81,12 +81,35 @@
     selectionCanvasContext = selectionCanvas.getContext("2d");
   }
 
+  function drawGuideLine(ctx, mouseX, mouseY) {
+    ctx.beginPath();
+    ctx.setLineDash([3, 7]);
+    if(mouseX > -1) {
+      ctx.moveTo(mouseX, 0);
+      ctx.lineTo(mouseX, selectionCanvas.height);
+    } else if (mouseY > -1) {
+      ctx.moveTo(0, mouseY);
+      ctx.lineTo(selectionCanvas.width, mouseY);
+    }
+    ctx.strokeStyle = 'blue';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  }
+
+  function showGuideLines() {
+    var tmpSelectionCanvasContext = selectionCanvas.getContext("2d");
+    tmpSelectionCanvasContext.clearRect(0, 0, selectionCanvas.width, selectionCanvas.height);
+    drawGuideLine(tmpSelectionCanvasContext, mouseX, -1);
+    drawGuideLine(tmpSelectionCanvasContext, -1, mouseY);
+  }
+
   function mouseMoveEventListener(event) {
     mouseX = parseInt(event.clientX - selectionCanvas.offsetLeft);
     mouseY = parseInt(event.clientY - selectionCanvas.offsetTop);
+    showGuideLines();
     if (selectionCanvasContext != undefined) {
-      selectionCanvasContext.clearRect(0, 0, window.innerWidth, window.innerHeight);
       selectionCanvasContext.beginPath();
+      selectionCanvasContext.setLineDash([]);
       const width = mouseX - lastMouseX;
       const height = mouseY - lastMouseY;
       selectionCanvasContext.rect(lastMouseX, lastMouseY, width, height);

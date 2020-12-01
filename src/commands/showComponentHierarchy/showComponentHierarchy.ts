@@ -276,10 +276,7 @@ export class ShowComponentHierarchy {
       const newFilePath = path.join(workspaceDirectory, 'ComponentHierarchy.png');
       this.fsUtils.writeFile(newFilePath, u8arr, () => {});
 
-      const angularToolsOutput = vscode.window.createOutputChannel("Angular Tools");
-      angularToolsOutput.clear();
-      angularToolsOutput.appendLine(`The file ComponentHierarchy.png has been created in the root of the workspace.\n`);
-      angularToolsOutput.show();      
+      vscode.window.showInformationMessage('The file ComponentHierarchy.png has been created in the root of the workspace.');
     }
   }
 }

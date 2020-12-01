@@ -65,11 +65,7 @@ export class ComponentHierarchyDgml {
       // Write the prettified xml string to the ReadMe-ProjectStructure.dgml file.
       const fsUtils = new FileSystemUtils();
       fsUtils.writeFile(path.join(directoryPath, graphFilename), fileContent, () => {
-        const angularToolsOutput = vscode.window.createOutputChannel("Angular Tools");
-        angularToolsOutput.clear();
-        angularToolsOutput.appendLine(`The project structure has been analyzed and a Directed Graph Markup Language (dgml) file has been created\n`);
-        angularToolsOutput.appendLine('The ReadMe-ProjectStructure.dgml file can now be viewed in Visual Studio\n');
-        angularToolsOutput.show();
+        vscode.window.showInformationMessage('The project structure has been analyzed and a Directed Graph Markup Language (dgml) file has been created\nThe ReadMe-ProjectStructure.dgml file can now be viewed in Visual Studio');
       });
     } catch (ex) {
       console.log('exception:' + ex);

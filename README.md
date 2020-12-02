@@ -1,65 +1,60 @@
-# angulartools README
+# AngularTools
 
-This is the README for your extension "angulartools". After writing up a brief description, we recommend including the following sections.
+AngularTools is a collection of tools for exploring an Angular project, help you with documenting, reverse engineering a project or help when refactoring.
+
+Some of the tools may seem very basic, but can be a powerful help when you have them right at your fingertips.
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+* Generate DGML graph of project component hierarchy
+* Show the component hierarchy
+* Show the directory structure of the project
+* Generate list of packages used in the project
+* List all imports
 
-For example if there is an image subfolder under your extension project workspace:
+Below is a detailed description of each feature.
 
-\!\[feature X\]\(images/feature-x.png\)
+### Generate DGML graph of project component hierarchy [#](#generate-dgml-graph- 'Generate DGML graph of project component hierarchy')
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+The Generate Directed Graph Markup Language ([dgml](https://docs.microsoft.com/en-us/visualstudio/modeling/directed-graph-markup-language-dgml-reference)) file command analyzes the all angular components and generates a graph of the relationship between the components.
 
-## Requirements
+The dgml file can be viewed and modified using Microsoft Visual Studio. I don't believe there is an extension for Visual Studio Code yet for viewing dgml files.
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+![Generate DGML graph](images/GenerateDgml.gif)
 
-## Extension Settings
+### Show the component hierarchy [#](#show-component-hierarchy- 'Show the component hierarchy')
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+If you don't want install Microsoft Visual Studio or you are on a platform not supporting Microsoft Visual Studio to view the dgml files with the component relationship, you can use the 'Show the component hierarchy' command to render the  hierarchy and show it directly in vscode.
 
-For example:
+This command uses a vscode webview extension component to render the hierarchy using html, javascript and the [Vis.js](https://visjs.org/index.html) javascript library. This has the downside that copying the generated graph to the clipboard is not yet possible due to limitations in the vscode extension api. So to overcome this limitation the generated graph can be saved as a Png file to the root of the project you are analyzing.
 
-This extension contributes the following settings:
+![Show component hierarchy](images/ShowComponentHierarchy.gif)
 
-* `myExtension.enable`: enable/disable this extension
-* `myExtension.thing`: set to `blah` to do something
+You can also choose to save a selection from the graph as shown in the example below.
 
-## Known Issues
+![Show component hierarchy](images/ShowComponentHierarchy2.gif)
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+### Show the directory structure of the project [#](#directory-structure- 'Show the directory structure of the project')
 
-## Release Notes
+This command lists the entire directory structure of the currently open project. Sometimes this can be a quick way to get an overview of the project if you are new to the project before og maybe need to document it.
 
-Users appreciate release notes as you update your extension.
+The directory structure will be listed in the output window for the AngularTools extension for easy copy/pasting.
 
-### 1.0.0
+![Show the directory structure of the project](images/ShowProjectStructure.gif)
 
-Initial release of ...
+### Generate list of packages used in the project [#](#package-json-to-markdown- 'Generate list of packages used in the project')
 
-### 1.0.1
+Sometimes your boss or a customer requires documentation of which packages is used in the project. This command can save you a lot of tedious manual work by analyzing the package.json file and for each referenced package queries the [npmjs.com](https://www.npmjs.com/) website to fetch the description for the package and from that generates a Markdown file with a table of the packages with their descriptions.
 
-Fixed issue #.
+![Generate list of packages used in the project](images/PackageMarkdown.gif)
 
-### 1.1.0
+### List all imports [#](#list-all-imports- 'List all imports')
 
-Added features X, Y, and Z.
+This command will analyse all Angular components in the project and collect all the imports of the components together with the number of times the imported component is used. This can be useful when refactoring or identifying frequently used modules. Usually frequently used modules needs extra attention or care before being changed during refactoring. You can also use the command to identify modules that are not referenced in a consistent way where some components are using relative path and some components using path-aliases.
 
------------------------------------------------------------------------------------------------------------
+![List all imports](images/ListAllImports.gif)
 
-## Working with Markdown
+## Third party components and resources
 
-**Note:** You can author your README using Visual Studio Code.  Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux)
-* Toggle preview (`Shift+CMD+V` on macOS or `Shift+Ctrl+V` on Windows and Linux)
-* Press `Ctrl+Space` (Windows, Linux) or `Cmd+Space` (macOS) to see a list of Markdown snippets
-
-### For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+* [Vis.js](https://visjs.org/index.html) - Used for generating the directed graph for showing the component hierarchy.
+* [npmjs.com](https://www.npmjs.com/) - The extension queries the NpmJs.com api.

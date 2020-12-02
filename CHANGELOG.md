@@ -1,9 +1,7 @@
 # Change Log
 
-All notable changes to the "angulartools" extension will be documented in this file.
-
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
-
-## [Unreleased]
+## Version 1.0
 
 - Initial release
+
+[Keep a Changelog](http://keepachangelog.com/)

@@ -1,8 +1,14 @@
 {
-	"name": "angulartools",
+	"name": "vscode-angulartools",
+	"publisher": "coderAllan",
 	"displayName": "AngularTools",
-	"description": "Various tools for Angular development",
-	"version": "0.0.1",
+	"description": "AngularTools is a collection of tools for exploring an Angular project, help you with documenting, reverse engineering a project or help when refactoring.",
+	"version": "1.0.0",
+	"repository": "https://github.com/CoderAllan/vscode-angulartools",
+	"author": {
+		"name": "Allan Simonsen",
+		"url": "https://github.com/CoderAllan"
+	},
 	"engines": {
 		"vscode": "^1.49.0"
 	},

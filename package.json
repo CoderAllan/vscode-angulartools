@@ -14,8 +14,12 @@
 		"vscode": "^1.49.0"
 	},
 	"categories": [
-		"Other"
-	],
+    "Other",
+    "Visualization"
+  ],
+  "keywords": [
+    "angular", "dgml", "typescript", "markdown"
+  ],
 	"activationEvents": [
 		"onCommand:angulartools.componentHierarchyDgml",
 		"onCommand:angulartools.listAllImports",

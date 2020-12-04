@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
-import { FileSystemUtils } from "../../filesystemUtils";
+import { FileSystemUtils } from "../filesystemUtils";
 import { Base64 } from 'js-base64';
 
 class Component {
@@ -109,10 +109,10 @@ export class ShowComponentHierarchy {
 
     try {
       const jsContent = this.generateJavascriptContent(nodesJson, rootNodesJson, edgesJson);
-      const outputJsFilename = 'showComponentHierarchy/showComponentHierarchy.js';
+      const outputJsFilename = 'showComponentHierarchy.js';
       let htmlContent = this.generateHtmlContent(webview, outputJsFilename);
 
-      this.fsUtils.writeFile(this.extensionContext?.asAbsolutePath(path.join('src', 'commands', 'showComponentHierarchy/showComponentHierarchy.html')), htmlContent, () => { }); // For debugging
+      this.fsUtils.writeFile(this.extensionContext?.asAbsolutePath(path.join('src', 'commands', 'showComponentHierarchy.html')), htmlContent, () => { }); // For debugging
       this.fsUtils.writeFile(
         this.extensionContext?.asAbsolutePath(path.join('src', 'commands', outputJsFilename)),
         jsContent,
@@ -236,8 +236,8 @@ export class ShowComponentHierarchy {
   }
 
   private generateJavascriptContent(nodesJson: string, rootNodesJson: string, edgesJson: string): string {
-    const templateJsFilename = 'showComponentHierarchy/showComponentHierarchy_Template.js';
-    let template = fs.readFileSync(this.extensionContext?.asAbsolutePath(path.join('src', 'commands', templateJsFilename)), 'utf8');
+    const templateJsFilename = 'showComponentHierarchy_Template.js';
+    let template = fs.readFileSync(this.extensionContext?.asAbsolutePath(path.join('templates', templateJsFilename)), 'utf8');
     let jsContent = template.replace('var nodes = new vis.DataSet([]);', `var nodes = new vis.DataSet([${nodesJson}]);`);
     jsContent = jsContent.replace('var rootNodes = [];', `var rootNodes = [${rootNodesJson}];`);
     jsContent = jsContent.replace('var edges = new vis.DataSet([]);', `var edges = new vis.DataSet([${edgesJson}]);`);
@@ -245,14 +245,14 @@ export class ShowComponentHierarchy {
   }
 
   private generateHtmlContent(webview: vscode.Webview, outputJsFilename: string): string {
-    const templateHtmlFilename = 'showComponentHierarchy/showComponentHierarchy_Template.html';
-    let htmlContent = fs.readFileSync(this.extensionContext?.asAbsolutePath(path.join('src', 'commands', templateHtmlFilename)), 'utf8');
+    const templateHtmlFilename = 'showComponentHierarchy_Template.html';
+    let htmlContent = fs.readFileSync(this.extensionContext?.asAbsolutePath(path.join('templates', templateHtmlFilename)), 'utf8');
 
-    const visPath = vscode.Uri.joinPath(this.extensionContext.extensionUri, 'src', 'commands', 'showComponentHierarchy/vis-network.min.js');
+    const visPath = vscode.Uri.joinPath(this.extensionContext.extensionUri, 'javascript', 'vis-network.min.js');
     const visUri = webview.asWebviewUri(visPath);
     htmlContent = htmlContent.replace('vis-network.min.js', visUri.toString());
 
-    const cssPath = vscode.Uri.joinPath(this.extensionContext.extensionUri, 'src', 'commands', 'showComponentHierarchy/showComponentHierarchy.css');
+    const cssPath = vscode.Uri.joinPath(this.extensionContext.extensionUri, 'stylesheet', 'showComponentHierarchy.css');
     const cssUri = webview.asWebviewUri(cssPath);
     htmlContent = htmlContent.replace('showComponentHierarchy.css', cssUri.toString());
 

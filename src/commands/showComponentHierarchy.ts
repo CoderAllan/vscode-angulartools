@@ -112,9 +112,9 @@ export class ShowComponentHierarchy {
       const outputJsFilename = 'showComponentHierarchy.js';
       let htmlContent = this.generateHtmlContent(webview, outputJsFilename);
 
-      this.fsUtils.writeFile(this.extensionContext?.asAbsolutePath(path.join('src', 'commands', 'showComponentHierarchy.html')), htmlContent, () => { }); // For debugging
+      this.fsUtils.writeFile(this.extensionContext?.asAbsolutePath(path.join('out', 'showComponentHierarchy.html')), htmlContent, () => { }); // For debugging
       this.fsUtils.writeFile(
-        this.extensionContext?.asAbsolutePath(path.join('src', 'commands', outputJsFilename)),
+        this.extensionContext?.asAbsolutePath(path.join('out', outputJsFilename)),
         jsContent,
         () => {
           webview.html = htmlContent;
@@ -261,7 +261,7 @@ export class ShowComponentHierarchy {
     htmlContent = htmlContent.replace(/<script /g, `<script nonce="${nonce}" `);
     htmlContent = htmlContent.replace('cspSource', webview.cspSource);
 
-    const jsPath = vscode.Uri.joinPath(this.extensionContext.extensionUri, 'src', 'commands', outputJsFilename);
+    const jsPath = vscode.Uri.joinPath(this.extensionContext.extensionUri, 'out', outputJsFilename);
     const jsUri = webview.asWebviewUri(jsPath);
     htmlContent = htmlContent.replace('showComponentHierarchy.js', jsUri.toString());
     return htmlContent;

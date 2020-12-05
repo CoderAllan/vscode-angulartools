@@ -3,24 +3,9 @@ import { Base64 } from 'js-base64';
 import * as path from 'path';
 import * as vscode from 'vscode';
 
+import { Component, ComponentManager } from '../componentManager';
 import { Config } from '../config';
 import { FileSystemUtils } from '../filesystemUtils';
-
-class Component {
-
-  constructor(tsFilename: string, templateFilename: string, selector: string, subComponents: Component[], isRoot: boolean) {
-    this.tsFilename = tsFilename;
-    this.templateFilename = templateFilename;
-    this.selector = selector;
-    this.subComponents = subComponents;
-    this.isRoot = isRoot;
-  }
-  public tsFilename: string;
-  public templateFilename: string;
-  public selector: string;
-  public subComponents: Component[];
-  public isRoot: boolean;
-}
 
 class Node {
   constructor(id: string, tsFilename: string, isRoot: boolean) {
@@ -36,6 +21,7 @@ class Node {
     return `{id: "${this.id}", label: "${this.id}"}`;
   }
 }
+
 class Edge {
   constructor(id: string, source: string, target: string) {
     this.id = id;
@@ -76,9 +62,7 @@ export class ShowComponentHierarchy {
     );
 
     var directoryPath: string = this.fsUtils.getWorkspaceFolder();
-    const componentFilenames = this.fsUtils.listFiles(directoryPath, Config.excludeDirectories, this.isComponentFile);
-    const components = this.findComponents(componentFilenames);
-    this.enrichComponentsFromComponentTemplates(components);
+    const components = ComponentManager.findComponents(directoryPath);
 
     let nodes: Node[] = [];
     const appendNodes = (nodeList: Node[]) => {
@@ -89,14 +73,14 @@ export class ShowComponentHierarchy {
       });
     };
     let edges: Edge[] = [];
-    const appendLinks = (edgeList: Edge[]) => {
+    const appendEdges = (edgeList: Edge[]) => {
       edgeList.forEach(newEdge => {
         if (!edges.some(edge => edge.source === newEdge.source && edge.target === newEdge.target)) {
           edges = edges.concat(newEdge);
         }
       });
     };
-    this.addNodesAndLinks(components, appendNodes, appendLinks);
+    this.addNodesAndEdges(components, appendNodes, appendEdges);
 
     const nodesJson = nodes
       .map((node, index, arr) => { return node.toJsonString(); })
@@ -127,77 +111,7 @@ export class ShowComponentHierarchy {
     }
   }
 
-  private isComponentFile(filename: string): boolean {
-    return filename.endsWith('.component.ts');
-  }
-
-  private findComponents(componentFilenames: string[]) {
-    const compHash: { [selector: string]: Component; } = {};
-    const componentRegex = /@Component\({/ig;
-    const templateUrlRegex = /.*templateUrl:.+\/(.+)\'/i;
-    const selectorRegex = /.*selector:.+\'(.+)\'/i;
-    const endBracketRegex = /}\)/i;
-    componentFilenames.forEach((componentFilename) => {
-      let componentDefinitionFound = false;
-      let currentComponent = new Component(componentFilename, "", "", [], true);
-      const content = fs.readFileSync(componentFilename, 'utf8');
-      const lines: string[] = content.split('\n');
-      for (let i: number = 0; i < lines.length; i++) {
-        let line = lines[i];
-        let match = componentRegex.exec(line);
-        if (match) {
-          componentDefinitionFound = true;
-        }
-        if (componentDefinitionFound) {
-          match = templateUrlRegex.exec(line);
-          if (match) {
-            currentComponent.templateFilename = path.join(path.dirname(componentFilename), match[1]);
-          }
-          match = selectorRegex.exec(line);
-          if (match) {
-            let currentSelector = match[1];
-            currentSelector = currentSelector.replace("[", "");
-            currentSelector = currentSelector.replace("]", "");
-            currentComponent.selector = currentSelector;
-          }
-          match = endBracketRegex.exec(line);
-          if (match) {
-            break;
-          }
-        }
-      }
-      compHash[currentComponent.selector] = currentComponent;
-    });
-    return compHash;
-  }
-
-  private enrichComponentsFromComponentTemplates(componentHash: { [selector: string]: Component; }) {
-    for (let selector1 in componentHash) {
-      if (fs.existsSync(componentHash[selector1].templateFilename)) {
-        const template = fs.readFileSync(componentHash[selector1].templateFilename); // We read the entire template file
-        for (let selector2 in componentHash) {  // then we check if the template contains each of the selectors we found in the components
-          let pattern = `</${selector2}>`;
-          let index = template.indexOf(pattern);
-          if (index >= 0) {
-            componentHash[selector1].subComponents = componentHash[selector1].subComponents.concat(componentHash[selector2]);
-            // If selector2 has been found in a template then it is not root
-            componentHash[selector2].isRoot = false;
-          }
-          else {
-            pattern = ` ${selector2}`;
-            index = template.indexOf(pattern);
-            if (index >= 0) {
-              componentHash[selector1].subComponents = componentHash[selector1].subComponents.concat(componentHash[selector2]);
-              // If selector2 has been found in a template then it is not root
-              componentHash[selector2].isRoot = false;
-            }
-          }
-        }
-      }
-    }
-  }
-
-  private addNodesAndLinks(componentHash: { [selector: string]: Component; }, appendNodes: (nodeList: Node[]) => void, appendLinks: (edgeList: Edge[]) => void) {
+  private addNodesAndEdges(componentHash: { [selector: string]: Component; }, appendNodes: (nodeList: Node[]) => void, appendLinks: (edgeList: Edge[]) => void) {
     for (let selector in componentHash) {
       const component = componentHash[selector];
       if (component.isRoot) {
@@ -284,7 +198,7 @@ export class ShowComponentHierarchy {
       const newFilePath = path.join(workspaceDirectory, Config.componentHierarchyFilename);
       this.fsUtils.writeFile(newFilePath, u8arr, () => {});
 
-      vscode.window.showInformationMessage('The file ComponentHierarchy.png has been created in the root of the workspace.');
+      vscode.window.showInformationMessage(`The file ${Config.componentHierarchyFilename} has been created in the root of the workspace.`);
     }
   }
 }

@@ -3,27 +3,12 @@ import * as path from 'path';
 import * as vscode from 'vscode';
 import * as xmldom from 'xmldom';
 
+import { Component, ComponentManager } from '../componentManager';
 import { Config } from '../config';
 import { FileSystemUtils } from '../filesystemUtils';
 
 const prettifyXml = require('prettify-xml');
 const xmlSerializer = require('xmlserializer');
-
-class Component {
-
-  constructor(tsFilename: string, templateFilename: string, selector: string, subComponents: Component[], isRoot: boolean) {
-    this.tsFilename = tsFilename;
-    this.templateFilename = templateFilename;
-    this.selector = selector;
-    this.subComponents = subComponents;
-    this.isRoot = isRoot;
-  }
-  public tsFilename: string;
-  public templateFilename: string;
-  public selector: string;
-  public subComponents: Component[];
-  public isRoot: boolean;
-}
 
 export class ComponentHierarchyDgml {
 
@@ -32,14 +17,11 @@ export class ComponentHierarchyDgml {
   public execute() {
     const fsUtils = new FileSystemUtils();
     var directoryPath: string = fsUtils.getWorkspaceFolder();
-    const componentFilenames = fsUtils.listFiles(directoryPath, Config.excludeDirectories, this.isComponentFile);
-    const components = this.findComponents(componentFilenames);
-    this.scanComponentTemplates(components);
+    const components = ComponentManager.findComponents(directoryPath);
 
     const domImpl = new xmldom.DOMImplementation();
     const documentParser = new xmldom.DOMParser();
     let xmlDocument: Document;
-    let root: Element;
 
     try {
       // if the graph file already exists, then read it and parse it into a xml document object
@@ -64,82 +46,11 @@ export class ComponentHierarchyDgml {
       fileContent = fileContent.replace('HasCategory(&apos;RootComponent&apos;)', "HasCategory('RootComponent')");
 
       // Write the prettified xml string to the ReadMe-ProjectStructure.dgml file.
-      const fsUtils = new FileSystemUtils();
       fsUtils.writeFile(path.join(directoryPath, Config.dgmlGraphFilename), fileContent, () => {
         vscode.window.showInformationMessage('The project structure has been analyzed and a Directed Graph Markup Language (dgml) file has been created\nThe ReadMe-ProjectStructure.dgml file can now be viewed in Visual Studio');
       });
     } catch (ex) {
       console.log('exception:' + ex);
-    }
-  }
-
-  private isComponentFile(filename: string): boolean {
-    return filename.endsWith('.component.ts');
-  }
-
-  private findComponents(componentFilenames: string[]) {
-    const compHash: { [selector: string]: Component; } = {};
-    const componentRegex = /@Component\({/ig;
-    const templateUrlRegex = /.*templateUrl:.+\/(.+)\'/i;
-    const selectorRegex = /.*selector:.+\'(.+)\'/i;
-    const endBracketRegex = /}\)/i;
-    componentFilenames.forEach((componentFilename) => {
-      let componentDefinitionFound = false;
-      let currentComponent = new Component(componentFilename, "", "", [], true);
-      const content = fs.readFileSync(componentFilename, 'utf8');
-      const lines: string[] = content.split('\n');
-      for (let i: number = 0; i < lines.length; i++) {
-        let line = lines[i];
-        let match = componentRegex.exec(line);
-        if (match) {
-          componentDefinitionFound = true;
-        }
-        if (componentDefinitionFound) {
-          match = templateUrlRegex.exec(line);
-          if (match) {
-            currentComponent.templateFilename = path.join(path.dirname(componentFilename), match[1]);
-          }
-          match = selectorRegex.exec(line);
-          if (match) {
-            let currentSelector = match[1];
-            currentSelector = currentSelector.replace("[", "");
-            currentSelector = currentSelector.replace("]", "");
-            currentComponent.selector = currentSelector;
-          }
-          match = endBracketRegex.exec(line);
-          if (match) {
-            break;
-          }
-        }
-      }
-      compHash[currentComponent.selector] = currentComponent;
-    });
-    return compHash;
-  }
-
-  private scanComponentTemplates(componentHash: { [selector: string]: Component; }) {
-    for (let selector1 in componentHash) {
-      if (fs.existsSync(componentHash[selector1].templateFilename)) {
-        const template = fs.readFileSync(componentHash[selector1].templateFilename); // We read the entire template file
-        for (let selector2 in componentHash) {  // then we check if the template contains each of the selectors we found in the components
-          let pattern = `</${selector2}>`;
-          let index = template.indexOf(pattern);
-          if (index >= 0) {
-            componentHash[selector1].subComponents = componentHash[selector1].subComponents.concat(componentHash[selector2]);
-            // If selector2 has been found in a template then it is not root
-            componentHash[selector2].isRoot = false;
-          }
-          else {
-            pattern = ` ${selector2}`;
-            index = template.indexOf(pattern);
-            if (index >= 0) {
-              componentHash[selector1].subComponents = componentHash[selector1].subComponents.concat(componentHash[selector2]);
-              // If selector2 has been found in a template then it is not root
-              componentHash[selector2].isRoot = false;
-            }
-          }
-        }
-      }
     }
   }
 

@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 1.1.0
+
+- Bugfix: The List imports command now also find the require(...) packages.
+
 ## Version 1.0.1
 
 - Bugfix: The Show component hierarchy graph command did not work 

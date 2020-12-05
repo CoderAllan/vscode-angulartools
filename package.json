@@ -2,9 +2,9 @@
 	"name": "vscode-angulartools",
 	"publisher": "coderAllan",
 	"displayName": "AngularTools",
-  "description": "AngularTools is a collection of tools for exploring an Angular project, help you with documenting, reverse engineering a project or help when refactoring.",
-  "icon": "images/logo.png",
-	"version": "1.0.1",
+	"description": "AngularTools is a collection of tools for exploring an Angular project, help you with documenting, reverse engineering a project or help when refactoring.",
+	"icon": "images/logo.png",
+	"version": "1.1.0",
 	"repository": "https://github.com/CoderAllan/vscode-angulartools",
 	"author": {
 		"name": "Allan Simonsen",
@@ -14,12 +14,15 @@
 		"vscode": "^1.49.0"
 	},
 	"categories": [
-    "Other",
-    "Visualization"
-  ],
-  "keywords": [
-    "angular", "dgml", "typescript", "markdown"
-  ],
+		"Other",
+		"Visualization"
+	],
+	"keywords": [
+		"angular",
+		"dgml",
+		"typescript",
+		"markdown"
+	],
 	"activationEvents": [
 		"onCommand:angulartools.componentHierarchyDgml",
 		"onCommand:angulartools.listAllImports",

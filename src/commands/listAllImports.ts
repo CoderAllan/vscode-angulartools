@@ -23,13 +23,21 @@ export class ListAllImports {
     if (!results) { return; }
     for (let i = 0; i < results.length; i++) {
       var file = results[i];
-      const regex: RegExp = new RegExp('.*?\\s+from\\s+[\'"](.+)[\'"]', 'ig');
+      const regexImports: RegExp = new RegExp('.*?\\s+from\\s+[\'"](.+)[\'"]', 'ig');
+      const regexRequires: RegExp = new RegExp('.*?\\s+require\\s*\\(\\s*[\'"](.+)[\'"]\\s*\\)', 'ig');
       const content = fs.readFileSync(file, 'utf8');
       const lines: string[] = content.split('\n');
       lines.forEach(line => {
-        const match = regex.exec(line);
-        if (match) {
-          const key = match[1];
+        const matchImports = regexImports.exec(line);
+        const matchRequires = regexRequires.exec(line);
+        if (matchImports || matchRequires) {
+          let key: string = '';
+          if (matchImports) {
+            key = matchImports[1];
+          }
+          if (matchRequires) {
+            key = matchRequires[1];
+          }
           if (imports.hasOwnProperty(key)) {
             imports[key] = imports[key] + 1;
           } else {

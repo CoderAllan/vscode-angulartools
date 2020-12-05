@@ -1,4 +1,6 @@
 import * as vscode from 'vscode';
+
+import { Config } from '../config';
 import { FileSystemUtils } from '../filesystemUtils';
 
 export class ProjectDirectoryStructure {
@@ -7,13 +9,12 @@ export class ProjectDirectoryStructure {
   public execute() {
     const fsUtils = new FileSystemUtils();
     var workspaceDirectory: string = fsUtils.getWorkspaceFolder();
-    const excludeDirectories = ['bin', 'obj', 'node_modules', 'dist', 'packages', '.git', '.vs', '.github'];
-    const directories: string[] = fsUtils.listDirectories(workspaceDirectory, excludeDirectories);
-    this.writeDirectoryStructure(workspaceDirectory, 'ReadMe-ProjectDirectoryStructure.md', directories);
+    const directories: string[] = fsUtils.listDirectories(workspaceDirectory, Config.excludeDirectories);
+    this.writeDirectoryStructure(workspaceDirectory, Config.projectDirectoryStructureMarkdownFilename, directories);
   }
 
   private writeDirectoryStructure(workSpaceDirectory: string, filename: string, directories: string[]) {
-    const angularToolsOutput = vscode.window.createOutputChannel("Angular Tools");
+    const angularToolsOutput = vscode.window.createOutputChannel(Config.angularToolsOutputChannel);
     angularToolsOutput.clear();
     angularToolsOutput.appendLine('Project Directory Structure');
     angularToolsOutput.appendLine(`Workspace directory: ${workSpaceDirectory}\n`);

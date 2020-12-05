@@ -1,8 +1,11 @@
-import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
-import { FileSystemUtils } from "../filesystemUtils";
+import * as vscode from 'vscode';
 import * as xmldom from 'xmldom';
+
+import { Config } from '../config';
+import { FileSystemUtils } from '../filesystemUtils';
+
 const prettifyXml = require('prettify-xml');
 const xmlSerializer = require('xmlserializer');
 
@@ -29,12 +32,10 @@ export class ComponentHierarchyDgml {
   public execute() {
     const fsUtils = new FileSystemUtils();
     var directoryPath: string = fsUtils.getWorkspaceFolder();
-    const excludeDirectories = ['bin', 'obj', 'node_modules', 'dist', 'packages', '.git', '.vs', '.github'];
-    const componentFilenames = fsUtils.listFiles(directoryPath, excludeDirectories, this.isComponentFile);
+    const componentFilenames = fsUtils.listFiles(directoryPath, Config.excludeDirectories, this.isComponentFile);
     const components = this.findComponents(componentFilenames);
     this.scanComponentTemplates(components);
 
-    const graphFilename = 'ReadMe-ProjectStructure.dgml';
     const domImpl = new xmldom.DOMImplementation();
     const documentParser = new xmldom.DOMParser();
     let xmlDocument: Document;
@@ -42,9 +43,9 @@ export class ComponentHierarchyDgml {
 
     try {
       // if the graph file already exists, then read it and parse it into a xml document object
-      if (fs.existsSync(graphFilename)) {
+      if (fs.existsSync(Config.dgmlGraphFilename)) {
         try {
-          const content = fs.readFileSync(graphFilename).toString();
+          const content = fs.readFileSync(Config.dgmlGraphFilename).toString();
           xmlDocument = documentParser.parseFromString(content, 'text/xml');
         } catch {
           xmlDocument = this.createNewDirectedGraph(domImpl);
@@ -64,7 +65,7 @@ export class ComponentHierarchyDgml {
 
       // Write the prettified xml string to the ReadMe-ProjectStructure.dgml file.
       const fsUtils = new FileSystemUtils();
-      fsUtils.writeFile(path.join(directoryPath, graphFilename), fileContent, () => {
+      fsUtils.writeFile(path.join(directoryPath, Config.dgmlGraphFilename), fileContent, () => {
         vscode.window.showInformationMessage('The project structure has been analyzed and a Directed Graph Markup Language (dgml) file has been created\nThe ReadMe-ProjectStructure.dgml file can now be viewed in Visual Studio');
       });
     } catch (ex) {
@@ -145,9 +146,9 @@ export class ComponentHierarchyDgml {
   private createNewDirectedGraph(domImpl: DOMImplementation) {
     let xmlDoc: Document = domImpl.createDocument('', null, null);
     const root = xmlDoc.createElement("DirectedGraph");
-    root.setAttribute("GraphDirection", "LeftToRight");
-    root.setAttribute("Layout", "Sugiyama");
-    root.setAttribute("ZoomLevel", "-1");
+    root.setAttribute("GraphDirection", Config.dgmlGraphDirection);
+    root.setAttribute("Layout", Config.dgmlGraphLayout);
+    root.setAttribute("ZoomLevel", Config.dgmlZooLevel);
     root.setAttribute("xmlns", "http://schemas.microsoft.com/vs/2009/dgml");
     xmlDoc.appendChild(root);
     return xmlDoc;
@@ -254,7 +255,7 @@ export class ComponentHierarchyDgml {
     const categoryElement = xmlDoc.createElement("Category");
     categoryElement.setAttribute("Id", "RootComponent");
     categoryElement.setAttribute("Label", "Root component");
-    categoryElement.setAttribute("Background", "#FF00AA00");
+    categoryElement.setAttribute("Background", Config.rootNodeBackgroundColor);
     categoryElement.setAttribute("IsTag", "True");
     this.addNode(categoriesElement, categoryElement);
   }

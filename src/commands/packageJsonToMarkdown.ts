@@ -1,6 +1,9 @@
-import { FileSystemUtils } from '../filesystemUtils';
-import * as path from 'path';
 import * as fs from 'fs';
+import * as path from 'path';
+
+import { Config } from '../config';
+import { FileSystemUtils } from '../filesystemUtils';
+
 const fetch = require('node-fetch');
 
 export class PackageJsonToMarkdown {
@@ -9,9 +12,8 @@ export class PackageJsonToMarkdown {
   public execute() {
     const fsUtils = new FileSystemUtils();
     const directoryPath: string = fsUtils.getWorkspaceFolder();
-    const excludeDirectories = ['bin', 'obj', 'node_modules', 'dist', 'packages', '.git', '.vs', '.github'];
     const isPackageJson = (filename: string): boolean => filename.toLowerCase().endsWith('package.json');
-    const files = fsUtils.listFiles(directoryPath, excludeDirectories, isPackageJson);
+    const files = fsUtils.listFiles(directoryPath, Config.excludeDirectories, isPackageJson);
     this.writeMarkdownFile(directoryPath, files);
   }
 
@@ -84,7 +86,7 @@ export class PackageJsonToMarkdown {
             '| ---- |:-----------|\n' +
             peerDependenciesMarkdown;
           const fsUtils = new FileSystemUtils();
-          fsUtils.writeFileAndOpen(path.join(workspaceDirectory, 'ReadMe-PackagesJson.md'), markdownContent);
+          fsUtils.writeFileAndOpen(path.join(workspaceDirectory, Config.packageJsonMarkdownFilename), markdownContent);
         });
       });
     });

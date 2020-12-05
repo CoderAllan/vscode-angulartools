@@ -4,14 +4,14 @@
   var rootNodes = [];
   rootNodes.forEach(nodeId => {
     nodes.get(nodeId).color = {
-      background: "#00FF00"
+      background: "#00FF00" // rootNode background color
     };
   });
 
   var arrowAttr = {
     to: {
       enabled: true,
-      type: "triangle"
+      type: "triangle" // edge arrow to type
     }
   };
   var edges = new vis.DataSet([]);
@@ -91,8 +91,8 @@
       ctx.moveTo(0, mouseY);
       ctx.lineTo(selectionCanvas.width, mouseY);
     }
-    ctx.strokeStyle = 'blue';
-    ctx.lineWidth = 1;
+    ctx.strokeStyle = 'blue'; // graph selection guideline color
+    ctx.lineWidth = 1; // graph selection guideline width
     ctx.stroke();
   }
 

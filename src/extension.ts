@@ -1,13 +1,15 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
-import { 
+
+import {
   ComponentHierarchyDgml,
+  ComponentHierarchyMarkdown,
   ListAllImports,
   PackageJsonToMarkdown,
   ProjectDirectoryStructure,
-  ShowComponentHierarchy
-} from './commands';
+  ShowComponentHierarchy,
+} from '@commands';
 
 export function activate(context: vscode.ExtensionContext) {
 
@@ -36,6 +38,12 @@ export function activate(context: vscode.ExtensionContext) {
     command.execute();
   });
   context.subscriptions.push(componentHierarchyDgmlDisposable);
+  
+  const componentHierarchyMarkdownDisposable = vscode.commands.registerCommand(`${cmdPrefix}.${ComponentHierarchyMarkdown.commandName}`, () => {
+    const command = new ComponentHierarchyMarkdown();
+    command.execute();
+  });
+  context.subscriptions.push(componentHierarchyMarkdownDisposable);
 
   const showComponentHierarchyDisposable = vscode.commands.registerCommand(`${cmdPrefix}.${ShowComponentHierarchy.commandName}`, () => {
     const componentHierarchyPanel = vscode.window.createWebviewPanel(
@@ -46,13 +54,13 @@ export function activate(context: vscode.ExtensionContext) {
         enableScripts: true
       }
     );
-    componentHierarchyPanel.onDidDispose(() => {  
-
-    }, null, context.subscriptions );
+    componentHierarchyPanel.onDidDispose(() => {
+    }, null, context.subscriptions);
     const command = new ShowComponentHierarchy(context);
     command.execute(componentHierarchyPanel.webview);
   });
-  context.subscriptions.push(showComponentHierarchyDisposable);}
+  context.subscriptions.push(showComponentHierarchyDisposable);
+}
 
 // this method is called when your extension is deactivated
 export function deactivate() { }

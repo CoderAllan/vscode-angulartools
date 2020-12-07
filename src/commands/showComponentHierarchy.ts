@@ -1,11 +1,8 @@
+import { Component, ComponentManager, Config, FileSystemUtils } from '@src';
 import * as fs from 'fs';
 import { Base64 } from 'js-base64';
 import * as path from 'path';
 import * as vscode from 'vscode';
-
-import { Component, ComponentManager } from '../componentManager';
-import { Config } from '../config';
-import { FileSystemUtils } from '../filesystemUtils';
 
 class Node {
   constructor(id: string, tsFilename: string, isRoot: boolean) {
@@ -98,7 +95,7 @@ export class ShowComponentHierarchy {
       const outputJsFilename = ShowComponentHierarchy.Name + '.js';
       let htmlContent = this.generateHtmlContent(webview, outputJsFilename);
 
-      this.fsUtils.writeFile(this.extensionContext?.asAbsolutePath(path.join('out', ShowComponentHierarchy.Name + '.html')), htmlContent, () => { }); // For debugging
+      //this.fsUtils.writeFile(this.extensionContext?.asAbsolutePath(path.join('out', ShowComponentHierarchy.Name + '.html')), htmlContent, () => { }); // For debugging
       this.fsUtils.writeFile(
         this.extensionContext?.asAbsolutePath(path.join('out', outputJsFilename)),
         jsContent,

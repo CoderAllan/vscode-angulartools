@@ -1,7 +1,5 @@
+import { Config, FileSystemUtils } from '@src';
 import * as vscode from 'vscode';
-
-import { Config } from '../config';
-import { FileSystemUtils } from '../filesystemUtils';
 
 export class ProjectDirectoryStructure {
   public static get commandName(): string { return 'projectDirectoryStructure'; }

@@ -25,4 +25,7 @@ export class Config {
   public static readonly graphSelectionColor = 'red';
   public static readonly graphSelectionWidth = 2;
   public static readonly componentHierarchyFilename = 'ComponentHierarchy.png';
+
+  // ComponentHierarchyMarkdown
+  public static readonly componentHierarchyMarkdownFilename = 'ComponentHierarchy.md';
 }

@@ -1,11 +1,9 @@
+import { Component, ComponentManager, Config, FileSystemUtils } from '@src';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as vscode from 'vscode';
 import * as xmldom from 'xmldom';
 
-import { Component, ComponentManager } from '../componentManager';
-import { Config } from '../config';
-import { FileSystemUtils } from '../filesystemUtils';
 
 const prettifyXml = require('prettify-xml');
 const xmlSerializer = require('xmlserializer');

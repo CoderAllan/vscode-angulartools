@@ -1,8 +1,7 @@
 import * as fs from 'fs';
 import path = require('path');
 
-import { Config } from './config';
-import { FileSystemUtils } from './filesystemUtils';
+import { Config , FileSystemUtils } from '@src';
 
 export class Component {
 

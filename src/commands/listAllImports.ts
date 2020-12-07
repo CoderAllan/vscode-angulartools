@@ -1,8 +1,7 @@
 import * as fs from 'fs';
 import * as vscode from 'vscode';
 
-import { Config } from '../config';
-import { FileSystemUtils } from '../filesystemUtils';
+import { Config, FileSystemUtils } from '@src';
 
 export class ListAllImports {
   public static get commandName(): string { return 'listAllImports'; }

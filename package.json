@@ -28,7 +28,8 @@
 		"onCommand:angulartools.listAllImports",
 		"onCommand:angulartools.projectDirectoryStructure",
 		"onCommand:angulartools.packageJsonToMarkdown",
-		"onCommand:angulartools.showComponentHierarchy"
+		"onCommand:angulartools.showComponentHierarchy",
+		"onCommand:angulartools.componentHierarchyMarkdown"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -52,16 +53,26 @@
 			{
 				"command": "angulartools.showComponentHierarchy",
 				"title": "AngularTools: Show a graph representing the component hierarchy."
+			},
+			{
+				"command": "angulartools.componentHierarchyMarkdown",
+				"title": "AngularTools: Generate a directed graph in Mermaid Markdown format."
 			}
 		]
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
-		"compile": "tsc -p ./",
+		"compile": "tsc -p ./ && tscpaths -p ./tsconfig.json -s ./src -o ./out",
 		"lint": "eslint src --ext ts",
 		"watch": "tsc -watch -p ./",
 		"pretest": "npm run compile && npm run lint",
 		"test": "node ./out/test/runTest.js"
+	},
+	"_moduleAliases": {
+		"@commands": [
+			"src/commands"
+		],
+		"@src": "src"
 	},
 	"devDependencies": {
 		"@types/vscode": "^1.49.0",
@@ -81,6 +92,8 @@
 		"js-base64": "^3.6.0",
 		"node-fetch": "^2.6.1",
 		"prettify-xml": "^1.2.0",
+		"tsconfig-paths": "^3.9.0",
+		"tscpaths": "0.0.9",
 		"xmldom": "^0.3.0",
 		"xmlserializer": "^0.6.1"
 	}

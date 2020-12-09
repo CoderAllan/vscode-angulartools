@@ -4,7 +4,6 @@
 
 - New feature: You can now generate a markdown(Mermaid) file with the component hierarchy.
 - Bugfix: The List imports command now also find the require(...) packages.
-- Bugfix: ShowComponentHierarchy.html is no longer written to the workspace root.
 
 ## Version 1.0.1
 

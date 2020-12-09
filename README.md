@@ -8,6 +8,7 @@ Some of the tools may seem very basic, but can be a powerful help when you have 
 
 * Generate DGML graph of project component hierarchy
 * Show the component hierarchy
+* Generate a markdown file with the component hierarchy in Mermaid format.
 * Show the directory structure of the project
 * Generate list of packages used in the project
 * List all imports
@@ -34,6 +35,14 @@ You can also choose to save a selection from the graph as shown in the example b
 
 ![Show component hierarchy](https://github.com/CoderAllan/vscode-angulartools/raw/main/images/ShowComponentHierarchy2.gif)
 
+### Generate a markdown file with the component hierarchy in Mermaid format [#](#component-hierarchy-markdown- 'Component hierarchy in Mermaid format')
+
+This command will generate the component hierarchy in markdown format using [Mermaid notation](https://mermaid-js.github.io/mermaid/#/).
+
+Please notice that some online tools and sites do not support Mermaid markdown format yet, like GitHub and Visual Studio Code. To preview markdown files using the mermaid notation in Visual Studio Code i'm using the [Markdown Preview Mermaid Support](https://marketplace.visualstudio.com/items?itemName=bierner.markdown-mermaid) extension.
+
+![Generate graph in Mermaid notation](https://github.com/CoderAllan/vscode-angulartools/raw/main/images/GenerateMermaid.gif)
+
 ### Show the directory structure of the project [#](#directory-structure- 'Show the directory structure of the project')
 
 This command lists the entire directory structure of the currently open project. Sometimes this can be a quick way to get an overview of the project if you are new to the project before og maybe need to document it.
@@ -58,3 +67,4 @@ This command will analyse all Angular components in the project and collect all 
 
 * [Vis.js](https://visjs.org/index.html) - Used for generating the directed graph for showing the component hierarchy.
 * [npmjs.com](https://www.npmjs.com/) - The extension queries the NpmJs.com api.
+* [Mermaid markdown notation](https://mermaid-js.github.io/mermaid/#/)

@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 1.1.1
+
+- Bugfix: The edges in the component hierarchy graph are now straight and the dynamics of the graph is turned off.
+
 ## Version 1.1.0
 
 - New feature: You can now generate a markdown(Mermaid) file with the component hierarchy.

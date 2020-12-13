@@ -20,10 +20,17 @@
     nodes: nodes,
     edges: edges
   };
-  var options = {};
+  var options = {
+    physics: {
+      enabled: false
+    },
+    edges: {
+      smooth: false // Make edges straight lines.
+    }
+  };
   var container = document.getElementById('network');
   var network = new vis.Network(container, data, options);
-
+  
   const vscode = acquireVsCodeApi();
   const helpTextDiv = document.getElementById('helpText');
   let lastMouseX = lastMouseY = 0;

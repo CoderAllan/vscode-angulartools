@@ -4,7 +4,7 @@
 	"displayName": "AngularTools",
 	"description": "AngularTools is a collection of tools for exploring an Angular project, help you with documenting, reverse engineering a project or help when refactoring.",
 	"icon": "images/logo.png",
-	"version": "1.1.1",
+	"version": "1.2.0",
 	"repository": "https://github.com/CoderAllan/vscode-angulartools",
 	"author": {
 		"name": "Allan Simonsen",
@@ -58,7 +58,96 @@
 				"command": "angulartools.componentHierarchyMarkdown",
 				"title": "AngularTools: Generate a directed graph in Mermaid Markdown format."
 			}
-		]
+    ],
+    "configuration":{
+      "title": "AngularTools",
+      "properties": {
+        "angularTools.excludeDirectories": {
+          "type": "string",
+          "default": "bin;obj;node_modules;dist;packages;.git;.vs;.github",
+          "description": "Semicolon separated list of directories that should be excluded when scanning for for Angular components."
+        },
+        "angularTools.componentHierarchyDgml.defaultGraphFilename": {
+          "type": "string",
+          "default": "ReadMe-ProjectStructure.dgml",
+          "description": "The default filename used when saving a component hierarchy to a Directed Graph Markup Language (Dgml) file."
+        },
+        "angularTools.componentHierarchyDgml.graphLayout": {
+          "type": "string",
+          "default": "Sugiyama",
+          "enum": ["Sugiyama", "ForceDirected"],
+          "description": "This is the algorithm used to layout the nodes of the graph. Sugiyama wil try to avoid crossing edges as far as possible. ForceDirected will try to cluster the nodes."
+        },
+        "angularTools.componentHierarchyDgml.graphDirection": {
+          "type": "string",
+          "default": "LeftToRight",
+          "enum": ["TopToBottom", "BottomToTop", "LeftToRight", "RightToLeft"],
+          "description": "This will make the layout algorithm position the graph nodes in the specified direction."
+        },
+        "angularTools.componentHierarchyDgml.rootNodeBackgroundColor": {
+          "type": "string",
+          "default": "#FF00AA00",
+          "description": "The color of the root nodes of the directed graph. The string should be in rgba format."
+        },
+        "angularTools.packageJsonMarkdownFilename": {
+          "type": "string",
+          "default": "ReadMe-PackagesJson.md",
+          "description": "The default filename used when saving the packages.json as a markdown file."
+        },
+        "angularTools.projectDirectoryStructureMarkdownFilename": {
+          "type": "string",
+          "default": "ReadMe-ProjectDirectoryStructure.md",
+          "description": "The default filename used when saving the project directory structure as a markdown file."
+        },
+        "angularTools.showComponentHierarchy.rootNodeBackgroundColor": {
+          "type": "string",
+          "default": "#00FF00",
+          "description": "The color of the root nodes of the component hierarchy graph. The string should be in rgba format or standard css color names."
+        },
+        "angularTools.showComponentHierarchy.edgeArrowToType": {
+          "type": "string",
+          "default": "triangle",
+          "enum": ["arrow","bar","box","circle","crow","curve","diamond","inv_curve","inv_triangle","triangle","vee"],
+          "description": "The default ending of the edges."
+        },
+        "angularTools.showComponentHierarchy.nodeShape": {
+          "type": "string",
+          "default": "box",
+          "enum": ["ellipse","circle","database","box","text","diamond","dot","star","triangle","triangleDown","hexagon", "square "],
+          "description": "The shape of the nodes in the component hierarchy graph. Notice that 'ellipse','circle','database','box' and 'text' have the label inside the shape, the rest have the label outside the shape."
+        },
+        "angularTools.showComponentHierarchy.graphSelectionGuidelineColor": {
+          "type": "string",
+          "default": "blue",
+          "description": "The color of the guidelines used when selecting part of a component hierarchy graph. The string should be in rgba format or standard css color names."
+        },
+        "angularTools.showComponentHierarchy.graphSelectionGuidelineWidth": {
+          "type": "number",
+          "default": "1",
+          "description": "The width of the guide lines shown when selecting part of a component hierarchy graph"
+        },
+        "angularTools.showComponentHierarchy.graphSelectionColor": {
+          "type": "string",
+          "default": "red",
+          "description": "The color of the selection rectangle used when selecting part of a component hierarchy graph. The string should be in rgba format or standard css color names."
+        },
+        "angularTools.showComponentHierarchy.graphSelectionWidth": {
+          "type": "number",
+          "default": "2",
+          "description": "The width of the selection rectangle shown when selecting part of a component hierarchy graph"
+        },
+        "angularTools.showComponentHierarchy.componentHierarchyFilename": {
+          "type": "string",
+          "default": "ComponentHierarchy.png",
+          "description": "The default name used when saving the component hierarchy to a Png file."
+        },
+        "angularTools.componentHierarchyMarkdownFilename": {
+          "type": "string",
+          "default": "ComponentHierarchy.md",
+          "description": "The default name used when saving the component hierarchy to a markdown file."
+        }
+      }
+    }
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",

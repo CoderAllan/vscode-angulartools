@@ -4,12 +4,13 @@ import * as vscode from 'vscode';
 import { Config, FileSystemUtils } from '@src';
 
 export class ListAllImports {
+  private config = new Config();
   public static get commandName(): string { return 'listAllImports'; }
 
   public execute() {
     const fsUtils = new FileSystemUtils();
     var directoryPath: string = fsUtils.getWorkspaceFolder();
-    const files = fsUtils.listFiles(directoryPath, Config.excludeDirectories, this.isTypescriptFile);
+    const files = fsUtils.listFiles(directoryPath, this.config.excludeDirectories, this.isTypescriptFile);
     this.writeResult(directoryPath, files);
   }
 
@@ -46,7 +47,7 @@ export class ListAllImports {
       });
     }
 
-    const angularToolsOutput = vscode.window.createOutputChannel(Config.angularToolsOutputChannel);
+    const angularToolsOutput = vscode.window.createOutputChannel(this.config.angularToolsOutputChannel);
     angularToolsOutput.clear();
     angularToolsOutput.appendLine(`Imports for files in workspace: ${workspaceDirectory}`);
     angularToolsOutput.appendLine('The number following each import in the list is the number of occurrences of the package import.\n');

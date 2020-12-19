@@ -21,10 +21,11 @@ export class Component {
 }
 
 export class ComponentManager {
-  
+
   public static findComponents(directoryPath: string): { [selector: string]: Component; } {
     const fsUtils = new FileSystemUtils();
-    const componentFilenames = fsUtils.listFiles(directoryPath, Config.excludeDirectories, ComponentManager.isComponentFile);
+    const config = new Config();
+    const componentFilenames = fsUtils.listFiles(directoryPath, config.excludeDirectories, ComponentManager.isComponentFile);
     const components = ComponentManager.scanWorkspaceForComponents(componentFilenames);
     ComponentManager.enrichComponentsFromComponentTemplates(components);
     return components;

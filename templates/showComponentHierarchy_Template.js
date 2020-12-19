@@ -26,6 +26,9 @@
     },
     edges: {
       smooth: false // Make edges straight lines.
+    },
+    nodes: {
+      shape: 'box' // The shape of the nodes.
     }
   };
   var container = document.getElementById('network');

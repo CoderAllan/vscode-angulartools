@@ -6,13 +6,14 @@ import { Config, FileSystemUtils } from '@src';
 const fetch = require('node-fetch');
 
 export class PackageJsonToMarkdown {
+  private config = new Config();
   public static get commandName(): string { return 'packageJsonToMarkdown'; }
 
   public execute() {
     const fsUtils = new FileSystemUtils();
     const directoryPath: string = fsUtils.getWorkspaceFolder();
     const isPackageJson = (filename: string): boolean => filename.toLowerCase().endsWith('package.json');
-    const files = fsUtils.listFiles(directoryPath, Config.excludeDirectories, isPackageJson);
+    const files = fsUtils.listFiles(directoryPath, this.config.excludeDirectories, isPackageJson);
     this.writeMarkdownFile(directoryPath, files);
   }
 
@@ -85,7 +86,7 @@ export class PackageJsonToMarkdown {
             '| ---- |:-----------|\n' +
             peerDependenciesMarkdown;
           const fsUtils = new FileSystemUtils();
-          fsUtils.writeFileAndOpen(path.join(workspaceDirectory, Config.packageJsonMarkdownFilename), markdownContent);
+          fsUtils.writeFileAndOpen(path.join(workspaceDirectory, this.config.packageJsonMarkdownFilename), markdownContent);
         });
       });
     });

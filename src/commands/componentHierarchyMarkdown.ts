@@ -2,7 +2,7 @@ import { Config, Component, ComponentManager, FileSystemUtils } from '@src';
 import * as path from 'path';
 
 export class ComponentHierarchyMarkdown {
-
+  private config = new Config();
   public static get commandName(): string { return 'componentHierarchyMarkdown'; }
 
   public execute() {
@@ -21,7 +21,7 @@ export class ComponentHierarchyMarkdown {
       'graph TD;\n'+
       relations+
       '```\n';
-      fsUtils.writeFileAndOpen(path.join(workspaceDirectory, Config.componentHierarchyMarkdownFilename), markdownContent);
+      fsUtils.writeFileAndOpen(path.join(workspaceDirectory, this.config.componentHierarchyMarkdownFilename), markdownContent);
     } catch (ex) {
       console.log('exception:' + ex);
     }

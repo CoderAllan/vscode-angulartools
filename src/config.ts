@@ -1,31 +1,49 @@
+import * as vscode from 'vscode';
 
 export class Config {
-  public static readonly excludeDirectories: string[] = ['bin', 'obj', 'node_modules', 'dist', 'packages', '.git', '.vs', '.github'];
-  
-  public static readonly angularToolsOutputChannel = 'Angular Tools';
+  public readonly angularToolsOutputChannel = 'Angular Tools';
+
+  private configuration = vscode.workspace.getConfiguration('angularTools');
+  private getSetting<T>(setting: string, defaultValue: T): T {
+    let value = this.configuration.get<T>(setting);
+    if (value === undefined) {
+      value = defaultValue;
+    }
+    if (typeof value === 'string' && value.length === 0) {
+      value = defaultValue;
+    }
+    return value as T;
+  }
+
+  // General
+  public get excludeDirectories(): string[] {
+    const value = this.getSetting<string>('excludeDirectories', 'bin;obj;node_modules;dist;packages;.git;.vs;.github');
+    return value.split(";");
+  }
 
   // ComponentHierarchyDgml
-  public static readonly dgmlGraphFilename = 'ReadMe-ProjectStructure.dgml';
-  public static readonly dgmlGraphLayout = 'Sugiyama';
-  public static readonly dgmlGraphDirection = 'LeftToRight';
-  public static readonly dgmlZooLevel = '-1';
-  public static readonly rootNodeBackgroundColor = '#FF00AA00';
-  
+  public get dgmlGraphFilename(): string { return this.getSetting<string>('componentHierarchyDgml.defaultGraphFilename', 'ReadMe-ProjectStructure.dgml'); }
+  public get dgmlGraphLayout(): string { return this.getSetting<string>('componentHierarchyDgml.graphLayout', 'Sugiyama'); }
+  public get dgmlGraphDirection(): string { return this.getSetting<string>('componentHierarchyDgml.graphDirection', 'LeftToRight'); }
+  public readonly dgmlZoomLevel = '-1';
+  public get rootNodeBackgroundColor(): string { return this.getSetting<string>('componentHierarchyDgml.rootNodeBackgroundColor', '#FF00AA00'); }
+
   // PackageJsonToMarkdown
-  public static readonly packageJsonMarkdownFilename ='ReadMe-PackagesJson.md';
-  
+  public get packageJsonMarkdownFilename(): string { return this.getSetting<string>('packageJsonMarkdownFilename', 'ReadMe-PackagesJson.md'); }
+
   // ProjectDirectoryStructure
-  public static readonly projectDirectoryStructureMarkdownFilename ='ReadMe-ProjectDirectoryStructure.md';
+  public get projectDirectoryStructureMarkdownFilename(): string { return this.getSetting<string>('projectDirectoryStructureMarkdownFilename', 'ReadMe-ProjectDirectoryStructure.md'); }
 
   // ShowComponentHierarchy
-  public static readonly visRootNodeBackgroundColor = '#00FF00';
-  public static readonly visEdgeArrowToType = 'triangle';
-  public static readonly graphSelectionGuidelineColor = 'blue';
-  public static readonly graphSelectionGuidelineWidth = 1;
-  public static readonly graphSelectionColor = 'red';
-  public static readonly graphSelectionWidth = 2;
-  public static readonly componentHierarchyFilename = 'ComponentHierarchy.png';
+  public get visRootNodeBackgroundColor(): string { return this.getSetting<string>('showComponentHierarchy.rootNodeBackgroundColor', '#00FF00'); }
+  public get visNodeShape(): string { return this.getSetting<string>('showComponentHierarchy.nodeShape', 'box'); }
+  public get visEdgeArrowToType(): string { return this.getSetting<string>('showComponentHierarchy.edgeArrowToType', 'triangle'); }
+  public get graphSelectionGuidelineColor(): string { return this.getSetting<string>('showComponentHierarchy.graphSelectionGuidelineColor', 'blue'); }
+  public get graphSelectionGuidelineWidth(): number { return this.getSetting<number>('showComponentHierarchy.graphSelectionGuidelineWidth', 1); }
+  public get graphSelectionColor(): string { return this.getSetting<string>('showComponentHierarchy.graphSelectionColor', 'red'); }
+  public get graphSelectionWidth(): number { return this.getSetting<number>('showComponentHierarchy.graphSelectionWidth', 2); }
+  public get componentHierarchyFilename(): string { return this.getSetting<string>('showComponentHierarchy.componentHierarchyFilename', 'ComponentHierarchy.png'); }
 
   // ComponentHierarchyMarkdown
-  public static readonly componentHierarchyMarkdownFilename = 'ComponentHierarchy.md';
+  public get componentHierarchyMarkdownFilename(): string { return this.getSetting<string>('componentHierarchyMarkdownFilename', 'ComponentHierarchy.md'); }
 }

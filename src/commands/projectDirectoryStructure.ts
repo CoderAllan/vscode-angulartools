@@ -2,17 +2,18 @@ import { Config, FileSystemUtils } from '@src';
 import * as vscode from 'vscode';
 
 export class ProjectDirectoryStructure {
+  private config = new Config();
   public static get commandName(): string { return 'projectDirectoryStructure'; }
 
   public execute() {
     const fsUtils = new FileSystemUtils();
     var workspaceDirectory: string = fsUtils.getWorkspaceFolder();
-    const directories: string[] = fsUtils.listDirectories(workspaceDirectory, Config.excludeDirectories);
-    this.writeDirectoryStructure(workspaceDirectory, Config.projectDirectoryStructureMarkdownFilename, directories);
+    const directories: string[] = fsUtils.listDirectories(workspaceDirectory, this.config.excludeDirectories);
+    this.writeDirectoryStructure(workspaceDirectory, this.config.projectDirectoryStructureMarkdownFilename, directories);
   }
 
   private writeDirectoryStructure(workSpaceDirectory: string, filename: string, directories: string[]) {
-    const angularToolsOutput = vscode.window.createOutputChannel(Config.angularToolsOutputChannel);
+    const angularToolsOutput = vscode.window.createOutputChannel(this.config.angularToolsOutputChannel);
     angularToolsOutput.clear();
     angularToolsOutput.appendLine('Project Directory Structure');
     angularToolsOutput.appendLine(`Workspace directory: ${workSpaceDirectory}\n`);

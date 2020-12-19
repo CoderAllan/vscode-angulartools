@@ -9,7 +9,7 @@ const prettifyXml = require('prettify-xml');
 const xmlSerializer = require('xmlserializer');
 
 export class ComponentHierarchyDgml {
-
+  private config = new Config();
   public static get commandName(): string { return 'componentHierarchyDgml'; }
 
   public execute() {
@@ -23,9 +23,10 @@ export class ComponentHierarchyDgml {
 
     try {
       // if the graph file already exists, then read it and parse it into a xml document object
-      if (fs.existsSync(Config.dgmlGraphFilename)) {
+      console.log('this.config.dgmlGraphFilename', this.config.dgmlGraphFilename);
+      if (fs.existsSync(this.config.dgmlGraphFilename)) {
         try {
-          const content = fs.readFileSync(Config.dgmlGraphFilename).toString();
+          const content = fs.readFileSync(this.config.dgmlGraphFilename).toString();
           xmlDocument = documentParser.parseFromString(content, 'text/xml');
         } catch {
           xmlDocument = this.createNewDirectedGraph(domImpl);
@@ -44,7 +45,7 @@ export class ComponentHierarchyDgml {
       fileContent = fileContent.replace('HasCategory(&apos;RootComponent&apos;)', "HasCategory('RootComponent')");
 
       // Write the prettified xml string to the ReadMe-ProjectStructure.dgml file.
-      fsUtils.writeFile(path.join(directoryPath, Config.dgmlGraphFilename), fileContent, () => {
+      fsUtils.writeFile(path.join(directoryPath, this.config.dgmlGraphFilename), fileContent, () => {
         vscode.window.showInformationMessage('The project structure has been analyzed and a Directed Graph Markup Language (dgml) file has been created\nThe ReadMe-ProjectStructure.dgml file can now be viewed in Visual Studio');
       });
     } catch (ex) {
@@ -55,9 +56,9 @@ export class ComponentHierarchyDgml {
   private createNewDirectedGraph(domImpl: DOMImplementation) {
     let xmlDoc: Document = domImpl.createDocument('', null, null);
     const root = xmlDoc.createElement("DirectedGraph");
-    root.setAttribute("GraphDirection", Config.dgmlGraphDirection);
-    root.setAttribute("Layout", Config.dgmlGraphLayout);
-    root.setAttribute("ZoomLevel", Config.dgmlZooLevel);
+    root.setAttribute("GraphDirection", this.config.dgmlGraphDirection);
+    root.setAttribute("Layout", this.config.dgmlGraphLayout);
+    root.setAttribute("ZoomLevel", this.config.dgmlZoomLevel);
     root.setAttribute("xmlns", "http://schemas.microsoft.com/vs/2009/dgml");
     xmlDoc.appendChild(root);
     return xmlDoc;
@@ -164,7 +165,7 @@ export class ComponentHierarchyDgml {
     const categoryElement = xmlDoc.createElement("Category");
     categoryElement.setAttribute("Id", "RootComponent");
     categoryElement.setAttribute("Label", "Root component");
-    categoryElement.setAttribute("Background", Config.rootNodeBackgroundColor);
+    categoryElement.setAttribute("Background", this.config.rootNodeBackgroundColor);
     categoryElement.setAttribute("IsTag", "True");
     this.addNode(categoriesElement, categoryElement);
   }

@@ -35,7 +35,7 @@ class Edge {
 }
 
 export class ShowComponentHierarchy {
-
+  private config = new Config();
   private extensionContext: vscode.ExtensionContext;
   private fsUtils = new FileSystemUtils();
   private static readonly Name = 'showComponentHierarchy';
@@ -154,12 +154,13 @@ export class ShowComponentHierarchy {
     let jsContent = template.replace('var nodes = new vis.DataSet([]);', `var nodes = new vis.DataSet([${nodesJson}]);`);
     jsContent = jsContent.replace('var rootNodes = [];', `var rootNodes = [${rootNodesJson}];`);
     jsContent = jsContent.replace('var edges = new vis.DataSet([]);', `var edges = new vis.DataSet([${edgesJson}]);`);
-    jsContent = jsContent.replace('background: "#00FF00" // rootNode background color', `background: "${Config.visRootNodeBackgroundColor}" // rootNode background color`);
-    jsContent = jsContent.replace('type: "triangle" // edge arrow to type', `type: "${Config.visEdgeArrowToType}" // edge arrow to type`);
-    jsContent = jsContent.replace('ctx.strokeStyle = \'blue\'; // graph selection guideline color', `ctx.strokeStyle = '${Config.graphSelectionGuidelineColor}'; // graph selection guideline color`);
-    jsContent = jsContent.replace('ctx.lineWidth = 1; // graph selection guideline width', `ctx.lineWidth = ${Config.graphSelectionGuidelineWidth}; // graph selection guideline width`);
-    jsContent = jsContent.replace('selectionCanvasContext.strokeStyle = \'red\';', `selectionCanvasContext.strokeStyle = '${Config.graphSelectionColor}';`);
-    jsContent = jsContent.replace('selectionCanvasContext.lineWidth = 2;', `selectionCanvasContext.lineWidth = ${Config.graphSelectionWidth};`);
+    jsContent = jsContent.replace('background: "#00FF00" // rootNode background color', `background: "${this.config.visRootNodeBackgroundColor}" // rootNode background color`);
+    jsContent = jsContent.replace('shape: \'box\' // The shape of the nodes.', `shape: '${this.config.visNodeShape}'// The shape of the nodes.`);
+    jsContent = jsContent.replace('type: "triangle" // edge arrow to type', `type: "${this.config.visEdgeArrowToType}" // edge arrow to type}`);
+    jsContent = jsContent.replace('ctx.strokeStyle = \'blue\'; // graph selection guideline color', `ctx.strokeStyle = '${this.config.graphSelectionGuidelineColor}'; // graph selection guideline color`);
+    jsContent = jsContent.replace('ctx.lineWidth = 1; // graph selection guideline width', `ctx.lineWidth = ${this.config.graphSelectionGuidelineWidth}; // graph selection guideline width`);
+    jsContent = jsContent.replace('selectionCanvasContext.strokeStyle = \'red\';', `selectionCanvasContext.strokeStyle = '${this.config.graphSelectionColor}';`);
+    jsContent = jsContent.replace('selectionCanvasContext.lineWidth = 2;', `selectionCanvasContext.lineWidth = ${this.config.graphSelectionWidth};`);
     return jsContent;
   }
 
@@ -192,10 +193,10 @@ export class ShowComponentHierarchy {
       const u8arr = Base64.toUint8Array(dataUrl[1]);
 
       const workspaceDirectory = this.fsUtils.getWorkspaceFolder();
-      const newFilePath = path.join(workspaceDirectory, Config.componentHierarchyFilename);
+      const newFilePath = path.join(workspaceDirectory, this.config.componentHierarchyFilename);
       this.fsUtils.writeFile(newFilePath, u8arr, () => {});
 
-      vscode.window.showInformationMessage(`The file ${Config.componentHierarchyFilename} has been created in the root of the workspace.`);
+      vscode.window.showInformationMessage(`The file ${this.config.componentHierarchyFilename} has been created in the root of the workspace.`);
     }
   }
 }

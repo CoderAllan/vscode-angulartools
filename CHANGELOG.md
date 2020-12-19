@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 1.2.1
+
+-Fixed bug in Readme.md
+
 ## Version 1.2.0
 
 - New feature: It is now possible to change shape, line colors, default filenames and a lot more for the commands in the extension. Go to the Preferences in the File menu and find the AngularTools section under the Extensions section.

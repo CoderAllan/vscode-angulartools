@@ -83,11 +83,11 @@ See the full list of settings below the screenshot.
 | angularTools.showComponentHierarchy.rootNodeBackgroundColor | The color of the root nodes of the component hierarchy graph. The string should be in rgba format or standard css color names. |
 | angularTools.showComponentHierarchy.edgeArrowToType | The default ending of the edges. |
 | angularTools.showComponentHierarchy.nodeShape | The shape of the nodes in the component hierarchy graph. Notice that 'ellipse','circle','database','box' and 'text' have the label inside the shape, the rest have the label outside the shape. |
-| angularTools.showComponentHierarchy.graphSelectionGuidelineColor | blue | The color of the guidelines used when selecting part of a component hierarchy graph. The string should be in rgba format or standard css color names. |
-| angularTools.showComponentHierarchy.graphSelectionGuidelineWidth | 1 | The width of the guide lines shown when selecting part of a component hierarchy graph |
-| angularTools.showComponentHierarchy.graphSelectionColor | red | The color of the selection rectangle used when selecting part of a component hierarchy graph. The string should be in rgba format or standard css color names. |
-| angularTools.showComponentHierarchy.graphSelectionWidth | 2 | The width of the selection rectangle shown when selecting part of a component hierarchy graph |
-| angularTools.showComponentHierarchy.componentHierarchyFilename | ComponentHierarchy.png | The default name used when saving the component hierarchy to a Png file. |
+| angularTools.showComponentHierarchy.graphSelectionGuidelineColor | The color of the guidelines used when selecting part of a component hierarchy graph. The string should be in rgba format or standard css color names. |
+| angularTools.showComponentHierarchy.graphSelectionGuidelineWidth | The width of the guide lines shown when selecting part of a component hierarchy graph |
+| angularTools.showComponentHierarchy.graphSelectionColor | The color of the selection rectangle used when selecting part of a component hierarchy graph. The string should be in rgba format or standard css color names. |
+| angularTools.showComponentHierarchy.graphSelectionWidth | The width of the selection rectangle shown when selecting part of a component hierarchy graph |
+| angularTools.showComponentHierarchy.componentHierarchyFilename | The default name used when saving the component hierarchy to a Png file. |
 | angularTools.componentHierarchyMarkdownFilename | The default name used when saving the component hierarchy to a markdown file. |
 
 ## Third party components and resources

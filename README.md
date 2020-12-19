@@ -63,6 +63,33 @@ This command will analyse all Angular components in the project and collect all 
 
 ![List all imports](https://github.com/CoderAllan/vscode-angulartools/raw/main/images/ListAllImports.gif)
 
+## Settings
+
+In the Visual Studio Code settings you find under File --> Preferences --> Settings, under Extensions, there is a section with all the settings for AngularTools. It is possible to change the default filenames used when the extension saves a file to the workspace folder. You can change how the component hierarchy graph nodes are rendered, the edge endings, the color of the root nodes and a lot more.
+
+See the full list of settings below the screenshot.
+
+![AngularTools settings](https://github.com/CoderAllan/vscode-angulartools/raw/main/images/Settings.gif)
+
+| Setting | Description |
+| --- | --- |
+| angularTools.excludeDirectories | Semicolon separated list of directories that should be excluded when scanning for for Angular components. |
+| angularTools.componentHierarchyDgml.defaultGraphFilename | The default filename used when saving a component hierarchy to a Directed Graph Markup Language (Dgml) file. |
+| angularTools.componentHierarchyDgml.graphLayout | This is the algorithm used to layout the nodes of the graph. Sugiyama wil try to avoid crossing edges as far as possible. ForceDirected will try to cluster the nodes. |
+| angularTools.componentHierarchyDgml.graphDirection | This will make the layout algorithm position the graph nodes in the specified direction. |
+| angularTools.componentHierarchyDgml.rootNodeBackgroundColor | The color of the root nodes of the directed graph. The string should be in rgba format. |
+| angularTools.packageJsonMarkdownFilename | The default filename used when saving the packages.json as a markdown file. |
+| angularTools.projectDirectoryStructureMarkdownFilename | The default filename used when saving the project directory structure as a markdown file. |
+| angularTools.showComponentHierarchy.rootNodeBackgroundColor | The color of the root nodes of the component hierarchy graph. The string should be in rgba format or standard css color names. |
+| angularTools.showComponentHierarchy.edgeArrowToType | The default ending of the edges. |
+| angularTools.showComponentHierarchy.nodeShape | The shape of the nodes in the component hierarchy graph. Notice that 'ellipse','circle','database','box' and 'text' have the label inside the shape, the rest have the label outside the shape. |
+| angularTools.showComponentHierarchy.graphSelectionGuidelineColor | blue | The color of the guidelines used when selecting part of a component hierarchy graph. The string should be in rgba format or standard css color names. |
+| angularTools.showComponentHierarchy.graphSelectionGuidelineWidth | 1 | The width of the guide lines shown when selecting part of a component hierarchy graph |
+| angularTools.showComponentHierarchy.graphSelectionColor | red | The color of the selection rectangle used when selecting part of a component hierarchy graph. The string should be in rgba format or standard css color names. |
+| angularTools.showComponentHierarchy.graphSelectionWidth | 2 | The width of the selection rectangle shown when selecting part of a component hierarchy graph |
+| angularTools.showComponentHierarchy.componentHierarchyFilename | ComponentHierarchy.png | The default name used when saving the component hierarchy to a Png file. |
+| angularTools.componentHierarchyMarkdownFilename | The default name used when saving the component hierarchy to a markdown file. |
+
 ## Third party components and resources
 
 * [Vis.js](https://visjs.org/index.html) - Used for generating the directed graph for showing the component hierarchy.

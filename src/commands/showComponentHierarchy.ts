@@ -112,17 +112,19 @@ export class ShowComponentHierarchy {
     for (let selector in componentHash) {
       const component = componentHash[selector];
       if (component.isRoot) {
-        this.generateDirectedGraphNodes(component.subComponents, component, true, appendNodes);
+        this.generateDirectedGraphNodes(component.subComponents, component, true, '', appendNodes);
         this.generateDirectedGraphEdges(component.subComponents, selector, "", appendLinks);
       }
     }
   }
 
-  private generateDirectedGraphNodes(components: Component[], component: Component, isRoot: boolean, appendNodes: (nodeList: Node[]) => void) {
+  private generateDirectedGraphNodes(components: Component[], component: Component, isRoot: boolean, parentSelector: string, appendNodes: (nodeList: Node[]) => void) {
     appendNodes([new Node(component.selector, component.templateFilename, isRoot)]);
     if (components.length > 0) {
       components.forEach((subComponent) => {
-        this.generateDirectedGraphNodes(subComponent.subComponents, subComponent, subComponent.isRoot, appendNodes);
+        if(parentSelector !== subComponent.selector) {
+          this.generateDirectedGraphNodes(subComponent.subComponents, subComponent, subComponent.isRoot, component.selector, appendNodes);
+        }
       });
     }
   }
@@ -132,7 +134,7 @@ export class ShowComponentHierarchy {
       const id = Math.random() * 100000;
       appendLinks([new Edge(id.toString(), parentSelector, selector)]);
     }
-    if (subComponents.length > 0) {
+    if (subComponents.length > 0 && selector !== parentSelector) {
       subComponents.forEach((subComponent) => {
         this.generateDirectedGraphEdges(subComponent.subComponents, subComponent.selector, selector, appendLinks);
       });

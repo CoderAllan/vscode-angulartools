@@ -1,8 +1,12 @@
 # Change Log
 
+## Version 1.2.2
+
+- Fixed bug: Show component hierarchy no longer fails when the Angular application contains recursive component.
+
 ## Version 1.2.1
 
--Fixed bug in Readme.md
+- Fixed bug in Readme.md
 
 ## Version 1.2.0
 

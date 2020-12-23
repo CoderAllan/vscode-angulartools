@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as vscode from 'vscode';
 
-import { Config, FileSystemUtils } from '@src';
+import { ArrayUtils, Config, FileSystemUtils } from '@src';
 
 export class ListAllImports {
   private config = new Config();
@@ -51,7 +51,7 @@ export class ListAllImports {
     angularToolsOutput.clear();
     angularToolsOutput.appendLine(`Imports for files in workspace: ${workspaceDirectory}`);
     angularToolsOutput.appendLine('The number following each import in the list is the number of occurrences of the package import.\n');
-    for (const key of Object.keys(imports).sort()) {
+    for (const key of Object.keys(imports).sort(ArrayUtils.sortStrings)) {
       angularToolsOutput.appendLine(`${key}: ${imports[key]}`);
     }
     angularToolsOutput.show();

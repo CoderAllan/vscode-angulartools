@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-import { Config, FileSystemUtils } from '@src';
+import { ArrayUtils, Config, FileSystemUtils } from '@src';
 
 const fetch = require('node-fetch');
 
@@ -39,7 +39,7 @@ export class PackageJsonToMarkdown {
     let devDependenciesMarkdown = '';
     let peerDependenciesMarkdown = '';
     const dependenciesRequests: Promise<{ name: string, description: string }>[] = [];
-    dependencies.sort().forEach(pckName => {
+    dependencies.sort(ArrayUtils.sortStrings).forEach(pckName => {
       dependenciesRequests.push(this.makeRequest(pckName));
     });
     Promise.all(dependenciesRequests).then(responses => {
@@ -50,7 +50,7 @@ export class PackageJsonToMarkdown {
       });
     }).then(() => {
       const devDependenciesRequests: Promise<{ name: string, description: string }>[] = [];
-      devDependencies.sort().forEach(pckName => {
+      devDependencies.sort(ArrayUtils.sortStrings).forEach(pckName => {
         devDependenciesRequests.push(this.makeRequest(pckName));
       });
       Promise.all(devDependenciesRequests).then(responses => {
@@ -61,7 +61,7 @@ export class PackageJsonToMarkdown {
         });
       }).then(() => {
         const peerDependenciesRequests: Promise<{ name: string, description: string }>[] = [];
-        peerDependencies.sort().forEach(pckName => {
+        peerDependencies.sort(ArrayUtils.sortStrings).forEach(pckName => {
           peerDependenciesRequests.push(this.makeRequest(pckName));
         });
         Promise.all(peerDependenciesRequests).then(responses => {

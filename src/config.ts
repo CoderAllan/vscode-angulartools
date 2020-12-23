@@ -46,4 +46,7 @@ export class Config {
 
   // ComponentHierarchyMarkdown
   public get componentHierarchyMarkdownFilename(): string { return this.getSetting<string>('componentHierarchyMarkdownFilename', 'ComponentHierarchy.md'); }
+
+  // ModulesMarkdown
+  public get modulesToMarkdownFilename(): string {return this.getSetting<string>('modulesToMarkdownFilename', 'Modules.md'); }
 }

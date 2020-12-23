@@ -6,6 +6,7 @@ import {
   ComponentHierarchyDgml,
   ComponentHierarchyMarkdown,
   ListAllImports,
+  ModulesToMarkdown,
   PackageJsonToMarkdown,
   ProjectDirectoryStructure,
   ShowComponentHierarchy,
@@ -26,6 +27,12 @@ export function activate(context: vscode.ExtensionContext) {
     command.execute();
   });
   context.subscriptions.push(projectDirectoryStructureDisposable);
+
+  const modulesToMarkdownDisposable = vscode.commands.registerCommand(`${cmdPrefix}.${ModulesToMarkdown.commandName}`, () => {
+    const command = new ModulesToMarkdown();
+    command.execute();
+  });
+  context.subscriptions.push(modulesToMarkdownDisposable);
 
   const packageJsonToMarkdownDisposable = vscode.commands.registerCommand(`${cmdPrefix}.${PackageJsonToMarkdown.commandName}`, () => {
     const command = new PackageJsonToMarkdown();

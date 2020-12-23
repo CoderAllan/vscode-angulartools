@@ -1,7 +1,7 @@
 import path = require("path");
 
 export class ArrayUtils {
-  
+
   public static arrayToMarkdown(array: string[] | undefined): string {
     if (array === undefined || array.length === 0) {
       return '';
@@ -17,7 +17,7 @@ export class ArrayUtils {
       }
     }
   }
-  
+
   public static sortStrings(stringA: string, stringB: string): number {
     stringA = path.basename(stringA).toUpperCase();
     stringB = path.basename(stringB).toUpperCase();
@@ -28,5 +28,13 @@ export class ArrayUtils {
       return 1;
     }
     return 0;
+  }
+
+  public static arrayLength(array: string[]): number {
+    if (typeof (array) === 'string') {
+      return 1;
+    } else {
+      return array.length;
+    }
   }
 }

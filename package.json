@@ -4,7 +4,7 @@
 	"displayName": "AngularTools",
 	"description": "AngularTools is a collection of tools for exploring an Angular project, help you with documenting, reverse engineering a project or help when refactoring.",
 	"icon": "images/logo.png",
-	"version": "1.2.2",
+	"version": "1.3.0",
 	"repository": "https://github.com/CoderAllan/vscode-angulartools",
 	"author": {
 		"name": "Allan Simonsen",
@@ -26,7 +26,8 @@
 	"activationEvents": [
 		"onCommand:angulartools.componentHierarchyDgml",
 		"onCommand:angulartools.listAllImports",
-		"onCommand:angulartools.projectDirectoryStructure",
+    "onCommand:angulartools.projectDirectoryStructure",
+    "onCommand:angulartools.modulesToMarkdown",
 		"onCommand:angulartools.packageJsonToMarkdown",
 		"onCommand:angulartools.showComponentHierarchy",
 		"onCommand:angulartools.componentHierarchyMarkdown"
@@ -41,10 +42,14 @@
 			{
 				"command": "angulartools.projectDirectoryStructure",
 				"title": "AngularTools: Show the project directory structure"
-			},
+      },
+      {
+        "command": "angulartools.modulesToMarkdown",
+        "title": "AngularTools: Generate a Markdown file of all modules in the current project."
+      },
 			{
 				"command": "angulartools.packageJsonToMarkdown",
-				"title": "AngularTools: Generate Markdown file from package.json files in the workspace."
+				"title": "AngularTools: Generate a Markdown file from package.json files in the workspace."
 			},
 			{
 				"command": "angulartools.componentHierarchyDgml",
@@ -145,6 +150,11 @@
           "type": "string",
           "default": "ComponentHierarchy.md",
           "description": "The default name used when saving the component hierarchy to a markdown file."
+        },
+        "angularTools.modulesToMarkdownFilename": {
+          "type": "string",
+          "default": "Modules.md",
+          "description": "The default name used when saving the project module to a markdown file."
         }
       }
     }

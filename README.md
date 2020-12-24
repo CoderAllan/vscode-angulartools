@@ -97,6 +97,7 @@ See the full list of settings below the screenshot.
 | angularTools.showComponentHierarchy.graphSelectionWidth | The width of the selection rectangle shown when selecting part of a component hierarchy graph |
 | angularTools.showComponentHierarchy.componentHierarchyFilename | The default name used when saving the component hierarchy to a Png file. |
 | angularTools.componentHierarchyMarkdownFilename | The default name used when saving the component hierarchy to a markdown file. |
+| angularTools.modulesToMarkdownFilename | The default name used when saving the modules to a markdown file. |
 
 ## Third party components and resources
 

@@ -13,14 +13,6 @@ export interface INgModule {
 }
 
 export class NgModule implements INgModule {
-  constructor(private data: INgModule) {
-    this.imports = data.imports;
-    this.exports = data.exports;
-    this.declarations = data.declarations;
-    this.entryComponents = data.entryComponents;
-    this.providers = data.providers;
-    this.bootstrap = data.bootstrap;
-  }
   public imports: string[] = [];
   public exports: string[] = [];
   public declarations: string[] = [];
@@ -59,16 +51,16 @@ export class ModulesToMarkdown {
         modules.push(module);
       }
     });
-    markdownContent = markdownContent + 
+    markdownContent = markdownContent +
       '## Modules in workspace\n\n' +
       '| Module | Declarations | Imports | Exports | Bootstrap | Providers | Entry points |\n' +
       '| ---| --- | --- | --- | --- | --- | --- |\n';
     let modulesMarkdown: string = '';
     modules.forEach(module => {
-      markdownContent = markdownContent + '| ' + module.moduleName + ' | ' +  module.moduleStats().join(' | ') + ' |\n';
+      markdownContent = markdownContent + '| ' + module.moduleName + ' | ' + module.moduleStats().join(' | ') + ' |\n';
       modulesMarkdown = modulesMarkdown + this.generateModuleMarkdown(module);
     });
-    markdownContent = markdownContent + '\n' +modulesMarkdown;
+    markdownContent = markdownContent + '\n' + modulesMarkdown;
     if (errors.length > 0) {
       this.showErrors(errors);
     }
@@ -85,9 +77,9 @@ export class ModulesToMarkdown {
     var match = regex.exec(fileContents.toString());
     if (match !== null) {
       const moduleName = match[2];
-      const moduleContents = this.convertNgModuleToParsableJson(match[1]);
+      const moduleContents = match[1];
       try {
-        const module: NgModule = new NgModule(JSON.parse(moduleContents));
+        const module: NgModule = this.parseModuleContents(moduleContents);
         module.filename = filename;
         module.moduleName = moduleName;
         module.moduleContents = moduleContents;
@@ -99,17 +91,100 @@ export class ModulesToMarkdown {
     }
   }
 
-  private convertNgModuleToParsableJson(moduleContents: string): string {
+  private parseModuleContents(moduleContents: string): NgModule {
     moduleContents = moduleContents.replace(/\s*?\/\/.*$/igm, () => ''); // Remove comments
-    moduleContents = moduleContents.replace(/\{\s*provide:\s*(.+?)\s*,\s*use\w+:\s*(.+?)\s*(,\s.*?)*\s*?\}[\s\}]*/igms, (str, provided, provider) => `"${provided.replace(/['"]/gms, '')} provided by ${provider.replace(/[\{\} ']/igms, '').replace(':', '=')}"`); // format providers ;
-    moduleContents = moduleContents.replace("'", "\""); // Single quotes to double-quotes
-    moduleContents = moduleContents.replace(/\s*?(\w+)[,\r\n]\s*?/igms, (str, identifier) => `"${identifier}",`); // quotes around array items
-    moduleContents = moduleContents.replace(/(\w+\.\w+\(\))[,\r\n]/igms, (str, identifier) => `"${identifier}",`); // quotes around array items
-    moduleContents = moduleContents.replace(/\[\s*([\w_\(\)\.]+?)\s*\]/igms, (str, identifier) => `"${identifier}"`); // quotes around array items
-    moduleContents = moduleContents.replace(/(\w+\.\w+\().*?(\))[,\r\n]/igms, (str, identifier, idEnd) => `"${identifier}...${idEnd}",`); // quotes around array items
-    moduleContents = moduleContents.replace(/("\s*),(\s+\])/igms, (str, quote, arrayEnd) => quote + arrayEnd); // Remove illegal empty array ending
-    moduleContents = moduleContents.replace(/(\w+)\s*:/g, (str, identifier) => `"${identifier}":`); // quotes around identifiers
-    return moduleContents;
+    const module = new NgModule();
+    let section = this.getSection(moduleContents, 'imports');
+    if (section.length > 0) {
+      module.imports = this.parseSection(section);
+    }
+    section = this.getSection(moduleContents, 'exports');
+    if (section.length > 0) {
+      module.exports = this.parseSection(section);
+    }
+    section = this.getSection(moduleContents, 'declarations');
+    if (section.length > 0) {
+      module.declarations = this.parseSection(section);
+    }
+    section = this.getSection(moduleContents, 'entryComponents');
+    if (section.length > 0) {
+      module.entryComponents = this.parseSection(section);
+    }
+    section = this.getSection(moduleContents, 'providers');
+    if (section.length > 0) {
+      module.providers = this.parseSection(section);
+    }
+    section = this.getSection(moduleContents, 'bootstrap');
+    if (section.length > 0) {
+      module.bootstrap = this.parseSection(section);
+    }
+    return module;
+  }
+
+  private getSection(moduleContents: string, sectionName: string): string {
+    const regex = new RegExp("\\s*" + sectionName + ":\\s*\\[", "igms");
+    const match = regex.exec(moduleContents);
+    let section = '';
+    if(match) {
+      let endSectionFound = false;
+      let inBrackets = 0;
+      for(let currentPos = match.index; currentPos < moduleContents.length && !endSectionFound; currentPos++){
+        let currentChar = moduleContents.charAt(currentPos);
+        switch(currentChar){
+          case '[':
+            inBrackets++;
+            break;
+          case ']':
+            inBrackets--;
+            if(inBrackets === 0) {
+              endSectionFound = true;
+              section = moduleContents.substr(match.index + match[0].length, currentPos - match.index - match[0].length);
+            }
+        }
+      }
+    }
+    return section;
+  }
+
+  private parseSection(sectionContents: string): string[] {
+    const result: string[] = [];
+    let currentElement = '';
+    let inBrackets = 0;
+    for (let currentPos = 0; currentPos < sectionContents.length; currentPos++) {
+      let currentChar = sectionContents.charAt(currentPos);
+      switch (currentChar) {
+        case ',':
+          if (inBrackets === 0) {
+            currentElement = currentElement.replace(/^\s+|\s+$|[\r\t\n|,]/igms, '');
+            if (currentElement.length > 0) {
+              result.push(currentElement);
+            }
+            currentElement = '';
+          } else {
+            currentElement += currentChar;
+          }
+          break;
+        case '{':
+        case '(':
+        case '[':
+          inBrackets++;
+          currentElement += currentChar;
+          break;
+        case '}':
+        case ')':
+        case ']':
+          inBrackets--;
+          currentElement += currentChar;
+          break;
+        default:
+          currentElement += currentChar;
+      }
+    }
+    currentElement = currentElement.replace(/^\s+|\s+$|[\r\t\n|,]/igms, '');
+    if (currentElement.length > 0) {
+      result.push(currentElement);
+    }
+    return result;
   }
 
   private generateModuleMarkdown(module: NgModule): string {

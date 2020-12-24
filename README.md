@@ -43,6 +43,14 @@ Please notice that some online tools and sites do not support Mermaid markdown f
 
 ![Generate graph in Mermaid notation](https://github.com/CoderAllan/vscode-angulartools/raw/main/images/GenerateMermaid.gif)
 
+### Generate a markdown file that summarizes all the Angular modules [#](modules-to-markdown- 'Modules to Markdown')
+
+This command will scan all *.ts files in the workspace folders and find those classes that are decorated with the '@NgModule' class decorator and parse the module definition and then summarize each module into a markdown file.
+
+The summarization will consist of two parts: First a table listing how many imports, exports, declarations and so on each module contains. The second part shows what each module contain.
+
+![Generate markdown file from all modules](https://github.com/CoderAllan/vscode-angulartools/raw/main/images/ModulesToMarkdown.gif)
+
 ### Show the directory structure of the project [#](#directory-structure- 'Show the directory structure of the project')
 
 This command lists the entire directory structure of the currently open project. Sometimes this can be a quick way to get an overview of the project if you are new to the project before og maybe need to document it.

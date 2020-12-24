@@ -1,5 +1,10 @@
 # Change Log
 
+## Version 1.3.0
+
+- New feature: You can now generate a markdown file that summarizes all the Angular modules.
+- Various refactoring.
+
 ## Version 1.2.2
 
 - Fixed bug: Show component hierarchy no longer fails when the Angular application contains recursive component.

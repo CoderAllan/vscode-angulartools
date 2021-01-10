@@ -8,6 +8,7 @@ Some of the tools may seem very basic, but can be a powerful help when you have 
 
 * Generate DGML graph of project component hierarchy
 * Show the component hierarchy
+* Summarizes all the Angular modules
 * Generate a markdown file with the component hierarchy in Mermaid format.
 * Show the directory structure of the project
 * Generate list of packages used in the project
@@ -34,6 +35,10 @@ This command uses a vscode webview extension component to render the hierarchy u
 You can also choose to save a selection from the graph as shown in the example below.
 
 ![Show component hierarchy](https://github.com/CoderAllan/vscode-angulartools/raw/main/images/ShowComponentHierarchy2.gif)
+
+By default the component hierarchy graph is rendered using a random layout. You can change the layout method to use a hierarchical layout to line up the nodes in the graph in different ways and also change how the layout engine sorts the nodes in the graph. This is all done by checking the 'Change layout' checkbox to show the drop down boxes with the available options.
+
+![Show component hierarchy](https://github.com/CoderAllan/vscode-angulartools/raw/main/images/ShowComponentHierarchy3.gif)
 
 ### Generate a markdown file with the component hierarchy in Mermaid format [#](#component-hierarchy-markdown- 'Component hierarchy in Mermaid format')
 

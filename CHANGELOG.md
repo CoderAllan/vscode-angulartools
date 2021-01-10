@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 1.4.0
+
+- New feature: You can now choose how to auto-layout the component hierarchy graph.
+
 ## Version 1.3.0
 
 - New feature: You can now generate a markdown file that summarizes all the Angular modules.

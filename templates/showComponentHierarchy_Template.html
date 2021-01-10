@@ -16,6 +16,21 @@
     <input type="button" id="saveAsPngButton" value="Save as png">
     <input type="button" id="saveSelectionAsPngButton" value="Save selection as png">
     <input type="button" id="copyToClipboardButton" value="Copy to clipboard">
+    <div id="hierarchical">Change layout:<input type="checkbox" id="showHierarchicalOptions"></div>
+    <div id="hierarchicalOptions_direction">
+      Direction: <select id="direction">
+        <option value="UD">Up-Down</option>
+        <option value="DU">Down-Up</option>
+        <option value="LR">Left-Right</option>
+        <option value="RL">Right-Left</option>
+      </select>
+    </div>
+    <div id="hierarchicalOptions_sortmethod">
+      Sort method: <select id="sortMethod">
+        <option value="hubsize">Hub size</option>
+        <option value="directed">Directed</option>
+      </select>
+    </div>
     <div id="helpText">Click and drag to select the area to be saved.</div>
   </div>
   <div id="selectionLayer" class="fullScreen"><canvas id="captureCanvas"></canvas></div>

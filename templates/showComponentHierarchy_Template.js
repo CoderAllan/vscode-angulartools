@@ -33,16 +33,17 @@
   };
   var container = document.getElementById('network');
   var network = new vis.Network(container, data, options);
-  
+  var seed = network.getSeed();
+
   const vscode = acquireVsCodeApi();
   const helpTextDiv = document.getElementById('helpText');
   let lastMouseX = lastMouseY = 0;
   let mouseX = mouseY = 0;
   let selection;
   // get the vis.js canvas
-  const graphDiv = document.getElementById('network');
-  const visDiv = graphDiv.firstElementChild;
-  const graphCanvas = visDiv.firstElementChild;
+  var graphDiv = document.getElementById('network');
+  var visDiv = graphDiv.firstElementChild;
+  var graphCanvas = visDiv.firstElementChild;
   const selectionLayer = document.getElementById('selectionLayer');
   const selectionCanvas = selectionLayer.firstElementChild;
   let selectionCanvasContext;
@@ -55,6 +56,12 @@
   const copyToClipboardButton = document.getElementById('copyToClipboardButton');
   copyToClipboardButton.addEventListener('click', copyToClipboard);
   copyToClipboardButton.style['display'] = 'none'; // TODO: Remove when copyToClipboard is implemented
+  const showHierarchicalOptionsButton = document.getElementById('showHierarchicalOptions');
+  showHierarchicalOptionsButton.addEventListener('click', setNetworkLayout);
+  const hierarchicalDirectionSelect = document.getElementById('direction');
+  hierarchicalDirectionSelect.addEventListener('change', setNetworkLayout);
+  const hierarchicalSortMethodSelect = document.getElementById('sortMethod');
+  hierarchicalSortMethodSelect.addEventListener('change', setNetworkLayout);
 
   function mouseUpEventListener(event) {
     // Convert the canvas to image data that can be saved
@@ -155,6 +162,9 @@
   }
 
   function saveAsPng() {
+    graphDiv = document.getElementById('network');
+    visDiv = graphDiv.firstElementChild;
+    graphCanvas = visDiv.firstElementChild;    
     // Calculate the bounding box of all the elements on the canvas
     const boundingBox = getBoundingBox();
 
@@ -228,6 +238,29 @@
 
   function copyToClipboard() {
     console.log('Not implemented yet...');
+  }
+  
+  function setNetworkLayout() {
+    const hierarchicalOptionsDirection = document.getElementById('hierarchicalOptions_direction');
+    const hierarchicalOptionsSortMethod = document.getElementById('hierarchicalOptions_sortmethod');
+    const showHierarchicalOptionsCheckbox = document.getElementById('showHierarchicalOptions');
+    hierarchicalOptionsDirection.style['display'] = showHierarchicalOptionsCheckbox.checked ? 'block' : 'none';
+    hierarchicalOptionsSortMethod.style['display'] = showHierarchicalOptionsCheckbox.checked ? 'block' : 'none';
+    const hierarchicalOptionsDirectionSelect = document.getElementById('direction');
+    const hierarchicalOptionsSortMethodSelect = document.getElementById('sortMethod');
+    if(showHierarchicalOptionsCheckbox.checked)  {
+      options.layout = {
+        hierarchical: {
+          enabled: true,
+          direction: hierarchicalOptionsDirectionSelect.value ? hierarchicalOptionsDirectionSelect.value : 'UD',
+          sortMethod: hierarchicalOptionsSortMethodSelect.value ? hierarchicalOptionsSortMethodSelect.value : 'hubsize'
+        }
+      };
+    } else {
+      options.layout = {};
+    }
+    options.layout.randomSeed = seed;
+    network = new vis.Network(container, data, options);
   }
   
 }());

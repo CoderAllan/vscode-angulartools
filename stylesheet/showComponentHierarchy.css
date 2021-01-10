@@ -17,6 +17,8 @@
   z-index: 100;
   padding: 5px 5px 5px 10px;
   margin: 5px;
+  display: grid;
+  grid-template-columns: auto auto auto auto auto auto;
 }
 
 #helpText {
@@ -33,4 +35,9 @@ input[type=button] {
   display: none;
   background-color: rgba(240, 240, 240, 0.4);
   z-index: 200;
+}
+
+#hierarchicalOptions_direction, #hierarchicalOptions_sortmethod {
+  display: none;
+  margin-left: 3px;
 }

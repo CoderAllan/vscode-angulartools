@@ -193,7 +193,7 @@
 		"prettify-xml": "^1.2.0",
 		"tsconfig-paths": "^3.9.0",
 		"tscpaths": "0.0.9",
-		"xmldom": "^0.3.0",
+		"xmldom": "^0.4.0",
 		"xmlserializer": "^0.6.1"
 	}
 }

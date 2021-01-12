@@ -1,5 +1,10 @@
 # Change Log
 
+## Version 1.4.1
+
+- Updated: PackageJsonToMarkdown command now shows the local version pattern and  the latest version number of the packages.
+- Bugfix: The list of packages in the generated markdown file for the packages is now sorted.
+
 ## Version 1.4.0
 
 - New feature: You can now choose how to auto-layout the component hierarchy graph.

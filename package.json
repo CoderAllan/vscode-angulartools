@@ -4,14 +4,14 @@
   "displayName": "AngularTools",
   "description": "AngularTools is a collection of tools for exploring an Angular project, help you with documenting, reverse engineering a project or help when refactoring.",
   "icon": "images/logo.png",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "repository": "https://github.com/CoderAllan/vscode-angulartools",
   "author": {
     "name": "Allan Simonsen",
     "url": "https://github.com/CoderAllan"
   },
   "engines": {
-    "vscode": "^1.49.0"
+    "vscode": "^1.52.0"
   },
   "categories": [
     "Other",

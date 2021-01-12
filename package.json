@@ -1,70 +1,70 @@
 {
-	"name": "vscode-angulartools",
-	"publisher": "coderAllan",
-	"displayName": "AngularTools",
-	"description": "AngularTools is a collection of tools for exploring an Angular project, help you with documenting, reverse engineering a project or help when refactoring.",
-	"icon": "images/logo.png",
-	"version": "1.4.0",
-	"repository": "https://github.com/CoderAllan/vscode-angulartools",
-	"author": {
-		"name": "Allan Simonsen",
-		"url": "https://github.com/CoderAllan"
-	},
-	"engines": {
-		"vscode": "^1.49.0"
-	},
-	"categories": [
-		"Other",
-		"Visualization"
-	],
-	"keywords": [
-		"angular",
-		"dgml",
-		"typescript",
-		"markdown"
-	],
-	"activationEvents": [
-		"onCommand:angulartools.componentHierarchyDgml",
-		"onCommand:angulartools.listAllImports",
+  "name": "vscode-angulartools",
+  "publisher": "coderAllan",
+  "displayName": "AngularTools",
+  "description": "AngularTools is a collection of tools for exploring an Angular project, help you with documenting, reverse engineering a project or help when refactoring.",
+  "icon": "images/logo.png",
+  "version": "1.4.0",
+  "repository": "https://github.com/CoderAllan/vscode-angulartools",
+  "author": {
+    "name": "Allan Simonsen",
+    "url": "https://github.com/CoderAllan"
+  },
+  "engines": {
+    "vscode": "^1.49.0"
+  },
+  "categories": [
+    "Other",
+    "Visualization"
+  ],
+  "keywords": [
+    "angular",
+    "dgml",
+    "typescript",
+    "markdown"
+  ],
+  "activationEvents": [
+    "onCommand:angulartools.componentHierarchyDgml",
+    "onCommand:angulartools.listAllImports",
     "onCommand:angulartools.projectDirectoryStructure",
     "onCommand:angulartools.modulesToMarkdown",
-		"onCommand:angulartools.packageJsonToMarkdown",
-		"onCommand:angulartools.showComponentHierarchy",
-		"onCommand:angulartools.componentHierarchyMarkdown"
-	],
-	"main": "./out/extension.js",
-	"contributes": {
-		"commands": [
-			{
-				"command": "angulartools.listAllImports",
-				"title": "AngularTools: List all imports"
-			},
-			{
-				"command": "angulartools.projectDirectoryStructure",
-				"title": "AngularTools: Show the project directory structure"
+    "onCommand:angulartools.packageJsonToMarkdown",
+    "onCommand:angulartools.showComponentHierarchy",
+    "onCommand:angulartools.componentHierarchyMarkdown"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "angulartools.listAllImports",
+        "title": "AngularTools: List all imports"
+      },
+      {
+        "command": "angulartools.projectDirectoryStructure",
+        "title": "AngularTools: Show the project directory structure"
       },
       {
         "command": "angulartools.modulesToMarkdown",
         "title": "AngularTools: Generate a Markdown file of all modules in the current project."
       },
-			{
-				"command": "angulartools.packageJsonToMarkdown",
-				"title": "AngularTools: Generate a Markdown file from package.json files in the workspace."
-			},
-			{
-				"command": "angulartools.componentHierarchyDgml",
-				"title": "AngularTools: Generate a Directed Graph file (dgml) showing the components in the current project."
-			},
-			{
-				"command": "angulartools.showComponentHierarchy",
-				"title": "AngularTools: Show a graph representing the component hierarchy."
-			},
-			{
-				"command": "angulartools.componentHierarchyMarkdown",
-				"title": "AngularTools: Generate a directed graph in Mermaid Markdown format."
-			}
+      {
+        "command": "angulartools.packageJsonToMarkdown",
+        "title": "AngularTools: Generate a Markdown file from package.json files in the workspace."
+      },
+      {
+        "command": "angulartools.componentHierarchyDgml",
+        "title": "AngularTools: Generate a Directed Graph file (dgml) showing the components in the current project."
+      },
+      {
+        "command": "angulartools.showComponentHierarchy",
+        "title": "AngularTools: Show a graph representing the component hierarchy."
+      },
+      {
+        "command": "angulartools.componentHierarchyMarkdown",
+        "title": "AngularTools: Generate a directed graph in Mermaid Markdown format."
+      }
     ],
-    "configuration":{
+    "configuration": {
       "title": "AngularTools",
       "properties": {
         "angularTools.excludeDirectories": {
@@ -80,13 +80,21 @@
         "angularTools.componentHierarchyDgml.graphLayout": {
           "type": "string",
           "default": "Sugiyama",
-          "enum": ["Sugiyama", "ForceDirected"],
+          "enum": [
+            "Sugiyama",
+            "ForceDirected"
+          ],
           "description": "This is the algorithm used to layout the nodes of the graph. Sugiyama wil try to avoid crossing edges as far as possible. ForceDirected will try to cluster the nodes."
         },
         "angularTools.componentHierarchyDgml.graphDirection": {
           "type": "string",
           "default": "LeftToRight",
-          "enum": ["TopToBottom", "BottomToTop", "LeftToRight", "RightToLeft"],
+          "enum": [
+            "TopToBottom",
+            "BottomToTop",
+            "LeftToRight",
+            "RightToLeft"
+          ],
           "description": "This will make the layout algorithm position the graph nodes in the specified direction."
         },
         "angularTools.componentHierarchyDgml.rootNodeBackgroundColor": {
@@ -112,13 +120,38 @@
         "angularTools.showComponentHierarchy.edgeArrowToType": {
           "type": "string",
           "default": "triangle",
-          "enum": ["arrow","bar","box","circle","crow","curve","diamond","inv_curve","inv_triangle","triangle","vee"],
+          "enum": [
+            "arrow",
+            "bar",
+            "box",
+            "circle",
+            "crow",
+            "curve",
+            "diamond",
+            "inv_curve",
+            "inv_triangle",
+            "triangle",
+            "vee"
+          ],
           "description": "The default ending of the edges."
         },
         "angularTools.showComponentHierarchy.nodeShape": {
           "type": "string",
           "default": "box",
-          "enum": ["ellipse","circle","database","box","text","diamond","dot","star","triangle","triangleDown","hexagon", "square "],
+          "enum": [
+            "ellipse",
+            "circle",
+            "database",
+            "box",
+            "text",
+            "diamond",
+            "dot",
+            "star",
+            "triangle",
+            "triangleDown",
+            "hexagon",
+            "square "
+          ],
           "description": "The shape of the nodes in the component hierarchy graph. Notice that 'ellipse','circle','database','box' and 'text' have the label inside the shape, the rest have the label outside the shape."
         },
         "angularTools.showComponentHierarchy.graphSelectionGuidelineColor": {
@@ -158,42 +191,42 @@
         }
       }
     }
-	},
-	"scripts": {
-		"vscode:prepublish": "npm run compile",
-		"compile": "tsc -p ./ && tscpaths -p ./tsconfig.json -s ./src -o ./out",
-		"lint": "eslint src --ext ts",
-		"watch": "tsc -watch -p ./",
-		"pretest": "npm run compile && npm run lint",
-		"test": "node ./out/test/runTest.js"
-	},
-	"_moduleAliases": {
-		"@commands": [
-			"src/commands"
-		],
-		"@src": "src"
-	},
-	"devDependencies": {
-		"@types/vscode": "^1.52.0",
-		"@types/glob": "^7.1.3",
-		"@types/mocha": "^8.2.0",
-		"@types/node": "^14.14.20",
-		"eslint": "^7.17.0",
-		"@typescript-eslint/eslint-plugin": "^4.13.0",
-		"@typescript-eslint/parser": "^4.13.0",
-		"glob": "^7.1.6",
-		"mocha": "^8.2.1",
-		"typescript": "^4.1.3",
-		"vscode-test": "^1.4.1"
-	},
-	"dependencies": {
-		"@types/xmldom": "^0.1.30",
-		"js-base64": "^3.6.0",
-		"node-fetch": "^2.6.1",
-		"prettify-xml": "^1.2.0",
-		"tsconfig-paths": "^3.9.0",
-		"tscpaths": "0.0.9",
-		"xmldom": "^0.4.0",
-		"xmlserializer": "^0.6.1"
-	}
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./ && tscpaths -p ./tsconfig.json -s ./src -o ./out",
+    "lint": "eslint src --ext ts",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "test": "node ./out/test/runTest.js"
+  },
+  "_moduleAliases": {
+    "@commands": [
+      "src/commands"
+    ],
+    "@src": "src"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.52.0",
+    "@types/glob": "^7.1.3",
+    "@types/mocha": "^8.2.0",
+    "@types/node": "^14.14.20",
+    "eslint": "^7.17.0",
+    "@typescript-eslint/eslint-plugin": "^4.13.0",
+    "@typescript-eslint/parser": "^4.13.0",
+    "glob": "^7.1.6",
+    "mocha": "^8.2.1",
+    "typescript": "^4.1.3",
+    "vscode-test": "^1.4.1"
+  },
+  "dependencies": {
+    "@types/xmldom": "^0.1.30",
+    "js-base64": "^3.6.0",
+    "npm-registry-fetch": "^9.0.0",
+    "prettify-xml": "^1.2.0",
+    "tsconfig-paths": "^3.9.0",
+    "tscpaths": "0.0.9",
+    "xmldom": "^0.4.0",
+    "xmlserializer": "^0.6.1"
+  }
 }

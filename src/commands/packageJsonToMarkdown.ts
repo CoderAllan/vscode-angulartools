@@ -3,7 +3,7 @@ import * as path from 'path';
 
 import { ArrayUtils, Config, FileSystemUtils } from '@src';
 
-const fetch = require('node-fetch');
+const fetch = require('npm-registry-fetch');
 
 export class PackageJsonToMarkdown {
   private config = new Config();
@@ -21,69 +21,61 @@ export class PackageJsonToMarkdown {
     let devDependencies: string[] = [];
     let dependencies: string[] = [];
     let peerDependencies: string[] = [];
+    const localPackages: { [pkgName: string]: string; } = {};
     packageJsonFiles.forEach(packageJsonFile => {
       const contents = fs.readFileSync(packageJsonFile).toString('utf8');
       const packageJson = JSON.parse(contents);
       if (packageJson.devDependencies) {
         devDependencies = [...new Set([...devDependencies, ...Object.keys(packageJson.devDependencies)])];
+        this.updateLocalPackagesDictionary(packageJson.devDependencies, localPackages);
       }
       if (packageJson.dependencies) {
         dependencies = [...new Set([...dependencies, ...Object.keys(packageJson.dependencies)])];
+        this.updateLocalPackagesDictionary(packageJson.dependencies, localPackages);
       }
       if (packageJson.peerDependencies) {
         peerDependencies = [...new Set([...peerDependencies, ...Object.keys(packageJson.peerDependencies)])];
+        this.updateLocalPackagesDictionary(packageJson.peerDependencies, localPackages);
       }
     });
 
     let dependenciesMarkdown = '';
     let devDependenciesMarkdown = '';
     let peerDependenciesMarkdown = '';
-    const dependenciesRequests: Promise<{ name: string, description: string }>[] = [];
+    const dependenciesRequests: Promise<{ name: string, version: string, description: string }>[] = [];
     dependencies.sort(ArrayUtils.sortStrings).forEach(pckName => {
       dependenciesRequests.push(this.makeRequest(pckName));
     });
     Promise.all(dependenciesRequests).then(responses => {
-      responses.forEach(response => {
-        if (response) {
-          dependenciesMarkdown += `| ${response.name} | ${response.description} |\n`;
-        }
-      });
+      dependenciesMarkdown = this.updateMarkdownRow(responses, localPackages);
     }).then(() => {
-      const devDependenciesRequests: Promise<{ name: string, description: string }>[] = [];
+      const devDependenciesRequests: Promise<{ name: string, version: string, description: string }>[] = [];
       devDependencies.sort(ArrayUtils.sortStrings).forEach(pckName => {
         devDependenciesRequests.push(this.makeRequest(pckName));
       });
       Promise.all(devDependenciesRequests).then(responses => {
-        responses.forEach(response => {
-          if (response) {
-            devDependenciesMarkdown += `| ${response.name} | ${response.description} |\n`;
-          }
-        });
+        devDependenciesMarkdown = this.updateMarkdownRow(responses, localPackages);
       }).then(() => {
-        const peerDependenciesRequests: Promise<{ name: string, description: string }>[] = [];
+        const peerDependenciesRequests: Promise<{ name: string, version: string, description: string }>[] = [];
         peerDependencies.sort(ArrayUtils.sortStrings).forEach(pckName => {
           peerDependenciesRequests.push(this.makeRequest(pckName));
         });
         Promise.all(peerDependenciesRequests).then(responses => {
-          responses.forEach(response => {
-            if (response) {
-              peerDependenciesMarkdown += `| ${response.name} | ${response.description} |\n`;
-            }
-          });
+          peerDependenciesMarkdown = this.updateMarkdownRow(responses, localPackages);
         }).then(() => {
           const markdownContent =
             '# Package.json\n\n' +
             '## Dependencies\n\n' +
-            '| Name | Description|\n' +
-            '| ---- |:-----------|\n' +
+            '| Name | Local version | Latest Version | Description|\n' +
+            '| ---- | ---- | ---- |:-----------|\n' +
             dependenciesMarkdown + '\n' +
             '## Dev dependencies\n\n' +
-            '| Name | Description|\n' +
-            '| ---- |:-----------|\n' +
+            '| Name | Local version | Latest Version | Description|\n' +
+            '| ---- | ---- | ---- |:-----------|\n' +
             devDependenciesMarkdown + '\n' +
             '## Peer dependencies\n\n' +
-            '| Name | Description|\n' +
-            '| ---- |:-----------|\n' +
+            '| Name | Local version | Latest Version | Description|\n' +
+            '| ---- | ---- | ---- |:-----------|\n' +
             peerDependenciesMarkdown;
           const fsUtils = new FileSystemUtils();
           fsUtils.writeFileAndOpen(path.join(workspaceDirectory, this.config.packageJsonMarkdownFilename), markdownContent);
@@ -92,19 +84,43 @@ export class PackageJsonToMarkdown {
     });
   }
 
-  private makeRequest(pckName: string): Promise<{ name: string, description: string }> {
-    const uri = 'https://api.npms.io/v2/search?q=' + pckName + '%20not:deprecated,insecure,unstable';
-    const request = fetch(uri).then((res: any) => res.json())
-      .then((json: any) => {
-        if (json.results[0] && json.results[0].package) {
-          let packageName = json.results[0].package.name;
-          packageName = packageName?.replace('|', '&#124;');
-          let packageDescription = json.results[0].package.description;
-          packageDescription = packageDescription?.replace('|', '&#124;');
-          return { name: packageName, description: packageDescription };
-        } else {
-          console.log('Package not found: ' + pckName);
+  private updateMarkdownRow(responses: { name: string; version: string; description: string; }[], localPackages: { [pkgName: string]: string; }): string {
+    let markdownStr: string = '';
+    responses.sort((first, second) => (first.name.replace('@','') < second.name.replace('@','') ? -1 : 1)).forEach(response => {
+      if (response) {
+        const localVersion = localPackages[response.name];
+        markdownStr += `| ${response.name} | ${localVersion} | ${response.version} | ${response.description} |\n`;
+      }
+    });
+    return markdownStr;
+  }
+
+  private updateLocalPackagesDictionary(dict: { [pkgName: string]: string; }, localPackages: { [pkgName: string]: string; }) {
+    Object.entries(dict).forEach(([pkgName, version]) => {
+      if (localPackages[pkgName] !== undefined) {
+        if(!localPackages[pkgName].includes(String(version))) {
+          localPackages[pkgName] += ', ' + String(version);
         }
+      } else {
+        localPackages[pkgName] = String(version);
+      }
+    });    
+  }
+
+  private makeRequest(pckName: string): Promise<{ name: string, version: string, description: string }> {
+    const uri = `/${pckName}`;
+    const request = fetch.json(uri)
+      .then((json: any) => {
+        let packageName = json.name;
+        packageName = packageName?.replace('|', '&#124;');
+        let packageDescription = json.description;
+        packageDescription = packageDescription?.replace('|', '&#124;');
+        let packageVersion = json['dist-tags'].latest;
+        packageVersion = packageVersion?.replace('|', '&#124;');
+        return { name: packageName, description: packageDescription, version: packageVersion };
+      })
+      .catch(() => {
+        return { name: pckName, description: 'N/A', version: 'N/A' };
       });
     return request;
   }

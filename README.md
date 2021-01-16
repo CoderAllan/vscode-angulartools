@@ -1,4 +1,6 @@
-# AngularTools
+# AngularTools 
+
+![Visual Studio Marketplace Version](https://img.shields.io/visual-studio-marketplace/v/coderAllan.vscode-angulartools) ![Visual Studio Marketplace Installs](https://img.shields.io/visual-studio-marketplace/i/coderAllan.vscode-angulartools) ![GitHub top language](https://img.shields.io/github/languages/top/CoderAllan/vscode-angulartools.svg) ![GitHub last commit](https://img.shields.io/github/last-commit/CoderAllan/vscode-angulartools.svg) ![GitHub](https://img.shields.io/github/license/CoderAllan/vscode-angulartools.svg) 
 
 AngularTools is a collection of tools for exploring an Angular project, help you with documenting, reverse engineering a project or help when refactoring.
 

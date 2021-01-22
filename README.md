@@ -1,6 +1,6 @@
 # AngularTools 
 
-![Visual Studio Marketplace Version](https://img.shields.io/visual-studio-marketplace/v/coderAllan.vscode-angulartools) ![Visual Studio Marketplace Installs](https://img.shields.io/visual-studio-marketplace/i/coderAllan.vscode-angulartools) ![GitHub top language](https://img.shields.io/github/languages/top/CoderAllan/vscode-angulartools.svg) ![GitHub last commit](https://img.shields.io/github/last-commit/CoderAllan/vscode-angulartools.svg) ![GitHub](https://img.shields.io/github/license/CoderAllan/vscode-angulartools.svg) 
+![Visual Studio Marketplace Version](https://img.shields.io/visual-studio-marketplace/v/coderAllan.vscode-angulartools) ![Visual Studio Marketplace Installs](https://img.shields.io/visual-studio-marketplace/i/coderAllan.vscode-angulartools) ![GitHub top language](https://img.shields.io/github/languages/top/CoderAllan/vscode-angulartools.svg) ![GitHub last commit](https://img.shields.io/github/last-commit/CoderAllan/vscode-angulartools.svg) ![GitHub](https://img.shields.io/github/license/CoderAllan/vscode-angulartools.svg)
 
 AngularTools is a collection of tools for exploring an Angular project, help you with documenting, reverse engineering a project or help when refactoring.
 
@@ -8,8 +8,8 @@ Some of the tools may seem very basic, but can be a powerful help when you have 
 
 ## Features
 
-* Generate DGML graph of project component hierarchy
 * Show the component hierarchy
+* Generate DGML graph of project component hierarchy
 * Summarizes all the Angular modules
 * Generate a markdown file with the component hierarchy in Mermaid format.
 * Show the directory structure of the project
@@ -17,14 +17,6 @@ Some of the tools may seem very basic, but can be a powerful help when you have 
 * List all imports
 
 Below is a detailed description of each feature.
-
-### Generate DGML graph of project component hierarchy [#](#generate-dgml-graph- 'Generate DGML graph of project component hierarchy')
-
-The Generate Directed Graph Markup Language ([dgml](https://docs.microsoft.com/en-us/visualstudio/modeling/directed-graph-markup-language-dgml-reference)) file command analyzes the all angular components and generates a graph of the relationship between the components.
-
-The dgml file can be viewed and modified using Microsoft Visual Studio. I don't believe there is an extension for Visual Studio Code yet for viewing dgml files.
-
-![Generate DGML graph](https://github.com/CoderAllan/vscode-angulartools/raw/main/images/GenerateDgml.gif)
 
 ### Show the component hierarchy [#](#show-component-hierarchy- 'Show the component hierarchy')
 
@@ -41,6 +33,14 @@ You can also choose to save a selection from the graph as shown in the example b
 By default the component hierarchy graph is rendered using a random layout. You can change the layout method to use a hierarchical layout to line up the nodes in the graph in different ways and also change how the layout engine sorts the nodes in the graph. This is all done by checking the 'Change layout' checkbox to show the drop down boxes with the available options.
 
 ![Show component hierarchy](https://github.com/CoderAllan/vscode-angulartools/raw/main/images/ShowComponentHierarchy3.gif)
+
+### Generate DGML graph of project component hierarchy [#](#generate-dgml-graph- 'Generate DGML graph of project component hierarchy')
+
+The Generate Directed Graph Markup Language ([dgml](https://docs.microsoft.com/en-us/visualstudio/modeling/directed-graph-markup-language-dgml-reference)) file command analyzes the all angular components and generates a graph of the relationship between the components.
+
+The dgml file can be viewed and modified using Microsoft Visual Studio. I don't believe there is an extension for Visual Studio Code yet for viewing dgml files.
+
+![Generate DGML graph](https://github.com/CoderAllan/vscode-angulartools/raw/main/images/GenerateDgml.gif)
 
 ### Generate a markdown file with the component hierarchy in Mermaid format [#](#component-hierarchy-markdown- 'Component hierarchy in Mermaid format')
 

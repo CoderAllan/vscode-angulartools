@@ -1,5 +1,10 @@
 # Change Log
 
+## Version 1.4.2
+
+- You can now select a random layout for the component hierarcy graph.
+- Bugfix: Savíng a selection did not work if you had change the layout of the graph.
+
 ## Version 1.4.1
 
 - Updated: PackageJsonToMarkdown command now shows the local version pattern and  the latest version number of the packages.

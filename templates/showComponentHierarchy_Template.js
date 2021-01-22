@@ -101,7 +101,7 @@
   function drawGuideLine(ctx, mouseX, mouseY) {
     ctx.beginPath();
     ctx.setLineDash([3, 7]);
-    if(mouseX > -1) {
+    if (mouseX > -1) {
       ctx.moveTo(mouseX, 0);
       ctx.lineTo(mouseX, selectionCanvas.height);
     } else if (mouseY > -1) {
@@ -143,6 +143,10 @@
   }
 
   function saveSelectionAsPng() {
+    graphDiv = document.getElementById('network');
+    visDiv = graphDiv.firstElementChild;
+    graphCanvas = visDiv.firstElementChild;
+
     // show the help text
     helpTextDiv.style['display'] = 'block';
 
@@ -157,14 +161,14 @@
     selection = {};
 
     selectionLayer.addEventListener("mouseup", mouseUpEventListener, true);
-    selectionLayer.addEventListener("mousedown", mouseDownEventListener , true);
+    selectionLayer.addEventListener("mousedown", mouseDownEventListener, true);
     selectionLayer.addEventListener("mousemove", mouseMoveEventListener, true);
   }
 
   function saveAsPng() {
     graphDiv = document.getElementById('network');
     visDiv = graphDiv.firstElementChild;
-    graphCanvas = visDiv.firstElementChild;    
+    graphCanvas = visDiv.firstElementChild;
     // Calculate the bounding box of all the elements on the canvas
     const boundingBox = getBoundingBox();
 
@@ -173,7 +177,7 @@
     finalSelectionCanvas.width = boundingBox.width;
     finalSelectionCanvas.height = boundingBox.height;
     const finalSelectionCanvasContext = finalSelectionCanvas.getContext('2d');
-    finalSelectionCanvasContext.drawImage(graphCanvas, boundingBox.top , boundingBox.left , boundingBox.width, boundingBox.height , 0, 0, boundingBox.width, boundingBox.height);
+    finalSelectionCanvasContext.drawImage(graphCanvas, boundingBox.top, boundingBox.left, boundingBox.width, boundingBox.height, 0, 0, boundingBox.width, boundingBox.height);
 
     // Call back to the extension context to save the image of the graph to the workspace folder.
     vscode.postMessage({
@@ -192,7 +196,7 @@
     var cWidth = graphCanvas.width * bytesPerPixels;
     var cHeight = graphCanvas.height;
     var minY = minX = maxY = maxX = -1;
-    for (var y = cHeight; y > 0  && maxY === -1; y--) {
+    for (var y = cHeight; y > 0 && maxY === -1; y--) {
       for (var x = 0; x < cWidth; x += bytesPerPixels) {
         var arrayPos = x + y * cWidth;
         if (imgData.data[arrayPos + 3] > 0 && maxY === -1) {
@@ -231,15 +235,15 @@
     return {
       'top': minX,
       'left': minY,
-      'width': maxX-minX,
-      'height': maxY-minY
+      'width': maxX - minX,
+      'height': maxY - minY
     };
   }
 
   function copyToClipboard() {
     console.log('Not implemented yet...');
   }
-  
+
   function setNetworkLayout() {
     const hierarchicalOptionsDirection = document.getElementById('hierarchicalOptions_direction');
     const hierarchicalOptionsSortMethod = document.getElementById('hierarchicalOptions_sortmethod');
@@ -248,19 +252,24 @@
     hierarchicalOptionsSortMethod.style['display'] = showHierarchicalOptionsCheckbox.checked ? 'block' : 'none';
     const hierarchicalOptionsDirectionSelect = document.getElementById('direction');
     const hierarchicalOptionsSortMethodSelect = document.getElementById('sortMethod');
-    if(showHierarchicalOptionsCheckbox.checked)  {
-      options.layout = {
-        hierarchical: {
-          enabled: true,
-          direction: hierarchicalOptionsDirectionSelect.value ? hierarchicalOptionsDirectionSelect.value : 'UD',
-          sortMethod: hierarchicalOptionsSortMethodSelect.value ? hierarchicalOptionsSortMethodSelect.value : 'hubsize'
-        }
-      };
+    if (showHierarchicalOptionsCheckbox.checked) {
+      if (hierarchicalOptionsDirectionSelect.value && hierarchicalOptionsDirectionSelect.value === 'Random') {
+        options.layout = {};
+        seed = Math.random();
+      } else {
+        options.layout = {
+          hierarchical: {
+            enabled: true,
+            direction: hierarchicalOptionsDirectionSelect.value ? hierarchicalOptionsDirectionSelect.value : 'UD',
+            sortMethod: hierarchicalOptionsSortMethodSelect.value ? hierarchicalOptionsSortMethodSelect.value : 'hubsize'
+          }
+        };
+      }
     } else {
       options.layout = {};
     }
     options.layout.randomSeed = seed;
     network = new vis.Network(container, data, options);
   }
-  
+
 }());

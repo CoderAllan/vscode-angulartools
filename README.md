@@ -6,6 +6,8 @@ AngularTools is a collection of tools for exploring an Angular project, help you
 
 Some of the tools may seem very basic, but can be a powerful help when you have them right at your fingertips.
 
+Find it on the [Visual Studio Code marketplace](https://marketplace.visualstudio.com/items?itemName=coderAllan.vscode-angulartools).
+
 ## Features
 
 * Show the component hierarchy

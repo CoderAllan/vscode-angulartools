@@ -22,9 +22,9 @@ Below is a detailed description of each feature.
 
 ### Show the component hierarchy [#](#show-component-hierarchy- 'Show the component hierarchy')
 
-If you don't want install Microsoft Visual Studio or you are on a platform not supporting Microsoft Visual Studio to view the dgml files with the component relationship, you can use the 'Show the component hierarchy' command to render the  hierarchy and show it directly in vscode.
+The 'Show the component hierarchy' command is used for visualizing the component hierarchy and Angular application. It analyses all the *.component.ts files and all the corresponding template files to determine how the component use each other and then generates a directed graph showing the component hierarchy.
 
-This command uses a vscode webview extension component to render the hierarchy using html, javascript and the [Vis.js](https://visjs.org/index.html) javascript library. This has the downside that copying the generated graph to the clipboard is not yet possible due to limitations in the vscode extension api. So to overcome this limitation the generated graph can be saved as a Png file to the root of the project you are analyzing.
+The command uses a vscode webview extension component to render the hierarchy using html, javascript and the [Vis.js](https://visjs.org/index.html) javascript library. This has the downside that copying the generated graph to the clipboard is not yet possible due to limitations in the vscode extension api. So to overcome this limitation the generated graph can be saved as a Png file to the root of the project you are analyzing.
 
 ![Show component hierarchy](https://github.com/CoderAllan/vscode-angulartools/raw/main/images/ShowComponentHierarchy.gif)
 
@@ -40,7 +40,7 @@ By default the component hierarchy graph is rendered using a random layout. You 
 
 The Generate Directed Graph Markup Language ([dgml](https://docs.microsoft.com/en-us/visualstudio/modeling/directed-graph-markup-language-dgml-reference)) file command analyzes the all angular components and generates a graph of the relationship between the components.
 
-The dgml file can be viewed and modified using Microsoft Visual Studio. I don't believe there is an extension for Visual Studio Code yet for viewing dgml files.
+The dgml file can be viewed and modified using Microsoft Visual Studio. I have also created an extension for Visual Studio Code for viewing dgml files. The [DGML Viewer extension](https://github.com/CoderAllan/vscode-dgmlviewer) can be found on the [Visual Studio code marketplace](https://marketplace.visualstudio.com/items?itemName=coderAllan.vscode-dgmlviewer).
 
 ![Generate DGML graph](https://github.com/CoderAllan/vscode-angulartools/raw/main/images/GenerateDgml.gif)
 

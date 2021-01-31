@@ -72,6 +72,8 @@ The directory structure will be listed in the output window for the AngularTools
 
 Sometimes your boss or a customer requires documentation of which packages is used in the project. This command can save you a lot of tedious manual work by analyzing the package.json file and for each referenced package queries the [npmjs.com](https://www.npmjs.com/) website to fetch the description for the package and from that generates a Markdown file with a table of the packages with their descriptions.
 
+The license information is retrieved from the package.json file for each package in the node_modules folder in the root of the workspace, this mean that the license will show 'N/A' if you have not run the 'npm install' yet.
+
 ![Generate list of packages used in the project](https://github.com/CoderAllan/vscode-angulartools/raw/main/images/PackageMarkdown.gif)
 
 ### List all imports [#](#list-all-imports- 'List all imports')

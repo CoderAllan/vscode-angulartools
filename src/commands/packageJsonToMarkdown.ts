@@ -42,23 +42,23 @@ export class PackageJsonToMarkdown {
     let dependenciesMarkdown = '';
     let devDependenciesMarkdown = '';
     let peerDependenciesMarkdown = '';
-    const dependenciesRequests: Promise<{ name: string, version: string, description: string }>[] = [];
+    const dependenciesRequests: Promise<{ name: string, version: string, description: string, license: string }>[] = [];
     dependencies.sort(ArrayUtils.sortStrings).forEach(pckName => {
-      dependenciesRequests.push(this.makeRequest(pckName));
+      dependenciesRequests.push(this.fetchPackageInformation(pckName, workspaceDirectory));
     });
     Promise.all(dependenciesRequests).then(responses => {
       dependenciesMarkdown = this.updateMarkdownRow(responses, localPackages);
     }).then(() => {
-      const devDependenciesRequests: Promise<{ name: string, version: string, description: string }>[] = [];
+      const devDependenciesRequests: Promise<{ name: string, version: string, description: string, license: string }>[] = [];
       devDependencies.sort(ArrayUtils.sortStrings).forEach(pckName => {
-        devDependenciesRequests.push(this.makeRequest(pckName));
+        devDependenciesRequests.push(this.fetchPackageInformation(pckName, workspaceDirectory));
       });
       Promise.all(devDependenciesRequests).then(responses => {
         devDependenciesMarkdown = this.updateMarkdownRow(responses, localPackages);
       }).then(() => {
-        const peerDependenciesRequests: Promise<{ name: string, version: string, description: string }>[] = [];
+        const peerDependenciesRequests: Promise<{ name: string, version: string, description: string, license: string }>[] = [];
         peerDependencies.sort(ArrayUtils.sortStrings).forEach(pckName => {
-          peerDependenciesRequests.push(this.makeRequest(pckName));
+          peerDependenciesRequests.push(this.fetchPackageInformation(pckName, workspaceDirectory));
         });
         Promise.all(peerDependenciesRequests).then(responses => {
           peerDependenciesMarkdown = this.updateMarkdownRow(responses, localPackages);
@@ -66,16 +66,16 @@ export class PackageJsonToMarkdown {
           const markdownContent =
             '# Package.json\n\n' +
             '## Dependencies\n\n' +
-            '| Name | Local version | Latest Version | Description|\n' +
-            '| ---- | ---- | ---- |:-----------|\n' +
+            '| Name | Local version | Latest Version | License | Description|\n' +
+            '| ---- | ---- | ---- | ---- |:-----------|\n' +
             dependenciesMarkdown + '\n' +
             '## Dev dependencies\n\n' +
-            '| Name | Local version | Latest Version | Description|\n' +
-            '| ---- | ---- | ---- |:-----------|\n' +
+            '| Name | Local version | Latest Version | License | Description|\n' +
+            '| ---- | ---- | ---- | ---- |:-----------|\n' +
             devDependenciesMarkdown + '\n' +
             '## Peer dependencies\n\n' +
-            '| Name | Local version | Latest Version | Description|\n' +
-            '| ---- | ---- | ---- |:-----------|\n' +
+            '| Name | Local version | Latest Version | License | Description|\n' +
+            '| ---- | ---- | ---- | ---- |:-----------|\n' +
             peerDependenciesMarkdown;
           const fsUtils = new FileSystemUtils();
           fsUtils.writeFileAndOpen(path.join(workspaceDirectory, this.config.packageJsonMarkdownFilename), markdownContent);
@@ -84,12 +84,12 @@ export class PackageJsonToMarkdown {
     });
   }
 
-  private updateMarkdownRow(responses: { name: string; version: string; description: string; }[], localPackages: { [pkgName: string]: string; }): string {
+  private updateMarkdownRow(responses: { name: string; version: string; description: string; license: string }[], localPackages: { [pkgName: string]: string; }): string {
     let markdownStr: string = '';
     responses.sort((first, second) => (first.name.replace('@','') < second.name.replace('@','') ? -1 : 1)).forEach(response => {
       if (response) {
         const localVersion = localPackages[response.name];
-        markdownStr += `| ${response.name} | ${localVersion} | ${response.version} | ${response.description} |\n`;
+        markdownStr += `| ${response.name} | ${localVersion} | ${response.version} | ${response.license} | ${response.description} |\n`;
       }
     });
     return markdownStr;
@@ -107,9 +107,10 @@ export class PackageJsonToMarkdown {
     });    
   }
 
-  private makeRequest(pckName: string): Promise<{ name: string, version: string, description: string }> {
+  private fetchPackageInformation(pckName: string, workspaceDirectory: string): Promise<{ name: string, version: string, description: string, license: string }> {
     const uri = `/${pckName}`;
-    const request = fetch.json(uri)
+    const license = this.getLicenseInformationFromNodeModulesFolder(workspaceDirectory, pckName);
+    const result = fetch.json(uri)
       .then((json: any) => {
         let packageName = json.name;
         packageName = packageName?.replace('|', '&#124;');
@@ -117,11 +118,23 @@ export class PackageJsonToMarkdown {
         packageDescription = packageDescription?.replace('|', '&#124;');
         let packageVersion = json['dist-tags'].latest;
         packageVersion = packageVersion?.replace('|', '&#124;');
-        return { name: packageName, description: packageDescription, version: packageVersion };
+        return { name: packageName, description: packageDescription, version: packageVersion, license: license };
       })
       .catch(() => {
-        return { name: pckName, description: 'N/A', version: 'N/A' };
+        return { name: pckName, description: 'N/A', version: 'N/A', license: license };
       });
-    return request;
+    return result;
+  }
+
+  private getLicenseInformationFromNodeModulesFolder(workspaceDirectory: string, pckName: string): string {
+    const pckFolder = path.join(workspaceDirectory, 'node_modules', pckName);
+    const packageJsonFile = path.join(pckFolder, 'package.json');
+    const contents = fs.readFileSync(packageJsonFile).toString('utf8');
+    const packageJson = JSON.parse(contents);
+    if(packageJson.license) {
+      return packageJson.license;
+    } else{
+      return 'N/A';
+    }
   }
 }

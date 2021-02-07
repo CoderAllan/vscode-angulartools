@@ -1,5 +1,10 @@
 # Change Log
 
+## Version 1.4.4
+
+- Bugfix: Not all modules was recognized by the 'Generate a Markdown file of all modules in the current project.' command.
+- Various refactoring.
+
 ## Version 1.4.3
 
 - Updated: PackageJsonToMarkdown command now shows the package license for each package.

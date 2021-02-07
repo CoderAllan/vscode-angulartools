@@ -71,7 +71,7 @@ export class ModulesToMarkdown extends CommandBase {
 
   private readModule(filename: string, errors: string[]): NgModule | undefined {
     const fileContents = fs.readFileSync(filename);
-    const regex: RegExp = /@NgModule\s*\(\s*(\{.+?\})\s*\)\s*export\s+class\s+(\w+)\s*\{/ims;
+    const regex: RegExp = /@NgModule\s*\(\s*(\{.+?\})\s*\)\s*export\s+class\s+(\w+)\s+/ims;
     var match = regex.exec(fileContents.toString());
     if (match !== null) {
       const moduleName = match[2];

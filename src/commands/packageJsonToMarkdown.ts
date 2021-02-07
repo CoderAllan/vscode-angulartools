@@ -2,14 +2,16 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 import { ArrayUtils, Config, FileSystemUtils } from '@src';
+import { CommandBase } from '@commands';
 
 const fetch = require('npm-registry-fetch');
 
-export class PackageJsonToMarkdown {
+export class PackageJsonToMarkdown extends CommandBase {
   private config = new Config();
   public static get commandName(): string { return 'packageJsonToMarkdown'; }
 
   public execute() {
+    this.checkForOpenWorkspace();
     const fsUtils = new FileSystemUtils();
     const directoryPath: string = fsUtils.getWorkspaceFolder();
     const isPackageJson = (filename: string): boolean => filename.toLowerCase().endsWith('package.json');

@@ -1,11 +1,13 @@
+import { CommandBase } from '@commands';
 import { Config, Component, ComponentManager, FileSystemUtils } from '@src';
 import * as path from 'path';
 
-export class ComponentHierarchyMarkdown {
+export class ComponentHierarchyMarkdown extends CommandBase {
   private config = new Config();
   public static get commandName(): string { return 'componentHierarchyMarkdown'; }
 
   public execute() {
+    this.checkForOpenWorkspace();
     const fsUtils = new FileSystemUtils();
     var workspaceDirectory: string = fsUtils.getWorkspaceFolder();
     const components = ComponentManager.findComponents(workspaceDirectory);

@@ -2,20 +2,18 @@ import * as fs from 'fs';
 import * as vscode from 'vscode';
 
 import { ArrayUtils, Config, FileSystemUtils } from '@src';
+import { CommandBase } from '@commands';
 
-export class ListAllImports {
+export class ListAllImports extends CommandBase {
   private config = new Config();
   public static get commandName(): string { return 'listAllImports'; }
 
   public execute() {
+    this.checkForOpenWorkspace();
     const fsUtils = new FileSystemUtils();
     var directoryPath: string = fsUtils.getWorkspaceFolder();
     const files = fsUtils.listFiles(directoryPath, this.config.excludeDirectories, this.isTypescriptFile);
     this.writeResult(directoryPath, files);
-  }
-
-  private isTypescriptFile(filename: string): boolean {
-    return filename.endsWith('.ts') && !filename.endsWith('index.ts');
   }
 
   private writeResult(workspaceDirectory: string, results: string[]) {

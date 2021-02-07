@@ -1,11 +1,13 @@
 import { Config, FileSystemUtils } from '@src';
+import { CommandBase } from '@commands';
 import * as vscode from 'vscode';
 
-export class ProjectDirectoryStructure {
+export class ProjectDirectoryStructure extends CommandBase {
   private config = new Config();
   public static get commandName(): string { return 'projectDirectoryStructure'; }
 
   public execute() {
+    this.checkForOpenWorkspace();
     const fsUtils = new FileSystemUtils();
     var workspaceDirectory: string = fsUtils.getWorkspaceFolder();
     const directories: string[] = fsUtils.listDirectories(workspaceDirectory, this.config.excludeDirectories);

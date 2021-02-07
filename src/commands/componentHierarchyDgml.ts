@@ -1,18 +1,19 @@
+import { CommandBase } from '@commands';
 import { Component, ComponentManager, Config, FileSystemUtils } from '@src';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as vscode from 'vscode';
 import * as xmldom from 'xmldom';
 
-
 const prettifyXml = require('prettify-xml');
 const xmlSerializer = require('xmlserializer');
 
-export class ComponentHierarchyDgml {
+export class ComponentHierarchyDgml extends CommandBase {
   private config = new Config();
   public static get commandName(): string { return 'componentHierarchyDgml'; }
 
   public execute() {
+    this.checkForOpenWorkspace();
     const fsUtils = new FileSystemUtils();
     var directoryPath: string = fsUtils.getWorkspaceFolder();
     const components = ComponentManager.findComponents(directoryPath);

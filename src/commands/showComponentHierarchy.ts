@@ -1,3 +1,4 @@
+import { CommandBase } from '@commands';
 import { Component, ComponentManager, Config, FileSystemUtils } from '@src';
 import * as fs from 'fs';
 import { Base64 } from 'js-base64';
@@ -34,18 +35,19 @@ class Edge {
   }
 }
 
-export class ShowComponentHierarchy {
+export class ShowComponentHierarchy extends CommandBase {
   private config = new Config();
   private extensionContext: vscode.ExtensionContext;
   private fsUtils = new FileSystemUtils();
   private static readonly Name = 'showComponentHierarchy';
   constructor(context: vscode.ExtensionContext) {
+    super();
     this.extensionContext = context;
   }
   public static get commandName(): string { return ShowComponentHierarchy.Name; }
 
   public execute(webview: vscode.Webview) {
-
+    this.checkForOpenWorkspace();
     webview.onDidReceiveMessage(
       message => {
         switch (message.command) {

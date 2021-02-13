@@ -1,49 +1,11 @@
-import { CommandBase } from '@commands';
-import { Component, ComponentManager, Config, FileSystemUtils } from '@src';
+import { Node, Edge, ShowHierarchyBase } from './showHierarchyBase';
+import { Component, ComponentManager } from '@src';
 import * as fs from 'fs';
-import { Base64 } from 'js-base64';
 import * as path from 'path';
 import * as vscode from 'vscode';
 
-class Node {
-  constructor(id: string, tsFilename: string, isRoot: boolean) {
-    this.id = id;
-    this.tsFilename = tsFilename;
-    this.isRoot = isRoot;
-  }
-  public id: string;
-  public tsFilename: string;
-  public isRoot: boolean;
-
-  public toJsonString(): string {
-    return `{id: "${this.id}", label: "${this.id}"}`;
-  }
-}
-
-class Edge {
-  constructor(id: string, source: string, target: string) {
-    this.id = id;
-    this.source = source;
-    this.target = target;
-  }
-  public id: string;
-  public source: string;
-  public target: string;
-
-  public toJsonString(): string {
-    return `{from: "${this.source}", to: "${this.target}", arrows: arrowAttr }`;
-  }
-}
-
-export class ShowComponentHierarchy extends CommandBase {
-  private config = new Config();
-  private extensionContext: vscode.ExtensionContext;
-  private fsUtils = new FileSystemUtils();
+export class ShowComponentHierarchy extends ShowHierarchyBase {
   private static readonly Name = 'showComponentHierarchy';
-  constructor(context: vscode.ExtensionContext) {
-    super();
-    this.extensionContext = context;
-  }
   public static get commandName(): string { return ShowComponentHierarchy.Name; }
 
   public execute(webview: vscode.Webview) {
@@ -52,7 +14,7 @@ export class ShowComponentHierarchy extends CommandBase {
       message => {
         switch (message.command) {
           case 'saveAsPng':
-            this.saveAsPng(message.text);
+            this.saveAsPng(this.config.componentHierarchyFilename, message.text);
             return;
         }
       },
@@ -63,32 +25,18 @@ export class ShowComponentHierarchy extends CommandBase {
     var directoryPath: string = this.fsUtils.getWorkspaceFolder();
     const components = ComponentManager.findComponents(directoryPath);
 
-    let nodes: Node[] = [];
-    const appendNodes = (nodeList: Node[]) => {
-      nodeList.forEach(newNode => {
-        if (!nodes.some(node => node.id === newNode.id)) {
-          nodes = nodes.concat(newNode);
-        }
-      });
-    };
-    let edges: Edge[] = [];
-    const appendEdges = (edgeList: Edge[]) => {
-      edgeList.forEach(newEdge => {
-        if (!edges.some(edge => edge.source === newEdge.source && edge.target === newEdge.target)) {
-          edges = edges.concat(newEdge);
-        }
-      });
-    };
-    this.addNodesAndEdges(components, appendNodes, appendEdges);
+    this.nodes = [];
+    this.edges = [];
+    this.addNodesAndEdges(components, this.appendNodes, this.appendEdges);
 
-    const nodesJson = nodes
+    const nodesJson = this.nodes
       .map((node, index, arr) => { return node.toJsonString(); })
       .join(',\n');
-    const rootNodesJson = nodes
+    const rootNodesJson = this.nodes
       .filter(node => node.isRoot)
       .map((node, index, arr) => { return '"' + node.id + '"'; })
       .join(',\n');
-    const edgesJson = edges
+    const edgesJson = this.edges
       .map((edge, index, arr) => { return edge.toJsonString(); })
       .join(',\n');
 
@@ -143,15 +91,6 @@ export class ShowComponentHierarchy extends CommandBase {
     }
   }
 
-  private getNonce() {
-    let text = '';
-    const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    for (let i = 0; i < 32; i++) {
-      text += possible.charAt(Math.floor(Math.random() * possible.length));
-    }
-    return text;
-  }
-
   private generateJavascriptContent(nodesJson: string, rootNodesJson: string, edgesJson: string): string {
     const templateJsFilename = ShowComponentHierarchy.Name + '_Template.js';
     let template = fs.readFileSync(this.extensionContext?.asAbsolutePath(path.join('templates', templateJsFilename)), 'utf8');
@@ -189,18 +128,5 @@ export class ShowComponentHierarchy extends CommandBase {
     const jsUri = webview.asWebviewUri(jsPath);
     htmlContent = htmlContent.replace(ShowComponentHierarchy.Name + '.js', jsUri.toString());
     return htmlContent;
-  }
-
-  private saveAsPng(messageText: string) {
-    const dataUrl = messageText.split(',');
-    if (dataUrl.length > 0) {
-      const u8arr = Base64.toUint8Array(dataUrl[1]);
-
-      const workspaceDirectory = this.fsUtils.getWorkspaceFolder();
-      const newFilePath = path.join(workspaceDirectory, this.config.componentHierarchyFilename);
-      this.fsUtils.writeFile(newFilePath, u8arr, () => {});
-
-      vscode.window.showInformationMessage(`The file ${this.config.componentHierarchyFilename} has been created in the root of the workspace.`);
-    }
   }
 }

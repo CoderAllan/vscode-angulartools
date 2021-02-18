@@ -35,14 +35,27 @@ export class Config {
   public get projectDirectoryStructureMarkdownFilename(): string { return this.getSetting<string>('projectDirectoryStructureMarkdownFilename', 'ReadMe-ProjectDirectoryStructure.md'); }
 
   // ShowComponentHierarchy
-  public get visRootNodeBackgroundColor(): string { return this.getSetting<string>('showComponentHierarchy.rootNodeBackgroundColor', '#00FF00'); }
+  public get visRootNodeBackgroundColor(): string { return this.getSetting<string>('showComponentHierarchy.rootNodeBackgroundColor', '#3abc3f'); }
   public get visNodeShape(): string { return this.getSetting<string>('showComponentHierarchy.nodeShape', 'box'); }
   public get visEdgeArrowToType(): string { return this.getSetting<string>('showComponentHierarchy.edgeArrowToType', 'triangle'); }
-  public get graphSelectionGuidelineColor(): string { return this.getSetting<string>('showComponentHierarchy.graphSelectionGuidelineColor', 'blue'); }
+  public get graphSelectionGuidelineColor(): string { return this.getSetting<string>('showComponentHierarchy.graphSelectionGuidelineColor', '#0288d1'); }
   public get graphSelectionGuidelineWidth(): number { return this.getSetting<number>('showComponentHierarchy.graphSelectionGuidelineWidth', 1); }
-  public get graphSelectionColor(): string { return this.getSetting<string>('showComponentHierarchy.graphSelectionColor', 'red'); }
+  public get graphSelectionColor(): string { return this.getSetting<string>('showComponentHierarchy.graphSelectionColor', '#e53935'); }
   public get graphSelectionWidth(): number { return this.getSetting<number>('showComponentHierarchy.graphSelectionWidth', 2); }
   public get componentHierarchyFilename(): string { return this.getSetting<string>('showComponentHierarchy.componentHierarchyFilename', 'ComponentHierarchy.png'); }
+
+  // ShowModuleHierarchy
+  public get moduleHierarchyFilename(): string { return this.getSetting<string>('showModuleHierarchy.moduleHierarchyFilename', 'ModuleHierarchy.png'); }
+  public get componentNodeBackgroundColor(): string { return this.getSetting<string>('showModuleHierarchy.componentNodeBackgroundColor', '#0288d1');}
+  public get componentNodeShape(): string { return this.getSetting<string>('showModuleHierarchy.componentNodeShape', 'box'); }
+  public get moduleNodeBackgroundColor(): string { return this.getSetting<string>('showModuleHierarchy.moduleNodeBackgroundColor', '#e53935');}
+  public get moduleNodeShape(): string { return this.getSetting<string>('showModuleHierarchy.moduleNodeShape', 'box'); }
+  public get pipeNodeBackgroundColor(): string { return this.getSetting<string>('showModuleHierarchy.pipeNodeBackgroundColor', '#00897b');}
+  public get pipeNodeShape(): string { return this.getSetting<string>('showModuleHierarchy.pipeNodeShape', 'box'); }
+  public get directiveNodeBackgroundColor(): string { return this.getSetting<string>('showModuleHierarchy.directiveNodeBackgroundColor', '#ffc107');}
+  public get directiveNodeShape(): string { return this.getSetting<string>('showModuleHierarchy.directiveNodeShape', 'box'); }
+  public get importEdgeColor(): string { return this.getSetting<string>('showModuleHierarchy.importEdgeColor', '#43a047'); }
+  public get exportEdgeColor(): string { return this.getSetting<string>('showModuleHierarchy.exportEdgeColor', '#0288d1'); }
 
   // ComponentHierarchyMarkdown
   public get componentHierarchyMarkdownFilename(): string { return this.getSetting<string>('componentHierarchyMarkdownFilename', 'ComponentHierarchy.md'); }

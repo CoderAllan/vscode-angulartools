@@ -4,7 +4,7 @@
   "displayName": "AngularTools",
   "description": "AngularTools is a collection of tools for exploring an Angular project, help you with documenting, reverse engineering a project or help when refactoring.",
   "icon": "images/logo.png",
-  "version": "1.4.4",
+  "version": "1.5.0",
   "license": "MIT",
   "repository": "https://github.com/CoderAllan/vscode-angulartools",
   "author": {
@@ -31,12 +31,12 @@
     "onCommand:angulartools.modulesToMarkdown",
     "onCommand:angulartools.packageJsonToMarkdown",
     "onCommand:angulartools.showComponentHierarchy",
+    "onCommand:angulartools.showModuleHierarchy",
     "onCommand:angulartools.componentHierarchyMarkdown"
   ],
   "main": "./out/extension.js",
   "contributes": {
-    "commands": [
-      {
+    "commands": [{
         "command": "angulartools.listAllImports",
         "title": "AngularTools: List all imports"
       },
@@ -59,6 +59,10 @@
       {
         "command": "angulartools.showComponentHierarchy",
         "title": "AngularTools: Show a graph representing the component hierarchy."
+      },
+      {
+        "command": "angulartools.showModuleHierarchy",
+        "title": "AngularTools: Show a graph representing the module hierarchy."
       },
       {
         "command": "angulartools.componentHierarchyMarkdown",
@@ -139,20 +143,7 @@
         "angularTools.showComponentHierarchy.nodeShape": {
           "type": "string",
           "default": "box",
-          "enum": [
-            "ellipse",
-            "circle",
-            "database",
-            "box",
-            "text",
-            "diamond",
-            "dot",
-            "star",
-            "triangle",
-            "triangleDown",
-            "hexagon",
-            "square "
-          ],
+          "enum": ["ellipse", "circle", "database", "box", "text", "diamond", "dot", "star", "triangle", "triangleDown", "hexagon", "square"],
           "description": "The shape of the nodes in the component hierarchy graph. Notice that 'ellipse','circle','database','box' and 'text' have the label inside the shape, the rest have the label outside the shape."
         },
         "angularTools.showComponentHierarchy.graphSelectionGuidelineColor": {
@@ -179,6 +170,65 @@
           "type": "string",
           "default": "ComponentHierarchy.png",
           "description": "The default name used when saving the component hierarchy to a Png file."
+        },
+        "angularTools.showModuleHierarchy.moduleHierarchyFilename": {
+          "type": "string",
+          "default": "ModuleHierarchy.png",
+          "description": "The default name used when saving the module hierarchy to a Png file."
+        },
+        "angularTools.showModuleHierarchy.componentNodeBackgroundColor": {
+          "type": "string",
+          "default": "#0288d1",
+          "description": "The default color of the nodes representing components."
+        },
+        "angularTools.showModuleHierarchy.componentNodeShape": {
+          "type": "string",
+          "default": "ellipse",
+          "enum": ["ellipse", "circle", "database", "box", "text", "diamond", "dot", "star", "triangle", "triangleDown", "hexagon", "square"],
+          "description": "The default shape of the nodes representing components. Notice that 'ellipse','circle','database','box' and 'text' have the label inside the shape, the rest have the label outside the shape."
+        },
+        "angularTools.showModuleHierarchy.moduleNodeBackgroundColor": {
+          "type": "string",
+          "default": "#e53935",
+          "description": "The default color of the nodes representing modules."
+        },
+        "angularTools.showModuleHierarchy.moduleNodeShape": {
+          "type": "string",
+          "default": "box",
+          "enum": ["ellipse", "circle", "database", "box", "text", "diamond", "dot", "star", "triangle", "triangleDown", "hexagon", "square"],
+          "description": "The default shape of the nodes representing modules. Notice that 'ellipse','circle','database','box' and 'text' have the label inside the shape, the rest have the label outside the shape."
+        },
+        "angularTools.showModuleHierarchy.pipeNodeBackgroundColor": {
+          "type": "string",
+          "default": "#00897b",
+          "description": "The default color of the pipes representing modules."
+        },
+        "angularTools.showModuleHierarchy.pipeNodeShape": {
+          "type": "string",
+          "default": "box",
+          "enum": ["ellipse", "circle", "database", "box", "text", "diamond", "dot", "star", "triangle", "triangleDown", "hexagon", "square"],
+          "description": "The default shape of the nodes representing pipes. Notice that 'ellipse','circle','database','box' and 'text' have the label inside the shape, the rest have the label outside the shape."
+        },
+        "angularTools.showModuleHierarchy.directiveNodeBackgroundColor": {
+          "type": "string",
+          "default": "#ffc107",
+          "description": "The default color of the directives representing modules."
+        },
+        "angularTools.showModuleHierarchy.directiveNodeShape": {
+          "type": "string",
+          "default": "box",
+          "enum": ["ellipse", "circle", "database", "box", "text", "diamond", "dot", "star", "triangle", "triangleDown", "hexagon", "square"],
+          "description": "The default shape of the nodes representing directives. Notice that 'ellipse','circle','database','box' and 'text' have the label inside the shape, the rest have the label outside the shape."
+        },
+        "angularTools.showModuleHierarchy.importEdgeColor": {
+          "type": "string",
+          "default": "#43a047",
+          "description": "The default color of the edges representing imports."
+        },
+        "angularTools.showModuleHierarchy.exportEdgeColor": {
+          "type": "string",
+          "default": "#0288d1",
+          "description": "The default color of the edges representing exports."
         },
         "angularTools.componentHierarchyMarkdownFilename": {
           "type": "string",

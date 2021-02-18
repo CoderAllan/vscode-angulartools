@@ -11,6 +11,7 @@ import {
   ProjectDirectoryStructure,
   ShowComponentHierarchy,
 } from '@commands';
+import { ShowModuleHierarchy } from './commands/showModuleHierarchy';
 
 export function activate(context: vscode.ExtensionContext) {
 
@@ -67,6 +68,22 @@ export function activate(context: vscode.ExtensionContext) {
     command.execute(componentHierarchyPanel.webview);
   });
   context.subscriptions.push(showComponentHierarchyDisposable);
+  
+  const showModuleHierarchyDisposable = vscode.commands.registerCommand(`${cmdPrefix}.${ShowModuleHierarchy.commandName}`, () => {
+    const moduleHierarchyPanel = vscode.window.createWebviewPanel(
+      'angularTools_showModuleHierarchy',
+      'Angular module hierarchy',
+      vscode.ViewColumn.One,
+      {
+        enableScripts: true
+      }
+    );
+    moduleHierarchyPanel.onDidDispose(() => {
+    }, null, context.subscriptions);
+    const command = new ShowModuleHierarchy(context);
+    command.execute(moduleHierarchyPanel.webview);
+  });
+  context.subscriptions.push(showModuleHierarchyDisposable);
 }
 
 // this method is called when your extension is deactivated

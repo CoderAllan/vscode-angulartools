@@ -183,7 +183,7 @@
         },
         "angularTools.showModuleHierarchy.componentNodeShape": {
           "type": "string",
-          "default": "ellipse",
+          "default": "box",
           "enum": ["ellipse", "circle", "database", "box", "text", "diamond", "dot", "star", "triangle", "triangleDown", "hexagon", "square"],
           "description": "The default shape of the nodes representing components. Notice that 'ellipse','circle','database','box' and 'text' have the label inside the shape, the rest have the label outside the shape."
         },
@@ -229,6 +229,11 @@
           "type": "string",
           "default": "#0288d1",
           "description": "The default color of the edges representing exports."
+        },
+        "angularTools.showModuleHierarchy.maximumNodeLabelLength": {
+          "type": "number",
+          "default": "40",
+          "description": "The maximum length of the label for the nodes in the hierarchy. If the class name, module definition, module imports, exports, directives or pipes are longer than the specified number of characters, it will be truncated to this length."
         },
         "angularTools.componentHierarchyMarkdownFilename": {
           "type": "string",

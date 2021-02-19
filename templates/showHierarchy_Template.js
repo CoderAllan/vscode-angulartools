@@ -22,7 +22,8 @@
   };
   var options = {
     physics: {
-      enabled: false
+      enabled: true,
+      solver: 'repulsion'
     },
     edges: {
       smooth: false // Make edges straight lines.
@@ -34,6 +35,9 @@
   var container = document.getElementById('network');
   var network = new vis.Network(container, data, options);
   var seed = network.getSeed();
+  network.on("stabilizationIterationsDone", function () {
+    network.setOptions( { physics: false } );
+  });
 
   const vscode = acquireVsCodeApi();
   const helpTextDiv = document.getElementById('helpText');
@@ -270,6 +274,9 @@
     }
     options.layout.randomSeed = seed;
     network = new vis.Network(container, data, options);
+    network.on("stabilizationIterationsDone", function () {
+      network.setOptions( { physics: false } );
+    });
   }
 
 }());

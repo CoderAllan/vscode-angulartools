@@ -1,16 +1,7 @@
 import * as fs from 'fs';
 import { ArrayUtils, Config, FileSystemUtils } from "@src";
 
-export interface INgModule {
-  imports: string[];
-  exports: string[];
-  declarations: string[];
-  entryComponents: string[];
-  providers: string[];
-  bootstrap: string[];
-}
-
-export class NgModule implements INgModule {
+export class NgModule {
   public imports: string[] = [];
   public exports: string[] = [];
   public declarations: string[] = [];
@@ -19,7 +10,6 @@ export class NgModule implements INgModule {
   public bootstrap: string[] = [];
   public filename: string = '';
   public moduleName: string = '';
-  public moduleContents: string = '';
   public moduleStats(): number[] {
     return [
       this.declarations === undefined ? 0 : ArrayUtils.arrayLength(this.declarations),
@@ -32,25 +22,50 @@ export class NgModule implements INgModule {
   }
 }
 
+export class NamedEntity {
+  public name: string = '';
+  public constructor(name: string) {
+    this.name = name;
+  }
+}
+class Directive extends NamedEntity { }
+class Pipe extends NamedEntity { }
+class Component extends NamedEntity { }
+export class Project {
+  public modules: NgModule[] = [];
+  public components: string[] = [];
+  public pipes: string[] = [];
+  public directives: string[] = [];
+}
+
 export class ModuleManager {
 
-  public static findModules(directoryPath: string, errors: string[], isTypescriptFile: (filename: string) => boolean): NgModule[] {
+  public static scanProject(directoryPath: string, errors: string[], isTypescriptFile: (filename: string) => boolean): Project {
     const fsUtils = new FileSystemUtils();
     const config = new Config();
     const moduleFilenames = fsUtils.listFiles(directoryPath, config.excludeDirectories, isTypescriptFile);
-    const modules: NgModule[] = [];
+    const project = new Project();
     moduleFilenames.sort(ArrayUtils.sortStrings).forEach(filename => {
-      const module = this.readModule(filename, errors);
-      if (module !== undefined) {
-        modules.push(module);
+      const file = this.readTypescriptFile(filename, errors);
+      if (file instanceof NgModule) {
+        project.modules.push(file as NgModule);
+      }
+      else if (file instanceof Component) {
+        project.components.push(file.name);
+      }
+      else if (file instanceof Pipe) {
+        project.pipes.push(file.name);
+      }
+      else if (file instanceof Directive) {
+        project.directives.push(file.name);
       }
     });
-    return modules;
+    return project;
   }
 
-  private static readModule(filename: string, errors: string[]): NgModule | undefined {
+  private static readTypescriptFile(filename: string, errors: string[]): NgModule | Component | Directive | Pipe | undefined {
     const fileContents = fs.readFileSync(filename);
-    const regex: RegExp = /@NgModule\s*\(\s*(\{.+?\})\s*\)\s*export\s+class\s+(\w+)\s+/ims;
+    let regex: RegExp = /@NgModule\s*\(\s*(\{.+?\})\s*\)\s*export\s+class\s+(\w+)\s+/ims;
     var match = regex.exec(fileContents.toString());
     if (match !== null) {
       const moduleName = match[2];
@@ -59,12 +74,26 @@ export class ModuleManager {
         const module: NgModule = this.parseModuleContents(moduleContents);
         module.filename = filename;
         module.moduleName = moduleName;
-        module.moduleContents = moduleContents;
         return module;
       } catch (ex) {
         errors.push(`ModuleName: ${moduleName}\nFilename: ${filename}\nException: ${ex}\n${match[1]}\n`);
         return undefined;
       }
+    }
+    regex = /@Component\s*\(\s*(\{.+?\})\s*\)\s*export\s+class\s+(\w+)\s+/ims;
+    var match = regex.exec(fileContents.toString());
+    if (match !== null) {
+      return new Component(match[2]);
+    }
+    regex = /@Directive\s*\(\s*(\{.+?\})\s*\)\s*export\s+class\s+(\w+)\s+/ims;
+    var match = regex.exec(fileContents.toString());
+    if (match !== null) {
+      return new Directive(match[2]);
+    }
+    regex = /@Pipe\s*\(\s*(\{.+?\})\s*\)\s*export\s+class\s+(\w+)\s+/ims;
+    var match = regex.exec(fileContents.toString());
+    if (match !== null) {
+      return new Pipe(match[2]);
     }
   }
 

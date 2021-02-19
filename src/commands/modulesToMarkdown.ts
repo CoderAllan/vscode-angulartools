@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
-import { ArrayUtils, Config, FileSystemUtils, NgModule } from '@src';
+import { ArrayUtils, Config, FileSystemUtils, NgModule, Project } from '@src';
 import { CommandBase } from '@commands';
 import { ModuleManager } from '@src';
 
@@ -14,13 +14,13 @@ export class ModulesToMarkdown extends CommandBase {
     var workspaceDirectory: string = fsUtils.getWorkspaceFolder();
     let markdownContent = '# Modules\n\n';
     const errors: string[] = [];
-    const modules: NgModule[] = ModuleManager.findModules(workspaceDirectory, errors, this.isTypescriptFile);
+    const project: Project = ModuleManager.scanProject(workspaceDirectory, errors, this.isTypescriptFile);
     markdownContent = markdownContent +
       '## Modules in workspace\n\n' +
       '| Module | Declarations | Imports | Exports | Bootstrap | Providers | Entry points |\n' +
       '| ---| --- | --- | --- | --- | --- | --- |\n';
     let modulesMarkdown: string = '';
-    modules.forEach(module => {
+    project.modules.forEach(module => {
       markdownContent = markdownContent + '| ' + module.moduleName + ' | ' + module.moduleStats().join(' | ') + ' |\n';
       modulesMarkdown = modulesMarkdown + this.generateModuleMarkdown(module);
     });

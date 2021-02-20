@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 1.4.5
+
+- Bugfix: The Package json to Markdown command failed if the node_modules folder did not exist.
+
 ## Version 1.4.4
 
 - Bugfix: Not all modules was recognized by the 'Generate a Markdown file of all modules in the current project.' command.

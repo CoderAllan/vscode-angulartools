@@ -65,20 +65,38 @@ export class PackageJsonToMarkdown extends CommandBase {
         Promise.all(peerDependenciesRequests).then(responses => {
           peerDependenciesMarkdown = this.updateMarkdownRow(responses, localPackages);
         }).then(() => {
+          if(dependenciesMarkdown === '') {
+            dependenciesMarkdown = 'No dependencies specified.';
+          } else {
+            dependenciesMarkdown = 
+              '| Name | Local version | Latest Version | License | Description|\n' +
+              '| ---- | ---- | ---- | ---- |:-----------|\n' +
+              dependenciesMarkdown;
+          }
+          if(devDependenciesMarkdown === '') {
+            devDependenciesMarkdown = 'No dev dependencies specified.';
+          } else {
+            devDependenciesMarkdown = 
+              '| Name | Local version | Latest Version | License | Description|\n' +
+              '| ---- | ---- | ---- | ---- |:-----------|\n' +
+              devDependenciesMarkdown;
+          }
+          if(peerDependenciesMarkdown === '') {
+            peerDependenciesMarkdown = 'No peer dependencies specified.';
+          } else {
+            peerDependenciesMarkdown = 
+              '| Name | Local version | Latest Version | License | Description|\n' +
+              '| ---- | ---- | ---- | ---- |:-----------|\n' +
+              peerDependenciesMarkdown;
+          }
           const markdownContent =
             '# Package.json\n\n' +
             '## Dependencies\n\n' +
-            '| Name | Local version | Latest Version | License | Description|\n' +
-            '| ---- | ---- | ---- | ---- |:-----------|\n' +
             dependenciesMarkdown + '\n' +
             '## Dev dependencies\n\n' +
-            '| Name | Local version | Latest Version | License | Description|\n' +
-            '| ---- | ---- | ---- | ---- |:-----------|\n' +
             devDependenciesMarkdown + '\n' +
             '## Peer dependencies\n\n' +
-            '| Name | Local version | Latest Version | License | Description|\n' +
-            '| ---- | ---- | ---- | ---- |:-----------|\n' +
-            peerDependenciesMarkdown;
+            peerDependenciesMarkdown + '\n';
           const fsUtils = new FileSystemUtils();
           fsUtils.writeFileAndOpen(path.join(workspaceDirectory, this.config.packageJsonMarkdownFilename), markdownContent);
         });
@@ -88,7 +106,7 @@ export class PackageJsonToMarkdown extends CommandBase {
 
   private updateMarkdownRow(responses: { name: string; version: string; description: string; license: string }[], localPackages: { [pkgName: string]: string; }): string {
     let markdownStr: string = '';
-    responses.sort((first, second) => (first.name.replace('@','') < second.name.replace('@','') ? -1 : 1)).forEach(response => {
+    responses.sort((first, second) => (first.name.replace('@', '') < second.name.replace('@', '') ? -1 : 1)).forEach(response => {
       if (response) {
         const localVersion = localPackages[response.name];
         markdownStr += `| ${response.name} | ${localVersion} | ${response.version} | ${response.license} | ${response.description} |\n`;
@@ -100,13 +118,13 @@ export class PackageJsonToMarkdown extends CommandBase {
   private updateLocalPackagesDictionary(dict: { [pkgName: string]: string; }, localPackages: { [pkgName: string]: string; }) {
     Object.entries(dict).forEach(([pkgName, version]) => {
       if (localPackages[pkgName] !== undefined) {
-        if(!localPackages[pkgName].includes(String(version))) {
+        if (!localPackages[pkgName].includes(String(version))) {
           localPackages[pkgName] += ', ' + String(version);
         }
       } else {
         localPackages[pkgName] = String(version);
       }
-    });    
+    });
   }
 
   private fetchPackageInformation(pckName: string, workspaceDirectory: string): Promise<{ name: string, version: string, description: string, license: string }> {
@@ -131,11 +149,17 @@ export class PackageJsonToMarkdown extends CommandBase {
   private getLicenseInformationFromNodeModulesFolder(workspaceDirectory: string, pckName: string): string {
     const pckFolder = path.join(workspaceDirectory, 'node_modules', pckName);
     const packageJsonFile = path.join(pckFolder, 'package.json');
-    const contents = fs.readFileSync(packageJsonFile).toString('utf8');
-    const packageJson = JSON.parse(contents);
-    if(packageJson.license) {
+    let packageJson = undefined;
+    try {
+      const contents = fs.readFileSync(packageJsonFile).toString('utf8');
+      packageJson = JSON.parse(contents);
+    }
+    catch {
+      packageJson = undefined;
+    }
+    if (packageJson !== undefined && packageJson.license) {
       return packageJson.license;
-    } else{
+    } else {
       return 'N/A';
     }
   }

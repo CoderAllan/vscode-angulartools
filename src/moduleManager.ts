@@ -33,9 +33,10 @@ class Pipe extends NamedEntity { }
 class Component extends NamedEntity { }
 export class Project {
   public modules: NgModule[] = [];
-  public components: string[] = [];
-  public pipes: string[] = [];
-  public directives: string[] = [];
+  public moduleNames: Map<string, string> = new Map<string, string>();
+  public components: Map<string, string> = new Map<string, string>();
+  public pipes: Map<string, string> = new Map<string, string>();
+  public directives: Map<string, string> = new Map<string, string>();
 }
 
 export class ModuleManager {
@@ -49,15 +50,16 @@ export class ModuleManager {
       const file = this.readTypescriptFile(filename, errors);
       if (file instanceof NgModule) {
         project.modules.push(file as NgModule);
+        project.moduleNames.set(file.moduleName, file.moduleName);
       }
       else if (file instanceof Component) {
-        project.components.push(file.name);
+        project.components.set(file.name, file.name);
       }
       else if (file instanceof Pipe) {
-        project.pipes.push(file.name);
+        project.pipes.set(file.name, file.name);
       }
       else if (file instanceof Directive) {
-        project.directives.push(file.name);
+        project.directives.set(file.name, file.name);
       }
     });
     return project;

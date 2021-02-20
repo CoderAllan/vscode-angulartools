@@ -1,5 +1,10 @@
 # Change Log
 
+## Version 1.5.0
+
+- Added Show module hierarchy command that visualizes the module structure and their import and exports.
+- Improved the layout of nodes in the Show Component hierarchy command
+
 ## Version 1.4.5
 
 - Bugfix: The Package json to Markdown command failed if the node_modules folder did not exist.

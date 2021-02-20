@@ -5,4 +5,5 @@ export * from './modulesToMarkdown';
 export * from './packageJsonToMarkdown';
 export * from './projectDirectoryStructure';
 export * from './showComponentHierarchy';
+export * from './showModuleHierarchy';
 export * from './componentHierarchyMarkdown';

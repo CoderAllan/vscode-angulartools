@@ -10,8 +10,8 @@ import {
   PackageJsonToMarkdown,
   ProjectDirectoryStructure,
   ShowComponentHierarchy,
+  ShowModuleHierarchy
 } from '@commands';
-import { ShowModuleHierarchy } from './commands/showModuleHierarchy';
 
 export function activate(context: vscode.ExtensionContext) {
 

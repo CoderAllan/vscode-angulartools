@@ -5,8 +5,7 @@ import * as path from 'path';
 import * as vscode from 'vscode';
 
 export class ShowComponentHierarchy extends ShowHierarchyBase {
-  private static readonly Name = 'showComponentHierarchy';
-  public static get commandName(): string { return ShowComponentHierarchy.Name; }
+  public static get commandName(): string { return 'showComponentHierarchy'; }
 
   public execute(webview: vscode.Webview) {
     this.checkForOpenWorkspace();
@@ -42,7 +41,7 @@ export class ShowComponentHierarchy extends ShowHierarchyBase {
 
     try {
       const jsContent = this.generateJavascriptContent(nodesJson, rootNodesJson, edgesJson);
-      const outputJsFilename = ShowComponentHierarchy.Name + '.js';
+      const outputJsFilename = this.showComponentHierarchyJsFilename;
       let htmlContent = this.generateHtmlContent(webview, outputJsFilename);
 
       //this.fsUtils.writeFile(this.extensionContext?.asAbsolutePath(path.join('out', ShowComponentHierarchy.Name + '.html')), htmlContent, () => { }); // For debugging
@@ -69,7 +68,7 @@ export class ShowComponentHierarchy extends ShowHierarchyBase {
   }
 
   private generateDirectedGraphNodes(components: Component[], component: Component, isRoot: boolean, parentSelector: string, appendNodes: (nodeList: Node[]) => void) {
-    appendNodes([new Node(component.selector, component.templateFilename, isRoot)]);
+    appendNodes([new Node(component.selector, component.selector, isRoot)]);
     if (components.length > 0) {
       components.forEach((subComponent) => {
         if(parentSelector !== subComponent.selector) {
@@ -81,7 +80,7 @@ export class ShowComponentHierarchy extends ShowHierarchyBase {
 
   private generateDirectedGraphEdges(subComponents: Component[], selector: string, parentSelector: string, appendLinks: (edgeList: Edge[]) => void) {
     if (parentSelector.length > 0) {
-      const id = Math.random() * 100000;
+      const id = this.edges.length;
       appendLinks([new Edge(id.toString(), parentSelector, selector)]);
     }
     if (subComponents.length > 0 && selector !== parentSelector) {
@@ -92,8 +91,7 @@ export class ShowComponentHierarchy extends ShowHierarchyBase {
   }
 
   private generateJavascriptContent(nodesJson: string, rootNodesJson: string, edgesJson: string): string {
-    const templateJsFilename = ShowComponentHierarchy.Name + '_Template.js';
-    let template = fs.readFileSync(this.extensionContext?.asAbsolutePath(path.join('templates', templateJsFilename)), 'utf8');
+    let template = fs.readFileSync(this.extensionContext?.asAbsolutePath(path.join('templates', this.templateJsFilename)), 'utf8');
     let jsContent = template.replace('var nodes = new vis.DataSet([]);', `var nodes = new vis.DataSet([${nodesJson}]);`);
     jsContent = jsContent.replace('var rootNodes = [];', `var rootNodes = [${rootNodesJson}];`);
     jsContent = jsContent.replace('var edges = new vis.DataSet([]);', `var edges = new vis.DataSet([${edgesJson}]);`);
@@ -105,28 +103,5 @@ export class ShowComponentHierarchy extends ShowHierarchyBase {
     jsContent = jsContent.replace('selectionCanvasContext.strokeStyle = \'red\';', `selectionCanvasContext.strokeStyle = '${this.config.graphSelectionColor}';`);
     jsContent = jsContent.replace('selectionCanvasContext.lineWidth = 2;', `selectionCanvasContext.lineWidth = ${this.config.graphSelectionWidth};`);
     return jsContent;
-  }
-
-  private generateHtmlContent(webview: vscode.Webview, outputJsFilename: string): string {
-    const templateHtmlFilename = ShowComponentHierarchy.Name + '_Template.html';
-    let htmlContent = fs.readFileSync(this.extensionContext?.asAbsolutePath(path.join('templates', templateHtmlFilename)), 'utf8');
-
-    const visPath = vscode.Uri.joinPath(this.extensionContext.extensionUri, 'javascript', 'vis-network.min.js');
-    const visUri = webview.asWebviewUri(visPath);
-    htmlContent = htmlContent.replace('vis-network.min.js', visUri.toString());
-
-    const cssPath = vscode.Uri.joinPath(this.extensionContext.extensionUri, 'stylesheet', ShowComponentHierarchy.Name + '.css');
-    const cssUri = webview.asWebviewUri(cssPath);
-    htmlContent = htmlContent.replace(ShowComponentHierarchy.Name + '.css', cssUri.toString());
-
-    const nonce = this.getNonce();
-    htmlContent = htmlContent.replace('nonce-nonce', `nonce-${nonce}`);
-    htmlContent = htmlContent.replace(/<script /g, `<script nonce="${nonce}" `);
-    htmlContent = htmlContent.replace('cspSource', webview.cspSource);
-
-    const jsPath = vscode.Uri.joinPath(this.extensionContext.extensionUri, 'out', outputJsFilename);
-    const jsUri = webview.asWebviewUri(jsPath);
-    htmlContent = htmlContent.replace(ShowComponentHierarchy.Name + '.js', jsUri.toString());
-    return htmlContent;
   }
 }

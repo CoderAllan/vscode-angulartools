@@ -1,36 +1,91 @@
 import { CommandBase } from '@commands';
 import { Config, FileSystemUtils } from '@src';
 import { Base64 } from 'js-base64';
+import * as fs from 'fs';
 import * as path from 'path';
 import * as vscode from 'vscode';
 
+export enum NodeType {
+  none,
+  rootNode,
+  component,
+  module,
+  pipe,
+  directive
+}
 export class Node {
-  constructor(id: string, tsFilename: string, isRoot: boolean) {
+  private config: Config = new Config();
+  constructor(id: string, name: string, isRoot: boolean, nodeType: NodeType = NodeType.none) {
     this.id = id;
-    this.tsFilename = tsFilename;
+    this.name = name;
     this.isRoot = isRoot;
+    this.nodeType = nodeType;
   }
   public id: string;
-  public tsFilename: string;
+  public name: string;
   public isRoot: boolean;
+  public nodeType: NodeType;
 
   public toJsonString(): string {
-    return `{id: "${this.id}", label: "${this.id}"}`;
+    let nodeColorAttr = '';
+    switch (this.nodeType) {
+      case NodeType.rootNode:
+        nodeColorAttr = `, color: "${this.config.rootNodeBackgroundColor}", shape: "${this.config.visNodeShape}"`;
+        break;
+      case NodeType.component:
+        nodeColorAttr = `, color: "${this.config.componentNodeBackgroundColor}", shape: "${this.config.componentNodeShape}"`;
+        break;
+      case NodeType.module:
+        nodeColorAttr = `, color: "${this.config.moduleNodeBackgroundColor}", shape: "${this.config.moduleNodeShape}"`;
+        break;
+      case NodeType.pipe:
+        nodeColorAttr = `, color: "${this.config.pipeNodeBackgroundColor}", shape: "${this.config.pipeNodeShape}"`;
+        break;
+      case NodeType.directive:
+        nodeColorAttr = `, color: "${this.config.directiveNodeBackgroundColor}", shape: "${this.config.directiveNodeShape}"`;
+        break;
+      default:
+        nodeColorAttr = '';
+        break;
+    }
+    const label = this.name.length > this.config.maximumNodeLabelLength ? this.name.substr(0, this.config.maximumNodeLabelLength) + '...' : this.name;
+    return `{id: "${this.id}", label: "${label}" ${nodeColorAttr}}`;
   }
 }
 
+export enum ArrowType {
+  none = 0,
+  import = 1,
+  export = 2
+}
+
 export class Edge {
-  constructor(id: string, source: string, target: string) {
+  private config: Config = new Config();
+  constructor(id: string, source: string, target: string, arrowType: ArrowType = ArrowType.none) {
     this.id = id;
     this.source = source;
     this.target = target;
+    this.arrowType = arrowType;
   }
   public id: string;
   public source: string;
   public target: string;
+  public arrowType: ArrowType;
 
   public toJsonString(): string {
-    return `{from: "${this.source}", to: "${this.target}", arrows: arrowAttr }`;
+    let arrowColorAttr = '';
+    switch (this.arrowType) {
+      case ArrowType.import:
+        arrowColorAttr = `, color: "${this.config.importEdgeColor}"`;
+        break;
+      case ArrowType.export:
+        arrowColorAttr = `, color: "${this.config.exportEdgeColor}"`;
+        break;
+      default:
+        arrowColorAttr = '';
+        break;
+    }
+    return `{from: "${this.source}", to: "${this.target}", arrows: arrowAttr ${arrowColorAttr} }`;
   }
 }
 
@@ -40,6 +95,11 @@ export class ShowHierarchyBase extends CommandBase {
   protected extensionContext: vscode.ExtensionContext;
   protected nodes: Node[] = [];
   protected edges: Edge[] = [];
+  protected templateJsFilename: string = 'showHierarchy_Template.js';
+  protected templateHtmlFilename: string = 'showHierarchy_Template.html';
+  protected showComponentHierarchyJsFilename: string = 'showComponentHierarchy.js';
+  protected showModuleHierarchyJsFilename: string = 'showModuleHierarchy.js';
+  protected showHierarchyCssFilename: string = 'showHierarchy.css';
 
   constructor(context: vscode.ExtensionContext) {
     super();
@@ -76,10 +136,32 @@ export class ShowHierarchyBase extends CommandBase {
 
       const workspaceDirectory = this.fsUtils.getWorkspaceFolder();
       const newFilePath = path.join(workspaceDirectory, pngFilename);
-      this.fsUtils.writeFile(newFilePath, u8arr, () => {});
+      this.fsUtils.writeFile(newFilePath, u8arr, () => { });
 
       vscode.window.showInformationMessage(`The file ${pngFilename} has been created in the root of the workspace.`);
     }
   }
 
+  
+  protected generateHtmlContent(webview: vscode.Webview, outputJsFilename: string): string {
+    let htmlContent = fs.readFileSync(this.extensionContext?.asAbsolutePath(path.join('templates', this.templateHtmlFilename)), 'utf8');
+
+    const visPath = vscode.Uri.joinPath(this.extensionContext.extensionUri, 'javascript', 'vis-network.min.js');
+    const visUri = webview.asWebviewUri(visPath);
+    htmlContent = htmlContent.replace('vis-network.min.js', visUri.toString());
+
+    const cssPath = vscode.Uri.joinPath(this.extensionContext.extensionUri, 'stylesheet', this.showHierarchyCssFilename);
+    const cssUri = webview.asWebviewUri(cssPath);
+    htmlContent = htmlContent.replace(this.showHierarchyCssFilename, cssUri.toString());
+
+    const nonce = this.getNonce();
+    htmlContent = htmlContent.replace('nonce-nonce', `nonce-${nonce}`);
+    htmlContent = htmlContent.replace(/<script /g, `<script nonce="${nonce}" `);
+    htmlContent = htmlContent.replace('cspSource', webview.cspSource);
+
+    const jsPath = vscode.Uri.joinPath(this.extensionContext.extensionUri, 'out', outputJsFilename);
+    const jsUri = webview.asWebviewUri(jsPath);
+    htmlContent = htmlContent.replace('showHierarchy.js', jsUri.toString());
+    return htmlContent;
+  }
 }

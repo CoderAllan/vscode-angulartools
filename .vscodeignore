@@ -12,3 +12,5 @@ vsc-extension-quickstart.md
 **/.eslintrc.json
 **/*.map
 **/*.ts
+showComponentHierarchy.js
+showModuleHierarchy.js

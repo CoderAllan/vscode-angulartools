@@ -159,7 +159,7 @@ export class ShowHierarchyBase extends CommandBase {
     htmlContent = htmlContent.replace(/<script /g, `<script nonce="${nonce}" `);
     htmlContent = htmlContent.replace('cspSource', webview.cspSource);
 
-    const jsPath = vscode.Uri.joinPath(this.extensionContext.extensionUri, 'out', outputJsFilename);
+    const jsPath = vscode.Uri.joinPath(this.extensionContext.extensionUri, outputJsFilename);
     const jsUri = webview.asWebviewUri(jsPath);
     htmlContent = htmlContent.replace('showHierarchy.js', jsUri.toString());
     return htmlContent;

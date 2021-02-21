@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 1.5.1
+
+- Now using webpack to reduce size of extension.
+
 ## Version 1.5.0
 
 - Added Show module hierarchy command that visualizes the module structure and their import and exports.

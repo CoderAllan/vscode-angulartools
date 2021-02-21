@@ -1,5 +1,7 @@
 .vscode
 node_modules
 out
-src/commands/showComponentHierarchy.html
-src/commands/showComponentHierarchy.js
+dist
+showComponentHierarchy.js
+showModuleHierarchy.js
+*.vsix

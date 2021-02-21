@@ -3,8 +3,8 @@
   "publisher": "coderAllan",
   "displayName": "AngularTools",
   "description": "AngularTools is a collection of tools for exploring an Angular project, help you with documenting, reverse engineering a project or help when refactoring.",
-  "icon": "images/logo.png",
-  "version": "1.5.0",
+  "icon": "logo.png",
+  "version": "1.5.1",
   "license": "MIT",
   "repository": "https://github.com/CoderAllan/vscode-angulartools",
   "author": {
@@ -35,9 +35,10 @@
     "onCommand:angulartools.showModuleHierarchy",
     "onCommand:angulartools.componentHierarchyMarkdown"
   ],
-  "main": "./out/extension.js",
+  "main": "./dist/extension.js",
   "contributes": {
-    "commands": [{
+    "commands": [
+      {
         "command": "angulartools.listAllImports",
         "title": "AngularTools: List all imports"
       },
@@ -315,7 +316,9 @@
     }
   },
   "scripts": {
-    "vscode:prepublish": "npm run compile",
+    "vscode:prepublish": "webpack --mode production",
+    "webpack": "webpack --mode development",
+    "webpack-dev": "webpack --mode development --watch",
     "compile": "tsc -p ./ && tscpaths -p ./tsconfig.json -s ./src -o ./out",
     "lint": "eslint src --ext ts",
     "watch": "tsc -watch -p ./",
@@ -323,17 +326,20 @@
     "test": "node ./out/test/runTest.js"
   },
   "devDependencies": {
-    "@types/vscode": "^1.53.0",
     "@types/glob": "^7.1.3",
     "@types/mocha": "^8.2.1",
     "@types/node": "^14.14.30",
+    "@types/vscode": "^1.53.0",
+    "@typescript-eslint/eslint-plugin": "^4.15.1",
     "@typescript-eslint/parser": "^4.15.1",
     "eslint": "^7.20.0",
-    "@typescript-eslint/eslint-plugin": "^4.15.1",
     "glob": "^7.1.6",
     "mocha": "^8.3.0",
+    "ts-loader": "^8.0.17",
     "typescript": "^4.1.5",
-    "vscode-test": "^1.5.1"
+    "vscode-test": "^1.5.1",
+    "webpack": "^5.23.0",
+    "webpack-cli": "^4.5.0"
   },
   "dependencies": {
     "@types/xmldom": "^0.1.30",

@@ -39,7 +39,7 @@ export class ShowModuleHierarchy extends ShowHierarchyBase {
       let htmlContent = this.generateHtmlContent(webview, this.showModuleHierarchyJsFilename);
       //this.fsUtils.writeFile(this.extensionContext?.asAbsolutePath(path.join('out', ShowComponentHierarchy.Name + '.html')), htmlContent, () => { }); // For debugging
       this.fsUtils.writeFile(
-        this.extensionContext?.asAbsolutePath(path.join('out', outputJsFilename)),
+        this.extensionContext?.asAbsolutePath(path.join('.', outputJsFilename)),
         jsContent,
         () => {
           webview.html = htmlContent;

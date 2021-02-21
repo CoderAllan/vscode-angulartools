@@ -10,6 +10,7 @@ Find it on the [Visual Studio Code marketplace](https://marketplace.visualstudio
 
 ## Features
 
+* Show the module hierarchy
 * Show the component hierarchy
 * Generate DGML graph of project component hierarchy
 * Summarizes all the Angular modules
@@ -19,6 +20,19 @@ Find it on the [Visual Studio Code marketplace](https://marketplace.visualstudio
 * List all imports
 
 Below is a detailed description of each feature.
+
+### Show the module hierarchy [#](#show-module-hierarchy- 'Show the module hierarchy')
+
+The 'Show module hierarchy' command is used for visualizing the hierarchy of the modules in an Angular application. The command scans all the *.ts files in the project to identify classes decorated with the `@NgModule` class decorator and then visualize how each module is imported by other modules. It will also visualize the classes specified in the imports and the exports section of the NgModule definition.
+
+In the visualization the classes will be colored depending on the class decorator of each class:
+
+* Modules are red
+* Components are blue
+* Pipes are yellow
+* Directives are green
+
+![Show module hierarchy](https://github.com/CoderAllan/vscode-angulartools/raw/main/images/ShowModuleHierarchy.gif)
 
 ### Show the component hierarchy [#](#show-component-hierarchy- 'Show the component hierarchy')
 

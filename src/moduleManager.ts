@@ -30,13 +30,17 @@ export class NamedEntity {
 }
 class Directive extends NamedEntity { }
 class Pipe extends NamedEntity { }
-class Component extends NamedEntity { }
+class Injectable extends NamedEntity { }
+class Component extends NamedEntity { 
+  public dependencyInjections: string[] = [];
+}
 export class Project {
   public modules: NgModule[] = [];
   public moduleNames: Map<string, string> = new Map<string, string>();
-  public components: Map<string, string> = new Map<string, string>();
+  public components: Map<string, Component> = new Map<string, Component>();
   public pipes: Map<string, string> = new Map<string, string>();
   public directives: Map<string, string> = new Map<string, string>();
+  public injectables: Map<string, string> = new Map<string, string>();
 }
 
 export class ModuleManager {
@@ -53,7 +57,7 @@ export class ModuleManager {
         project.moduleNames.set(file.moduleName, file.moduleName);
       }
       else if (file instanceof Component) {
-        project.components.set(file.name, file.name);
+        project.components.set(file.name, file);
       }
       else if (file instanceof Pipe) {
         project.pipes.set(file.name, file.name);
@@ -61,11 +65,14 @@ export class ModuleManager {
       else if (file instanceof Directive) {
         project.directives.set(file.name, file.name);
       }
+      else if (file instanceof Injectable) {
+        project.directives.set(file.name, file.name);
+      }
     });
     return project;
   }
 
-  private static readTypescriptFile(filename: string, errors: string[]): NgModule | Component | Directive | Pipe | undefined {
+  private static readTypescriptFile(filename: string, errors: string[]): NgModule | Component | Directive | Pipe | Injectable | undefined {
     const fileContents = fs.readFileSync(filename);
     let regex: RegExp = /@NgModule\s*\(\s*(\{.+?\})\s*\)\s*export\s+class\s+(\w+)\s+/ims;
     var match = regex.exec(fileContents.toString());
@@ -82,10 +89,22 @@ export class ModuleManager {
         return undefined;
       }
     }
-    regex = /@Component\s*\(\s*(\{.+?\})\s*\)\s*export\s+class\s+(\w+)\s+/ims;
+    regex = /@Component\s*\(\s*(\{.+?\})\s*\)\s*export\s+class\s+(\w+)\s+(.*)/ims;
     var match = regex.exec(fileContents.toString());
     if (match !== null) {
-      return new Component(match[2]);
+      const className = match[2];
+      const component = new Component(className);
+      const classBody = match[3];
+      regex = /constructor\s*\((.*?)\)/ims;
+      match = regex.exec(classBody);
+      if (match !== null) {
+        const constructorParameters = match[1];
+        regex = /\s*\w+\s+\w+\s*:\s*(\w+)[,]*/gims;
+        while(match = regex.exec(constructorParameters)) {
+          component.dependencyInjections.push(match[1]);
+        }
+      }
+      return component;
     }
     regex = /@Directive\s*\(\s*(\{.+?\})\s*\)\s*export\s+class\s+(\w+)\s+/ims;
     var match = regex.exec(fileContents.toString());
@@ -96,6 +115,11 @@ export class ModuleManager {
     var match = regex.exec(fileContents.toString());
     if (match !== null) {
       return new Pipe(match[2]);
+    }
+    regex = /@Injectable\s*\(\s*(\{.+?\})\s*\)\s*export\s+class\s+(\w+)\s+/ims;
+    var match = regex.exec(fileContents.toString());
+    if (match !== null) {
+      return new Injectable(match[2]);
     }
   }
 

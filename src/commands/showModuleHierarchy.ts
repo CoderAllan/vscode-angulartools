@@ -50,39 +50,23 @@ export class ShowModuleHierarchy extends ShowHierarchyBase {
       console.log('Angular Tools Exception:' + ex);
     }
     if (errors.length > 0) {
-      this.showErrors(errors);
+      this.showErrors(errors, `Parsing of ${errors.length > 1 ? 'some' : 'one'} of the modules failed.\n`);
     }
   }
   addNodesAndEdges(project: Project, appendNodes: (nodeList: Node[]) => void, appendEdges: (edgeList: Edge[]) => void) {
     project.modules.forEach(module => {
       appendNodes([new Node(module.moduleName, module.moduleName, false, NodeType.module)]);
       module.imports.forEach(_import => {
-        const nodeType = this.getNodeType(project, _import);
+        const nodeType = Node.getNodeType(project, _import);
         appendNodes([new Node(_import, _import, false, nodeType)]);
         appendEdges([new Edge((this.edges.length + 1).toString(), _import, module.moduleName, ArrowType.import)]);
       });
       module.exports.forEach(_export => {
-        const nodeType = this.getNodeType(project, _export);
+        const nodeType = Node.getNodeType(project, _export);
         appendNodes([new Node(_export, _export, false, nodeType)]);
         appendEdges([new Edge((this.edges.length + 1).toString(), module.moduleName, _export, ArrowType.export)]);
       });
     });
-  }
-  getNodeType(project: Project, className: string) {
-    let nodeType = NodeType.none;
-    if (project.moduleNames.has(className) || className.endsWith('Module') || className.includes("Module.")) {
-      nodeType = NodeType.module;
-    }
-    else if (project.components.has(className) || className.endsWith('Component')) {
-      nodeType = NodeType.component;
-    }
-    else if (project.directives.has(className) || className.endsWith('Directive')) {
-      nodeType = NodeType.directive;
-    }
-    else if (project.pipes.has(className) || className.endsWith('Pipe')) {
-      nodeType = NodeType.pipe;
-    }
-    return nodeType;
   }
   generateJavascriptContent(nodesJson: string, edgesJson: string) {
     let template = fs.readFileSync(this.extensionContext?.asAbsolutePath(path.join('templates', this.templateJsFilename)), 'utf8');
@@ -94,14 +78,5 @@ export class ShowModuleHierarchy extends ShowHierarchyBase {
     jsContent = jsContent.replace('selectionCanvasContext.strokeStyle = \'red\';', `selectionCanvasContext.strokeStyle = '${this.config.graphSelectionColor}';`);
     jsContent = jsContent.replace('selectionCanvasContext.lineWidth = 2;', `selectionCanvasContext.lineWidth = ${this.config.graphSelectionWidth};`);
     return jsContent;
-  }
-
-  showErrors(errors: string[]) {
-    const angularToolsOutput = vscode.window.createOutputChannel(this.config.angularToolsOutputChannel);
-    angularToolsOutput.clear();
-    angularToolsOutput.appendLine(`Parsing of ${errors.length > 1 ? 'some' : 'one'} of the modules failed.\n`);
-    angularToolsOutput.appendLine('Below is a list of the errors.');
-    angularToolsOutput.appendLine(errors.join('\n'));
-    angularToolsOutput.show();
   }
 }

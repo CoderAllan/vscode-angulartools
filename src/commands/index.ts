@@ -7,3 +7,4 @@ export * from './projectDirectoryStructure';
 export * from './showComponentHierarchy';
 export * from './showModuleHierarchy';
 export * from './componentHierarchyMarkdown';
+export * from './generateDependencyInjectionGraph';

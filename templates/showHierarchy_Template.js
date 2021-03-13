@@ -29,6 +29,7 @@
       smooth: false // Make edges straight lines.
     },
     nodes: {
+      font: { multi: 'html' },
       shape: 'box' // The shape of the nodes.
     }
   };

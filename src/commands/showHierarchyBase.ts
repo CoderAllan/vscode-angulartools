@@ -4,14 +4,16 @@ import { Base64 } from 'js-base64';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as vscode from 'vscode';
+import { Project } from '@model';
 
 export enum NodeType {
   none,
-  rootNode,
   component,
+  directive,
+  injectable,
   module,
   pipe,
-  directive
+  rootNode
 }
 export class Node {
   private config: Config = new Config();
@@ -48,15 +50,36 @@ export class Node {
         nodeColorAttr = '';
         break;
     }
-    const label = this.name.length > this.config.maximumNodeLabelLength ? this.name.substr(0, this.config.maximumNodeLabelLength) + '...' : this.name;
+    const label = this.config.maximumNodeLabelLength !== -1 && this.name.length > this.config.maximumNodeLabelLength ? this.name.substr(0, this.config.maximumNodeLabelLength) + '...' : this.name;
     return `{id: "${this.id}", label: "${label}" ${nodeColorAttr}}`;
+  }
+
+  public static getNodeType(project: Project, className: string) {
+    let nodeType = NodeType.none;
+    if (project.moduleNames.has(className) || className.endsWith('Module') || className.includes("Module.")) {
+      nodeType = NodeType.module;
+    }
+    else if (project.components.has(className) || className.endsWith('Component')) {
+      nodeType = NodeType.component;
+    }
+    else if (project.directives.has(className) || className.endsWith('Directive')) {
+      nodeType = NodeType.directive;
+    }
+    else if (project.pipes.has(className) || className.endsWith('Pipe')) {
+      nodeType = NodeType.pipe;
+    }
+    else if (project.injectables.has(className)) {
+      nodeType = NodeType.injectable;
+    }
+    return nodeType;
   }
 }
 
 export enum ArrowType {
   none = 0,
   import = 1,
-  export = 2
+  export = 2,
+  injectable = 3
 }
 
 export class Edge {
@@ -163,5 +186,14 @@ export class ShowHierarchyBase extends CommandBase {
     const jsUri = webview.asWebviewUri(jsPath);
     htmlContent = htmlContent.replace('showHierarchy.js', jsUri.toString());
     return htmlContent;
+  }
+
+  protected showErrors(errors: string[], errorMessage: string) {
+    const angularToolsOutput = vscode.window.createOutputChannel(this.config.angularToolsOutputChannel);
+    angularToolsOutput.clear();
+    angularToolsOutput.appendLine(errorMessage);
+    angularToolsOutput.appendLine('Below is a list of the errors.');
+    angularToolsOutput.appendLine(errors.join('\n'));
+    angularToolsOutput.show();
   }
 }

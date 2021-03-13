@@ -1,8 +1,8 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
-import { ArrayUtils, Config, FileSystemUtils, NgModule, Project } from '@src';
+import { ArrayUtils, Config, FileSystemUtils, ModuleManager, NgModule } from '@src';
 import { CommandBase } from '@commands';
-import { ModuleManager } from '@src';
+import { Project } from '@model';
 
 export class ModulesToMarkdown extends CommandBase {
   private config = new Config();

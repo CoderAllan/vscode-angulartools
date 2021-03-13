@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import { ArrayUtils, Config, FileSystemUtils } from "@src";
+import { Component, Directive, Injectable, Pipe, Project } from '@model';
 
 export class NgModule {
   public imports: string[] = [];
@@ -22,23 +23,6 @@ export class NgModule {
   }
 }
 
-export class NamedEntity {
-  public name: string = '';
-  public constructor(name: string) {
-    this.name = name;
-  }
-}
-class Directive extends NamedEntity { }
-class Pipe extends NamedEntity { }
-class Component extends NamedEntity { }
-export class Project {
-  public modules: NgModule[] = [];
-  public moduleNames: Map<string, string> = new Map<string, string>();
-  public components: Map<string, string> = new Map<string, string>();
-  public pipes: Map<string, string> = new Map<string, string>();
-  public directives: Map<string, string> = new Map<string, string>();
-}
-
 export class ModuleManager {
 
   public static scanProject(directoryPath: string, errors: string[], isTypescriptFile: (filename: string) => boolean): Project {
@@ -53,7 +37,7 @@ export class ModuleManager {
         project.moduleNames.set(file.moduleName, file.moduleName);
       }
       else if (file instanceof Component) {
-        project.components.set(file.name, file.name);
+        project.components.set(file.name, file);
       }
       else if (file instanceof Pipe) {
         project.pipes.set(file.name, file.name);
@@ -61,11 +45,14 @@ export class ModuleManager {
       else if (file instanceof Directive) {
         project.directives.set(file.name, file.name);
       }
+      else if (file instanceof Injectable) {
+        project.directives.set(file.name, file.name);
+      }
     });
     return project;
   }
 
-  private static readTypescriptFile(filename: string, errors: string[]): NgModule | Component | Directive | Pipe | undefined {
+  private static readTypescriptFile(filename: string, errors: string[]): NgModule | Component | Directive | Pipe | Injectable | undefined {
     const fileContents = fs.readFileSync(filename);
     let regex: RegExp = /@NgModule\s*\(\s*(\{.+?\})\s*\)\s*export\s+class\s+(\w+)\s+/ims;
     var match = regex.exec(fileContents.toString());
@@ -82,10 +69,14 @@ export class ModuleManager {
         return undefined;
       }
     }
-    regex = /@Component\s*\(\s*(\{.+?\})\s*\)\s*export\s+class\s+(\w+)\s+/ims;
+    regex = /@Component\s*\(\s*(\{.+?\})\s*\)\s*export\s+class\s+(\w+)\s+(.*)/ims;
     var match = regex.exec(fileContents.toString());
     if (match !== null) {
-      return new Component(match[2]);
+      const className = match[2];
+      const component = new Component(className);
+      const classBody = match[3];
+      this.enrichComponent(component, classBody);
+      return component;
     }
     regex = /@Directive\s*\(\s*(\{.+?\})\s*\)\s*export\s+class\s+(\w+)\s+/ims;
     var match = regex.exec(fileContents.toString());
@@ -97,6 +88,51 @@ export class ModuleManager {
     if (match !== null) {
       return new Pipe(match[2]);
     }
+    regex = /@Injectable\s*\(\s*(\{.+?\})\s*\)\s*export\s+class\s+(\w+)\s+/ims;
+    var match = regex.exec(fileContents.toString());
+    if (match !== null) {
+      return new Injectable(match[2]);
+    }
+  }
+
+  private static enrichComponent(component: Component, classBody: string): void {
+    let regex = /constructor\s*\((.*?)\)/ims;
+    let match = regex.exec(classBody);
+    if (match !== null) {
+      const constructorParameters = match[1];
+      regex = /\s*\w+\s+\w+\s*:\s*(\w+)[,]*/gims;
+      while (match = regex.exec(constructorParameters)) {
+        component.dependencyInjections.push(match[1]);
+      }
+    }
+    this.matchMultipleSpecificDecorator(classBody, '@Input', component.inputs);
+    this.matchMultipleSpecificDecorator(classBody, '@output', component.outputs);
+    this.matchSpecificDecorator(classBody, '@ViewChild', component.viewchilds);
+    this.matchSpecificDecorator(classBody, '@ViewChildren', component.viewchildren);
+    this.matchSpecificDecorator(classBody, '@ContentChild', component.contentchilds);
+    this.matchSpecificDecorator(classBody, '@ContentChildren', component.contentchildren);
+  }
+
+  private static matchMultipleSpecificDecorator(classBody: string, decorator: string, decoratorArray: string[]) {
+    const regex =  new RegExp(decorator + '\\(\\)\\s+(?:public)?(?:protected)?(?:private)?\\s*(?:[gs]et)?\\s*(\\w+)\\s*[:=(]|' + decorator + '\\(["\'](.*?)["\']\\)', 'gms');
+    let match: RegExpExecArray | null = null;
+    while (match = regex.exec(classBody)) {
+      if (match[1]) {
+        decoratorArray.push(match[1]);
+      } else if (match[2]) {
+        decoratorArray.push(match[2]);
+      }
+    }
+  }
+
+  private static matchSpecificDecorator(classBody: string, decorator: string, decoratorArray: string[]) {
+    const regex =  new RegExp(decorator + '\\s*\\(\\s*[\'"]?(\\w+)[\'"]?.*?\\)', 'gms');
+    let match: RegExpExecArray | null = null;
+    while (match = regex.exec(classBody)) {
+      if (match[1]) {
+        decoratorArray.push(match[1]);
+      }
+    }    
   }
 
   private static parseModuleContents(moduleContents: string): NgModule {

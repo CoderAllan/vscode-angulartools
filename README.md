@@ -11,6 +11,7 @@ Find it on the [Visual Studio Code marketplace](https://marketplace.visualstudio
 ## Features
 
 * Show the module hierarchy
+* Show the dependency injection graph
 * Show the component hierarchy
 * Generate DGML graph of project component hierarchy
 * Summarizes all the Angular modules
@@ -33,6 +34,14 @@ In the visualization the classes will be colored depending on the class decorato
 * Directives are green
 
 ![Show module hierarchy](https://github.com/CoderAllan/vscode-angulartools/raw/main/images/ShowModuleHierarchy.gif)
+
+### Show the dependency injection graph [#](#show-dependency-injection-graph- 'Show the dependency injection graph')
+
+The 'Show a graph representing the components and the injected dependencies' command generates a directed graph representing the components and the services injected into the components of an Angular application. The command scans all *.ts files of the application and for each class decorated with the @Component decorator, it analyses the constructor and each field in the class to identify all injected classes and to identify all the fields decorated with the Input, Output, ViewChild, ViewChildren, ContentChild and ContentChildren decorators.
+
+In the visualization the components will by default be colored dark blue and the injected classes will be colored light blue.
+
+![Show dependency injection graph](https://github.com/CoderAllan/vscode-angulartools/raw/main/images/ShowDependencyInjectionGraph.gif)
 
 ### Show the component hierarchy [#](#show-component-hierarchy- 'Show the component hierarchy')
 

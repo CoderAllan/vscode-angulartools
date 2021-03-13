@@ -10,7 +10,8 @@ import {
   PackageJsonToMarkdown,
   ProjectDirectoryStructure,
   ShowComponentHierarchy,
-  ShowModuleHierarchy
+  ShowModuleHierarchy,
+  GenerateDependencyInjectionGraph
 } from '@commands';
 
 export function activate(context: vscode.ExtensionContext) {
@@ -84,7 +85,22 @@ export function activate(context: vscode.ExtensionContext) {
     command.execute(moduleHierarchyPanel.webview);
   });
   context.subscriptions.push(showModuleHierarchyDisposable);
-}
+  
+  const generateDependencyInjectionGraphDisposable = vscode.commands.registerCommand(`${cmdPrefix}.${GenerateDependencyInjectionGraph.commandName}`, () => {
+    const dependencyInjectionGraphPanel = vscode.window.createWebviewPanel(
+      'angularTools_generateDependencyInjectionGraph',
+      'Angular dependency injection graph',
+      vscode.ViewColumn.One,
+      {
+        enableScripts: true
+      }
+    );
+    dependencyInjectionGraphPanel.onDidDispose(() => {
+    }, null, context.subscriptions);
+    const command = new GenerateDependencyInjectionGraph(context);
+    command.execute(dependencyInjectionGraphPanel.webview);
+  });
+  context.subscriptions.push(generateDependencyInjectionGraphDisposable);}
 
 // this method is called when your extension is deactivated
 export function deactivate() { }

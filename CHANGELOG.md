@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 1.6.0
+
+- Added Dependency injection graph command that visualizes what services are injected into the components. Graph also include all the inputs, outputs, viewchild, viewchildren, contentchild and contentchildren of each component.
+
 ## Version 1.5.1
 
 - Now using webpack to reduce size of extension.

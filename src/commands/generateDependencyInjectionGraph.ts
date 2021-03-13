@@ -1,19 +1,19 @@
 import { Node, Edge, ShowHierarchyBase, NodeType, ArrowType } from './showHierarchyBase';
 import { ModuleManager } from '@src';
-import { Project } from '@model';
+import { Component, Project } from '@model';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as vscode from 'vscode';
 
-export class ShowModuleHierarchy extends ShowHierarchyBase {
-  static get commandName() { return 'showModuleHierarchy'; }
+export class GenerateDependencyInjectionGraph extends ShowHierarchyBase {
+  static get commandName() { return 'generateDependencyInjectionGraph'; }
   public execute(webview: vscode.Webview) {
     this.checkForOpenWorkspace();
     webview.onDidReceiveMessage(
       message => {
         switch (message.command) {
           case 'saveAsPng':
-            this.saveAsPng(this.config.moduleHierarchyFilename, message.text);
+            this.saveAsPng('DependencyInjectionGraph.png', message.text);
             return;
         }
       },
@@ -23,7 +23,7 @@ export class ShowModuleHierarchy extends ShowHierarchyBase {
     var workspaceFolder = this.fsUtils.getWorkspaceFolder();
     const errors: string[] = [];
     const project: Project = ModuleManager.scanProject(workspaceFolder, errors, this.isTypescriptFile);
-    
+
     this.nodes = [];
     this.edges = [];
     this.addNodesAndEdges(project, this.appendNodes, this.appendEdges);
@@ -51,24 +51,50 @@ export class ShowModuleHierarchy extends ShowHierarchyBase {
       console.log('Angular Tools Exception:' + ex);
     }
     if (errors.length > 0) {
-      this.showErrors(errors, `Parsing of ${errors.length > 1 ? 'some' : 'one'} of the modules failed.\n`);
+      this.showErrors(errors, `Parsing of ${errors.length > 1 ? 'some' : 'one'} of the project files failed.\n`);
     }
   }
+
+  generatedComponentNode(component: Component): string {
+    let nodeContent: string = '';
+    nodeContent = `<b>${component.name}</b>`;
+    if(component.inputs.length > 0) {
+      const inputs = component.inputs.join(", ");
+      nodeContent += `\\n<b>Inputs:</b> ${inputs}`;
+    }
+    if(component.outputs.length > 0) {
+      const outputs = component.outputs.join(", ");
+      nodeContent += `\\n<b>Outputs:</b> ${outputs}`;
+    }
+    if(component.viewchilds.length > 0) {
+      const viewchilds = component.viewchilds.join(", ");
+      nodeContent += `\\n<b>Viewchilds:</b> ${viewchilds}`;
+    }
+    if(component.viewchildren.length > 0) {
+      const viewchildren = component.viewchildren.join(", ");
+      nodeContent += `\\n<b>Viewchildren:</b> ${viewchildren}`;
+    }
+    if(component.contentchilds.length > 0) {
+      const contentchilds = component.contentchilds.join(", ");
+      nodeContent += `\\n<b>Contentchilds:</b> ${contentchilds}`;
+    }
+    if(component.contentchildren.length > 0) {
+      const contentchildren = component.contentchildren.join(", ");
+      nodeContent += `\\n<b>Contentchildren:</b> ${contentchildren}`;
+    }
+    return nodeContent;
+  }
+
   addNodesAndEdges(project: Project, appendNodes: (nodeList: Node[]) => void, appendEdges: (edgeList: Edge[]) => void) {
-    project.modules.forEach(module => {
-      appendNodes([new Node(module.moduleName, module.moduleName, false, NodeType.module)]);
-      module.imports.forEach(_import => {
-        const nodeType = Node.getNodeType(project, _import);
-        appendNodes([new Node(_import, _import, false, nodeType)]);
-        appendEdges([new Edge((this.edges.length + 1).toString(), _import, module.moduleName, ArrowType.import)]);
-      });
-      module.exports.forEach(_export => {
-        const nodeType = Node.getNodeType(project, _export);
-        appendNodes([new Node(_export, _export, false, nodeType)]);
-        appendEdges([new Edge((this.edges.length + 1).toString(), module.moduleName, _export, ArrowType.export)]);
+    project.components.forEach(component => {
+      appendNodes([new Node(component.name, this.generatedComponentNode(component), false, NodeType.component)]);
+      component.dependencyInjections.forEach(injectable => {
+        appendNodes([new Node(injectable, injectable, false, NodeType.injectable)]);
+        appendEdges([new Edge((this.edges.length + 1).toString(), injectable, component.name, ArrowType.injectable)]);
       });
     });
   }
+
   generateJavascriptContent(nodesJson: string, edgesJson: string) {
     let template = fs.readFileSync(this.extensionContext?.asAbsolutePath(path.join('templates', this.templateJsFilename)), 'utf8');
     let jsContent = template.replace('var nodes = new vis.DataSet([]);', `var nodes = new vis.DataSet([${nodesJson}]);`);

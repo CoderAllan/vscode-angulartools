@@ -1,5 +1,6 @@
 import { Node, Edge, ShowHierarchyBase, NodeType, ArrowType } from './showHierarchyBase';
-import { ModuleManager, Project } from '@src';
+import { ModuleManager } from '@src';
+import { Component, Project } from '@model';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as vscode from 'vscode';
@@ -22,7 +23,7 @@ export class GenerateDependencyInjectionGraph extends ShowHierarchyBase {
     var workspaceFolder = this.fsUtils.getWorkspaceFolder();
     const errors: string[] = [];
     const project: Project = ModuleManager.scanProject(workspaceFolder, errors, this.isTypescriptFile);
-    
+
     this.nodes = [];
     this.edges = [];
     this.addNodesAndEdges(project, this.appendNodes, this.appendEdges);
@@ -54,9 +55,39 @@ export class GenerateDependencyInjectionGraph extends ShowHierarchyBase {
     }
   }
 
+  generatedComponentNode(component: Component): string {
+    let nodeContent: string = '';
+    nodeContent = `<b>${component.name}</b>`;
+    if(component.inputs.length > 0) {
+      const inputs = component.inputs.join(", ");
+      nodeContent += `\\n<b>Inputs:</b> ${inputs}`;
+    }
+    if(component.outputs.length > 0) {
+      const outputs = component.outputs.join(", ");
+      nodeContent += `\\n<b>Outputs:</b> ${outputs}`;
+    }
+    if(component.viewchilds.length > 0) {
+      const viewchilds = component.viewchilds.join(", ");
+      nodeContent += `\\n<b>Viewchilds:</b> ${viewchilds}`;
+    }
+    if(component.viewchildren.length > 0) {
+      const viewchildren = component.viewchildren.join(", ");
+      nodeContent += `\\n<b>Viewchildren:</b> ${viewchildren}`;
+    }
+    if(component.contentchilds.length > 0) {
+      const contentchilds = component.contentchilds.join(", ");
+      nodeContent += `\\n<b>Contentchilds:</b> ${contentchilds}`;
+    }
+    if(component.contentchildren.length > 0) {
+      const contentchildren = component.contentchildren.join(", ");
+      nodeContent += `\\n<b>Contentchildren:</b> ${contentchildren}`;
+    }
+    return nodeContent;
+  }
+
   addNodesAndEdges(project: Project, appendNodes: (nodeList: Node[]) => void, appendEdges: (edgeList: Edge[]) => void) {
     project.components.forEach(component => {
-      appendNodes([new Node(component.name, component.name, false, NodeType.component)]);
+      appendNodes([new Node(component.name, this.generatedComponentNode(component), false, NodeType.component)]);
       component.dependencyInjections.forEach(injectable => {
         appendNodes([new Node(injectable, injectable, false, NodeType.injectable)]);
         appendEdges([new Edge((this.edges.length + 1).toString(), injectable, component.name, ArrowType.injectable)]);

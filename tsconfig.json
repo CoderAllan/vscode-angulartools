@@ -12,7 +12,8 @@
     "baseUrl": ".",
     "paths": {
       "@commands": ["src/commands"],
-      "@src": ["src"]
+      "@src": ["src"],
+      "@model": ["src/model"]
     }
 	},
 	"exclude": [

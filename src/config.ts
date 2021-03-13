@@ -56,7 +56,7 @@ export class Config {
   public get directiveNodeShape(): string { return this.getSetting<string>('showModuleHierarchy.directiveNodeShape', 'box'); }
   public get importEdgeColor(): string { return this.getSetting<string>('showModuleHierarchy.importEdgeColor', '#43a047'); }
   public get exportEdgeColor(): string { return this.getSetting<string>('showModuleHierarchy.exportEdgeColor', '#0288d1'); }
-  public get maximumNodeLabelLength(): number { return this.getSetting<number>('showModuleHierarchy.maximumNodeLabelLength', 40); }
+  public get maximumNodeLabelLength(): number { return this.getSetting<number>('showModuleHierarchy.maximumNodeLabelLength', -1); }
 
   // ComponentHierarchyMarkdown
   public get componentHierarchyMarkdownFilename(): string { return this.getSetting<string>('componentHierarchyMarkdownFilename', 'ComponentHierarchy.md'); }

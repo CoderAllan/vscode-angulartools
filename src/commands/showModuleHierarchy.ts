@@ -1,5 +1,6 @@
 import { Node, Edge, ShowHierarchyBase, NodeType, ArrowType } from './showHierarchyBase';
-import { ModuleManager, Project } from '@src';
+import { ModuleManager } from '@src';
+import { Project } from '@model';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as vscode from 'vscode';

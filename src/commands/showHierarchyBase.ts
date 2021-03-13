@@ -1,9 +1,10 @@
 import { CommandBase } from '@commands';
-import { Config, FileSystemUtils, Project } from '@src';
+import { Config, FileSystemUtils } from '@src';
 import { Base64 } from 'js-base64';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as vscode from 'vscode';
+import { Project } from '@model';
 
 export enum NodeType {
   none,
@@ -49,7 +50,7 @@ export class Node {
         nodeColorAttr = '';
         break;
     }
-    const label = this.name.length > this.config.maximumNodeLabelLength ? this.name.substr(0, this.config.maximumNodeLabelLength) + '...' : this.name;
+    const label = this.config.maximumNodeLabelLength !== -1 && this.name.length > this.config.maximumNodeLabelLength ? this.name.substr(0, this.config.maximumNodeLabelLength) + '...' : this.name;
     return `{id: "${this.id}", label: "${label}" ${nodeColorAttr}}`;
   }
 

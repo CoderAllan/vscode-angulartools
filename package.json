@@ -336,14 +336,14 @@
     "@types/node": "^14.14.33",
     "@types/vscode": "^1.54.0",
     "@typescript-eslint/eslint-plugin": "^4.17.0",
-    "@typescript-eslint/parser": "^4.17.0",
     "eslint": "^7.22.0",
+    "@typescript-eslint/parser": "^4.18.0",
     "glob": "^7.1.6",
-    "mocha": "^8.3.1",
+    "mocha": "^8.3.2",
     "ts-loader": "^8.0.18",
     "typescript": "^4.2.3",
     "vscode-test": "^1.5.1",
-    "webpack": "^5.24.4",
+    "webpack": "^5.26.0",
     "webpack-cli": "^4.5.0"
   },
   "dependencies": {

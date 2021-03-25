@@ -21,10 +21,6 @@
     edges: edges
   };
   var options = {
-    physics: {
-      enabled: true,
-      solver: 'repulsion'
-    },
     edges: {
       smooth: false // Make edges straight lines.
     },
@@ -33,6 +29,7 @@
       shape: 'box' // The shape of the nodes.
     }
   };
+  setRandomLayout();
   var container = document.getElementById('network');
   var network = new vis.Network(container, data, options);
   var seed = network.getSeed();
@@ -249,6 +246,40 @@
     console.log('Not implemented yet...');
   }
 
+  function setRandomLayout() {
+    options.layout ={
+      hierarchical: {
+        enabled: false
+      }
+    };
+    options.physics = {
+      enabled: true,
+      barnesHut: {
+        springConstant: 0,
+        avoidOverlap: 0.8
+      }
+    };
+  }
+
+  function setHierarchicalLayout(direction, sortMethod) {
+    options.layout = {
+        hierarchical: {
+        enabled: true,
+        levelSeparation: 200,
+        nodeSpacing: 200,
+        direction: direction,
+        sortMethod: sortMethod
+      }
+    };
+    options.physics = {
+      enabled: true,
+      hierarchicalRepulsion: {
+        springConstant: 0,
+        avoidOverlap: 0.2
+      }
+    };
+  }
+
   function setNetworkLayout() {
     const hierarchicalOptionsDirection = document.getElementById('hierarchicalOptions_direction');
     const hierarchicalOptionsSortMethod = document.getElementById('hierarchicalOptions_sortmethod');
@@ -259,16 +290,12 @@
     const hierarchicalOptionsSortMethodSelect = document.getElementById('sortMethod');
     if (showHierarchicalOptionsCheckbox.checked) {
       if (hierarchicalOptionsDirectionSelect.value && hierarchicalOptionsDirectionSelect.value === 'Random') {
-        options.layout = {};
+        setRandomLayout();
         seed = Math.random();
       } else {
-        options.layout = {
-          hierarchical: {
-            enabled: true,
-            direction: hierarchicalOptionsDirectionSelect.value ? hierarchicalOptionsDirectionSelect.value : 'UD',
-            sortMethod: hierarchicalOptionsSortMethodSelect.value ? hierarchicalOptionsSortMethodSelect.value : 'hubsize'
-          }
-        };
+        const direction = hierarchicalOptionsDirectionSelect.value ? hierarchicalOptionsDirectionSelect.value : 'UD';
+        const sortMethod = hierarchicalOptionsSortMethodSelect.value ? hierarchicalOptionsSortMethodSelect.value : 'hubsize';
+        setHierarchicalLayout(direction, sortMethod);
       }
     } else {
       options.layout = {};

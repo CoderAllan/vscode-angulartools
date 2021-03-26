@@ -53,6 +53,8 @@
   // add button event listeners
   const saveAsPngButton = document.getElementById('saveAsPngButton');
   saveAsPngButton.addEventListener('click', saveAsPng);
+  const saveAsDgmlButton = document.getElementById('saveAsDgmlButton');
+  saveAsDgmlButton.addEventListener('click', saveAsDgml);
   const saveSelectionAsPngButton = document.getElementById('saveSelectionAsPngButton');
   saveSelectionAsPngButton.addEventListener('click', saveSelectionAsPng);
   const copyToClipboardButton = document.getElementById('copyToClipboardButton');
@@ -240,6 +242,22 @@
       'width': maxX - minX,
       'height': maxY - minY
     };
+  }
+
+  function saveAsDgml() {
+    const nodeExport = [];
+    nodes.forEach(node => {
+      nodeExport.push({
+        id: node.id,
+        label: node.label,
+        color: node.color,
+        position: network.getPosition(node.id)
+      });
+    });
+    vscode.postMessage({
+      command: 'saveAsDgml',
+      text: nodeExport
+    });
   }
 
   function copyToClipboard() {

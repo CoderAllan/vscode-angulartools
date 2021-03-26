@@ -13,7 +13,13 @@
 
 <body>
   <div id="buttons">
-    <input type="button" id="saveAsPngButton" value="Save as png">
+    <div class="dropdown">
+      <input type="button" id="saveAsButton" value="Save as ...">
+      <div class="dropdown-content">
+        <a href="#" id="saveAsPngButton">Save as Png</a>
+        <a href="#" Id="saveAsDgmlButton">Save as Dgml</a>
+      </div>
+    </div>
     <input type="button" id="saveSelectionAsPngButton" value="Save selection as png">
     <input type="button" id="copyToClipboardButton" value="Copy to clipboard">
     <div id="hierarchical">Change layout:<input type="checkbox" id="showHierarchicalOptions"></div>

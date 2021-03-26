@@ -20,6 +20,17 @@ export class GenerateDependencyInjectionGraph extends ShowHierarchyBase {
       undefined,
       this.extensionContext.subscriptions
     );
+    webview.onDidReceiveMessage(
+      message => {
+        switch (message.command) {
+          case 'saveAsDgml':
+            console.log(message.text);
+            return;
+        }
+      },
+      undefined,
+      this.extensionContext.subscriptions
+    );
     var workspaceFolder = this.fsUtils.getWorkspaceFolder();
     const errors: string[] = [];
     const project: Project = ModuleManager.scanProject(workspaceFolder, errors, this.isTypescriptFile);

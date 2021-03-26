@@ -20,6 +20,17 @@ export class ShowComponentHierarchy extends ShowHierarchyBase {
       undefined,
       this.extensionContext.subscriptions
     );
+    webview.onDidReceiveMessage(
+      message => {
+        switch (message.command) {
+          case 'saveAsDgml':
+            console.log(message.text);
+            return;
+        }
+      },
+      undefined,
+      this.extensionContext.subscriptions
+    );
 
     var directoryPath: string = this.fsUtils.getWorkspaceFolder();
     const components = ComponentManager.findComponents(directoryPath);

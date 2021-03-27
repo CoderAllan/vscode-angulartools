@@ -15,16 +15,8 @@ export class GenerateDependencyInjectionGraph extends ShowHierarchyBase {
           case 'saveAsPng':
             this.saveAsPng('DependencyInjectionGraph.png', message.text);
             return;
-        }
-      },
-      undefined,
-      this.extensionContext.subscriptions
-    );
-    webview.onDidReceiveMessage(
-      message => {
-        switch (message.command) {
           case 'saveAsDgml':
-            console.log(message.text);
+            this.saveAsDgml(this.config.dgmlGraphFilename, message.text);
             return;
         }
       },

@@ -165,6 +165,9 @@ export class ShowHierarchyBase extends CommandBase {
     }
   }
 
+  protected saveAsDgml(dgmlGraphFilename: string, messageText: string) {
+    
+  }
   
   protected generateHtmlContent(webview: vscode.Webview, outputJsFilename: string): string {
     let htmlContent = fs.readFileSync(this.extensionContext?.asAbsolutePath(path.join('templates', this.templateHtmlFilename)), 'utf8');

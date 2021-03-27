@@ -15,16 +15,8 @@ export class ShowModuleHierarchy extends ShowHierarchyBase {
           case 'saveAsPng':
             this.saveAsPng(this.config.moduleHierarchyFilename, message.text);
             return;
-        }
-      },
-      undefined,
-      this.extensionContext.subscriptions
-    );
-    webview.onDidReceiveMessage(
-      message => {
-        switch (message.command) {
           case 'saveAsDgml':
-            console.log(message.text);
+            this.saveAsDgml(this.config.dgmlGraphFilename, message.text);
             return;
         }
       },
@@ -34,7 +26,7 @@ export class ShowModuleHierarchy extends ShowHierarchyBase {
     var workspaceFolder = this.fsUtils.getWorkspaceFolder();
     const errors: string[] = [];
     const project: Project = ModuleManager.scanProject(workspaceFolder, errors, this.isTypescriptFile);
-    
+
     this.nodes = [];
     this.edges = [];
     this.addNodesAndEdges(project, this.appendNodes, this.appendEdges);
@@ -44,8 +36,8 @@ export class ShowModuleHierarchy extends ShowHierarchyBase {
     const edgesJson = this.edges
       .map((edge, index, arr) => { return edge.toJsonString(); })
       .join(',\n');
-    
-      try {
+
+    try {
       const jsContent = this.generateJavascriptContent(nodesJson, edgesJson);
       const outputJsFilename = this.showModuleHierarchyJsFilename;
       let htmlContent = this.generateHtmlContent(webview, this.showModuleHierarchyJsFilename);

@@ -13,18 +13,10 @@ export class ShowComponentHierarchy extends ShowHierarchyBase {
       message => {
         switch (message.command) {
           case 'saveAsPng':
-            this.saveAsPng(this.config.componentHierarchyFilename, message.text);
+            this.saveAsPng(this.config.moduleHierarchyFilename, message.text);
             return;
-        }
-      },
-      undefined,
-      this.extensionContext.subscriptions
-    );
-    webview.onDidReceiveMessage(
-      message => {
-        switch (message.command) {
           case 'saveAsDgml':
-            console.log(message.text);
+            this.saveAsDgml(this.config.dgmlGraphFilename, message.text);
             return;
         }
       },

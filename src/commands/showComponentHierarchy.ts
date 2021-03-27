@@ -17,7 +17,7 @@ export class ShowComponentHierarchy extends ShowHierarchyBase {
             this.saveAsPng(this.config.moduleHierarchyFilename, message.text);
             return;
           case 'saveAsDgml':
-            this.saveAsDgml(this.config.dgmlGraphFilename, message.text);
+            this.saveAsDgml(this.config.dgmlGraphFilename, message.text, "'The component hierarchy has been analyzed and a Directed Graph Markup Language (dgml) file has been created\nThe ComponentHierarchy.dgml file can now be viewed in Visual Studio'");
             return;
         }
       },

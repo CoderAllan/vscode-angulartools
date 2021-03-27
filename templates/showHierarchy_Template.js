@@ -50,6 +50,8 @@
   const selectionCanvas = selectionLayer.firstElementChild;
   let selectionCanvasContext;
 
+  const hierarchicalOptionsDirectionSelect = document.getElementById('direction');
+
   // add button event listeners
   const saveAsPngButton = document.getElementById('saveAsPngButton');
   saveAsPngButton.addEventListener('click', saveAsPng);
@@ -249,15 +251,27 @@
     nodes.forEach(node => {
       nodeExport.push({
         id: node.id,
-        label: node.label,
-        color: node.color,
-        position: network.getPosition(node.id)
+        label: cleanLabel(node.label),
+        position: network.getPosition(node.id),
+        boundingBox: network.getBoundingBox(node.id)
       });
     });
+    const direction = hierarchicalOptionsDirectionSelect.value ? hierarchicalOptionsDirectionSelect.value : 'UD';
     vscode.postMessage({
       command: 'saveAsDgml',
-      text: nodeExport
+      text: JSON.stringify({
+        nodes: nodeExport,
+        direction: direction
+      })
     });
+  }
+
+  function cleanLabel(label) {
+    let regex = /(<([^>]+)>)/ig;
+    let cleanedLabel = label.replace(regex, '');
+    regex = /\s+/g;
+    cleanedLabel = cleanedLabel.replace(regex, ' ');
+    return cleanedLabel;
   }
 
   function copyToClipboard() {
@@ -304,7 +318,6 @@
     const showHierarchicalOptionsCheckbox = document.getElementById('showHierarchicalOptions');
     hierarchicalOptionsDirection.style['display'] = showHierarchicalOptionsCheckbox.checked ? 'block' : 'none';
     hierarchicalOptionsSortMethod.style['display'] = showHierarchicalOptionsCheckbox.checked ? 'block' : 'none';
-    const hierarchicalOptionsDirectionSelect = document.getElementById('direction');
     const hierarchicalOptionsSortMethodSelect = document.getElementById('sortMethod');
     if (showHierarchicalOptionsCheckbox.checked) {
       if (hierarchicalOptionsDirectionSelect.value && hierarchicalOptionsDirectionSelect.value === 'Random') {

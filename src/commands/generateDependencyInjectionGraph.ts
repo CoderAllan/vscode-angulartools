@@ -16,7 +16,7 @@ export class GenerateDependencyInjectionGraph extends ShowHierarchyBase {
             this.saveAsPng('DependencyInjectionGraph.png', message.text);
             return;
           case 'saveAsDgml':
-            this.saveAsDgml(this.config.dgmlGraphFilename, message.text);
+            this.saveAsDgml(this.config.dgmlGraphFilename, message.text, "'The components hierarchy has been analyzed and a Directed Graph Markup Language (dgml) file has been created\nThe DependencyInjectionGraph.dgml file can now be viewed in Visual Studio'");
             return;
         }
       },

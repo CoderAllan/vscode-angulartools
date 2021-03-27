@@ -1,7 +1,7 @@
-import { Component } from "@src";
+import { BoundingBox, Category, Edge, NetworkNode, Node, Position } from "@model";
 
-export class DGMLManager {
-  
+export class DgmlManager {
+
   public createNewDirectedGraph(domImpl: DOMImplementation, direction: string, layout: string, zoomLevel: string) {
     let xmlDoc: Document = domImpl.createDocument('', null, null);
     const root = xmlDoc.createElement("DirectedGraph");
@@ -70,53 +70,81 @@ export class DGMLManager {
     }
   }
 
-  public addNodesAndLinks(xmlDoc: Document, componentHash: { [selector: string]: Component; }) {
+  public addNodesAndLinks(xmlDoc: Document, nodes: Node[], nodeInfos: NetworkNode[], edges: Edge[]) {
+    const nodeInfoDictionary = Object.assign({}, ...nodeInfos.map((nodeInfo) => ({ [nodeInfo.id]: nodeInfo })));
     const nodesElement = this.addNodeToRoot(xmlDoc, "Nodes");
     const linksElement = this.addNodeToRoot(xmlDoc, "Links");
-    for (let selector in componentHash) {
-      const component = componentHash[selector];
-      if (component.isRoot) {
-        this.generateDirectedGraphNodesXml(xmlDoc, component.subComponents, component, true, nodesElement);
-        this.generateDirectedGraphLinksXml(xmlDoc, component.subComponents, selector, "", linksElement);
+    nodes.forEach(node => {
+      if (node.id in nodeInfoDictionary) {
+        this.enrichNode(node, nodeInfoDictionary[node.id]);
       }
+      this.generateDirectedGraphNodesXml(xmlDoc, node, nodesElement);
+    });
+    edges.forEach(edge => {
+      this.generateDirectedGraphLinksXml(xmlDoc, edge, linksElement);
+    });
+  }
+
+  private enrichNode(node: Node, networkNode: NetworkNode) {
+    if (networkNode.label) {
+      node.name = networkNode.label;
+    }
+    if (networkNode.position) {
+      node.position = networkNode.position;
+    }
+    if (networkNode.boundingBox) {
+      node.boundingBox = networkNode.boundingBox;
     }
   }
 
-  private generateDirectedGraphNodesXml(xmlDoc: Document, components: Component[], component: Component, isRoot: boolean, nodesElement: Element | null) {
+  private generateDirectedGraphNodesXml(xmlDoc: Document, node: Node, nodesElement: Element | null) {
     const nodeElement = xmlDoc.createElement("Node");
-    nodeElement.setAttribute("ComponentFilename", component.tsFilename);
-    nodeElement.setAttribute("Label", component.selector);
-    nodeElement.setAttribute("Id", component.selector);
-    if (isRoot) {
-      nodeElement.setAttribute("Category", "RootComponent");
+    nodeElement.setAttribute("Label", node.name);
+    nodeElement.setAttribute("Id", node.id);
+    if (node.boundingBox !== undefined && node.position !== undefined) {
+      nodeElement.setAttribute("Bounds", this.calculateBounds(node.position, node.boundingBox));
+      nodeElement.setAttribute("UseManualLocation", "True");
+    }
+    if (node.attributes && node.attributes.length > 0) {
+      node.attributes.forEach(attribute => {
+        nodeElement.setAttribute(attribute.name, attribute.value);
+      });
     }
     this.addNode(nodesElement, nodeElement);
-    if (components.length > 0) {
-      components.forEach((subComponent) => {
-        this.generateDirectedGraphNodesXml(xmlDoc, subComponent.subComponents, subComponent, subComponent.isRoot, nodesElement);
-      });
+  }
+  
+  private calculateBounds(position: Position, boundingBox: BoundingBox): string {
+    const width = boundingBox.right - boundingBox.left;
+    const height = boundingBox.bottom - boundingBox.top;
+    return `${position.x},${position.y},${width},${height}`;
+  }
+
+  private generateDirectedGraphLinksXml(xmlDoc: Document, edge: Edge, linksElement: Element | null) {
+    this.addLinkNode(xmlDoc, linksElement, edge.source, edge.target);
+  }
+
+  private addCategory(xmlDoc: Document, categoriesElement: Element | null, category: Category) {
+    if (categoriesElement !== null) {
+      const categoryElement = xmlDoc.createElement("Category");
+      categoryElement.setAttribute("Id", category.id);
+      categoryElement.setAttribute("Label", category.label);
+      categoryElement.setAttribute("Background", category.backgroundColor);
+      categoryElement.setAttribute("IsTag", "True");
+      this.addNode(categoriesElement, categoryElement);
     }
   }
 
-  private generateDirectedGraphLinksXml(xmlDoc: Document, subComponents: Component[], displayName: string, parentDisplayName: string, linksElement: Element | null) {
-    if (parentDisplayName.length > 0) {
-      this.addLinkNode(xmlDoc, linksElement, parentDisplayName, displayName);
-    }
-    if (subComponents.length > 0) {
-      subComponents.forEach((subComponent) => {
-        this.generateDirectedGraphLinksXml(xmlDoc, subComponent.subComponents, subComponent.selector, displayName, linksElement);
-      });
-    }
-  }
-
-  public addCategory(xmlDoc: Document, id: string, label: string, backgroundColor: string) {
+  public addCategories(xmlDoc: Document, categories: Category[]) {
     const categoriesElement = this.addNodeToRoot(xmlDoc, "Categories");
-    const categoryElement = xmlDoc.createElement("Category");
-    categoryElement.setAttribute("Id", id);
-    categoryElement.setAttribute("Label", label);
-    categoryElement.setAttribute("Background", backgroundColor);
-    categoryElement.setAttribute("IsTag", "True");
-    this.addNode(categoriesElement, categoryElement);
+    // const categoryElement = xmlDoc.createElement("Category");
+    // categoryElement.setAttribute("Id", "RootComponent");
+    // categoryElement.setAttribute("Label", "Root component");
+    // // categoryElement.setAttribute("Background", this.config.rootNodeBackgroundColor);
+    // categoryElement.setAttribute("IsTag", "True");
+    // this.addNode(categoriesElement, categoryElement);
+    categories.forEach(category => {
+      this.addCategory(xmlDoc, categoriesElement, category);
+    });
   }
 
   public addProperties(xmlDoc: Document) {

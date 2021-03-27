@@ -1,11 +1,14 @@
 import { CommandBase } from '@commands';
-import { Config, FileSystemUtils } from '@src';
-import { Edge, Node } from '@model';
+import { Config, DgmlManager, FileSystemUtils } from '@src';
+import { Category, Edge, Node } from '@model';
 import { Base64 } from 'js-base64';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as vscode from 'vscode';
+import * as xmldom from 'xmldom';
 
+const prettifyXml = require('prettify-xml');
+const xmlSerializer = require('xmlserializer');
 
 export class ShowHierarchyBase extends CommandBase {
   protected fsUtils: FileSystemUtils = new FileSystemUtils();
@@ -60,8 +63,27 @@ export class ShowHierarchyBase extends CommandBase {
     }
   }
 
-  protected saveAsDgml(dgmlGraphFilename: string, messageText: string) {
+  protected saveAsDgml(dgmlGraphFilename: string, messageText: string, popMessageText: string) {
+    const message = JSON.parse(messageText);
+    const direction = message.direction;
+    const domImpl = new xmldom.DOMImplementation();
+    const dgmlManager = new DgmlManager();
+    const xmlDocument = dgmlManager.createNewDirectedGraph(domImpl, direction, "", "-1");
+    dgmlManager.addNodesAndLinks(xmlDocument, this.nodes, message.nodes, this.edges);
+    const categories: Category[] = [];
+    dgmlManager.addCategories(xmlDocument, categories);
+    dgmlManager.addProperties(xmlDocument);
+    dgmlManager.addStyles(xmlDocument);
+    // Serialize the xml into a string
+    const xmlAsString = xmlSerializer.serializeToString(xmlDocument.documentElement);
+    let fileContent = prettifyXml(xmlAsString);
+    fileContent = fileContent.replace('HasCategory(&apos;RootComponent&apos;)', "HasCategory('RootComponent')");
 
+    // Write the prettified xml string to the ReadMe-ProjectStructure.dgml file.
+    var directoryPath: string = this.fsUtils.getWorkspaceFolder();
+    this.fsUtils.writeFile(path.join(directoryPath, dgmlGraphFilename), fileContent, () => {
+      vscode.window.showInformationMessage(popMessageText);
+    });
   }
   
   protected generateHtmlContent(webview: vscode.Webview, outputJsFilename: string): string {

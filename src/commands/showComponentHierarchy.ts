@@ -1,5 +1,6 @@
-import { Node, Edge, ShowHierarchyBase } from './showHierarchyBase';
+import { ShowHierarchyBase } from './showHierarchyBase';
 import { Component, ComponentManager } from '@src';
+import { Edge, Node } from '@model';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as vscode from 'vscode';

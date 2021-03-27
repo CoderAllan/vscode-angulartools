@@ -1,18 +1,24 @@
-import { NodeType, Project } from "@model";
+import { BoundingBox, NodeType, Position, Project } from "@model";
 import { Config } from "@src";
 
 export class Node {
   private config: Config = new Config();
-  constructor(id: string, name: string, isRoot: boolean, nodeType: NodeType = NodeType.none) {
+  constructor(id: string, name: string, isRoot: boolean, nodeType: NodeType = NodeType.none, position: Position | undefined = undefined, boundingBox: BoundingBox | undefined = undefined, attributes: { name: string, value: string}[] = []) {
     this.id = id;
     this.name = name;
     this.isRoot = isRoot;
     this.nodeType = nodeType;
+    this.position = position;
+    this.boundingBox = boundingBox;
+    this.attributes = attributes;
   }
   public id: string;
   public name: string;
   public isRoot: boolean;
+  public position: Position | undefined;
+  public boundingBox: BoundingBox | undefined;
   public nodeType: NodeType;
+  public attributes: { name: string, value: string}[];
 
   public toJsonString(): string {
     let nodeColorAttr = '';

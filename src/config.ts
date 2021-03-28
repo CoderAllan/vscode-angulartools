@@ -54,6 +54,8 @@ export class Config {
   public get pipeNodeShape(): string { return this.getSetting<string>('showModuleHierarchy.pipeNodeShape', 'box'); }
   public get directiveNodeBackgroundColor(): string { return this.getSetting<string>('showModuleHierarchy.directiveNodeBackgroundColor', '#ffc107');}
   public get directiveNodeShape(): string { return this.getSetting<string>('showModuleHierarchy.directiveNodeShape', 'box'); }
+  public get injectableNodeShape(): string { return this.getSetting<string>('graph.injectableNodeShape', 'box'); }
+  public get injectableNodeBackgroundColor(): string { return this.getSetting<string>('graph.injectableNodeBackgroundColor', '#97c2fc'); }
   public get importEdgeColor(): string { return this.getSetting<string>('showModuleHierarchy.importEdgeColor', '#43a047'); }
   public get exportEdgeColor(): string { return this.getSetting<string>('showModuleHierarchy.exportEdgeColor', '#0288d1'); }
   public get maximumNodeLabelLength(): number { return this.getSetting<number>('showModuleHierarchy.maximumNodeLabelLength', -1); }

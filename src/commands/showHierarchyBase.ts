@@ -70,10 +70,6 @@ export class ShowHierarchyBase extends CommandBase {
     const dgmlManager = new DgmlManager();
     const xmlDocument = dgmlManager.createNewDirectedGraph(domImpl, direction, "", "-1");
     dgmlManager.addNodesAndLinks(xmlDocument, this.nodes, message.nodes, this.edges);
-    const categories: Category[] = [];
-    dgmlManager.addCategories(xmlDocument, categories);
-    dgmlManager.addProperties(xmlDocument);
-    dgmlManager.addStyles(xmlDocument);
     // Serialize the xml into a string
     const xmlAsString = xmlSerializer.serializeToString(xmlDocument.documentElement);
     let fileContent = prettifyXml(xmlAsString);

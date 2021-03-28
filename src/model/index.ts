@@ -1,4 +1,5 @@
 export * from './ArrowType';
+export * from './Attribute';
 export * from './BoundingBox';
 export * from './Category';
 export * from './Component';

@@ -1,4 +1,4 @@
-import { BoundingBox, Category, Edge, NetworkNode, Node, Position } from "@model";
+import { BoundingBox, Category, Edge, NetworkNode, Node, NodeType, Position } from "@model";
 
 export class DgmlManager {
 
@@ -74,15 +74,22 @@ export class DgmlManager {
     const nodeInfoDictionary = Object.assign({}, ...nodeInfos.map((nodeInfo) => ({ [nodeInfo.id]: nodeInfo })));
     const nodesElement = this.addNodeToRoot(xmlDoc, "Nodes");
     const linksElement = this.addNodeToRoot(xmlDoc, "Links");
+    const categoryDictionary: { [nodeType: string]: Category } = {};
     nodes.forEach(node => {
       if (node.id in nodeInfoDictionary) {
         this.enrichNode(node, nodeInfoDictionary[node.id]);
       }
       this.generateDirectedGraphNodesXml(xmlDoc, node, nodesElement);
+      const categoryId = NodeType[node.nodeType];
+      if (!(categoryId in categoryDictionary)) {
+        categoryDictionary[categoryId] = new Category(categoryId, categoryId, node.getNodeTypeColor(node.nodeType));
+      }
     });
     edges.forEach(edge => {
       this.generateDirectedGraphLinksXml(xmlDoc, edge, linksElement);
     });
+    this.addCategoriesAndStyles(xmlDoc, categoryDictionary);
+    this.addProperties(xmlDoc);
   }
 
   private enrichNode(node: Node, networkNode: NetworkNode) {
@@ -105,6 +112,7 @@ export class DgmlManager {
       nodeElement.setAttribute("Bounds", this.calculateBounds(node.position, node.boundingBox));
       nodeElement.setAttribute("UseManualLocation", "True");
     }
+    nodeElement.setAttribute("Category", NodeType[node.nodeType]);
     if (node.attributes && node.attributes.length > 0) {
       node.attributes.forEach(attribute => {
         nodeElement.setAttribute(attribute.name, attribute.value);
@@ -134,20 +142,14 @@ export class DgmlManager {
     }
   }
 
-  public addCategories(xmlDoc: Document, categories: Category[]) {
+  private addCategoriesAndStyles(xmlDoc: Document, categories: { [nodeType: string]: Category }) {
     const categoriesElement = this.addNodeToRoot(xmlDoc, "Categories");
-    // const categoryElement = xmlDoc.createElement("Category");
-    // categoryElement.setAttribute("Id", "RootComponent");
-    // categoryElement.setAttribute("Label", "Root component");
-    // // categoryElement.setAttribute("Background", this.config.rootNodeBackgroundColor);
-    // categoryElement.setAttribute("IsTag", "True");
-    // this.addNode(categoriesElement, categoryElement);
-    categories.forEach(category => {
-      this.addCategory(xmlDoc, categoriesElement, category);
+    Object.keys(categories).forEach(nodeType => {
+      this.addCategory(xmlDoc, categoriesElement, categories[nodeType]);
     });
   }
 
-  public addProperties(xmlDoc: Document) {
+  private addProperties(xmlDoc: Document) {
     const propertiesElement = this.addNodeToRoot(xmlDoc, "Properties");
     this.addProperty(xmlDoc, propertiesElement, "ComponentFilename", "System.String");
     this.addProperty(xmlDoc, propertiesElement, "Background", "System.Windows.Media.Brush");
@@ -169,7 +171,7 @@ export class DgmlManager {
     this.addNode(propertiesElement, propertyElement);
   }
 
-  public addStyles(xmlDoc: Document) {
+  private addStyles(xmlDoc: Document) {
     const stylesElement = this.addNodeToRoot(xmlDoc, "Styles");
     const styleElement = xmlDoc.createElement("Style");
     styleElement.setAttribute("TargetType", "Node");

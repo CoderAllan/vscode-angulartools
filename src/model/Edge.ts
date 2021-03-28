@@ -15,18 +15,29 @@ export class Edge {
   public arrowType: ArrowType;
 
   public toJsonString(): string {
-    let arrowColorAttr = '';
-    switch (this.arrowType) {
+    let arrowColorAttr = `, color: "${this.getEdgeTypeColor(this.arrowType)}"`;;
+    return `{from: "${this.source}", to: "${this.target}", arrows: arrowAttr${arrowColorAttr} }`;
+  }
+
+  public getEdgeTypeColor(arrowType: ArrowType): string {
+    let edgeTypeColor = '';
+    switch (arrowType) {
       case ArrowType.import:
-        arrowColorAttr = `, color: "${this.config.importEdgeColor}"`;
+        edgeTypeColor = this.config.importEdgeColor;
         break;
       case ArrowType.export:
-        arrowColorAttr = `, color: "${this.config.exportEdgeColor}"`;
+        edgeTypeColor = this.config.exportEdgeColor;
+        break;
+      case ArrowType.injectable:
+        edgeTypeColor = this.config.injectableEdgeColor;
+        break;
+      case ArrowType.uses:
+        edgeTypeColor = this.config.usesEdgeColor;
         break;
       default:
-        arrowColorAttr = '';
+        edgeTypeColor = '';
         break;
     }
-    return `{from: "${this.source}", to: "${this.target}", arrows: arrowAttr ${arrowColorAttr} }`;
+    return edgeTypeColor;
   }
 }

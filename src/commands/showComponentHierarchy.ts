@@ -1,6 +1,6 @@
 import { ShowHierarchyBase } from './showHierarchyBase';
 import { Component, ComponentManager } from '@src';
-import { Edge, Node } from '@model';
+import { ArrowType, Edge, Node, NodeType } from '@model';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as vscode from 'vscode';
@@ -72,7 +72,7 @@ export class ShowComponentHierarchy extends ShowHierarchyBase {
   }
 
   private generateDirectedGraphNodes(components: Component[], component: Component, isRoot: boolean, parentSelector: string, appendNodes: (nodeList: Node[]) => void) {
-    appendNodes([new Node(component.selector, component.selector, isRoot)]);
+    appendNodes([new Node(component.selector, component.selector, isRoot, isRoot ? NodeType.rootNode : NodeType.component)]);
     if (components.length > 0) {
       components.forEach((subComponent) => {
         if(parentSelector !== subComponent.selector) {
@@ -85,7 +85,7 @@ export class ShowComponentHierarchy extends ShowHierarchyBase {
   private generateDirectedGraphEdges(subComponents: Component[], selector: string, parentSelector: string, appendLinks: (edgeList: Edge[]) => void) {
     if (parentSelector.length > 0) {
       const id = this.edges.length;
-      appendLinks([new Edge(id.toString(), parentSelector, selector)]);
+      appendLinks([new Edge(id.toString(), parentSelector, selector, ArrowType.uses)]);
     }
     if (subComponents.length > 0 && selector !== parentSelector) {
       subComponents.forEach((subComponent) => {

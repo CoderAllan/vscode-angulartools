@@ -1,4 +1,4 @@
-import { BoundingBox, Category, Edge, NetworkNode, Node, NodeType, Position } from "@model";
+import { ArrowType, BoundingBox, Category, Edge, NetworkNode, Node, NodeType, Position } from "@model";
 
 export class DgmlManager {
 
@@ -46,7 +46,7 @@ export class DgmlManager {
     }
   }
 
-  private addLinkNode(xmlDoc: Document, element: Element | null, source: string, target: string) {
+  private addLinkNode(xmlDoc: Document, element: Element | null, source: string, target: string, categoryId: string) {
     if (element !== null) {
       let nodeAlreadyAdded = false;
       if (element.childNodes.length > 0) {
@@ -65,6 +65,7 @@ export class DgmlManager {
         const linkElement = xmlDoc.createElement("Link");
         linkElement.setAttribute("Source", source);
         linkElement.setAttribute("Target", target);
+        linkElement.setAttribute("Category", categoryId);
         element.appendChild(linkElement);
       }
     }
@@ -82,10 +83,14 @@ export class DgmlManager {
       this.generateDirectedGraphNodesXml(xmlDoc, node, nodesElement);
       const categoryId = NodeType[node.nodeType];
       if (!(categoryId in categoryDictionary)) {
-        categoryDictionary[categoryId] = new Category(categoryId, categoryId, node.getNodeTypeColor(node.nodeType));
+        categoryDictionary[categoryId] = new Category(categoryId, categoryId, node.getNodeTypeColor(node.nodeType), '');
       }
     });
     edges.forEach(edge => {
+      const categoryId = ArrowType[edge.arrowType];
+      if (!(categoryId in categoryDictionary)) {
+        categoryDictionary[categoryId] = new Category(categoryId, categoryId, '', edge.getEdgeTypeColor(edge.arrowType));
+      }
       this.generateDirectedGraphLinksXml(xmlDoc, edge, linksElement);
     });
     this.addCategoriesAndStyles(xmlDoc, categoryDictionary);
@@ -128,15 +133,21 @@ export class DgmlManager {
   }
 
   private generateDirectedGraphLinksXml(xmlDoc: Document, edge: Edge, linksElement: Element | null) {
-    this.addLinkNode(xmlDoc, linksElement, edge.source, edge.target);
+    const categoryId = ArrowType[edge.arrowType];
+    this.addLinkNode(xmlDoc, linksElement, edge.source, edge.target, categoryId);
   }
 
   private addCategory(xmlDoc: Document, categoriesElement: Element | null, category: Category) {
-    if (categoriesElement !== null) {
+    if (categoriesElement !== null && ( category.backgroundColor || category.stroke )) {
       const categoryElement = xmlDoc.createElement("Category");
       categoryElement.setAttribute("Id", category.id);
       categoryElement.setAttribute("Label", category.label);
-      categoryElement.setAttribute("Background", category.backgroundColor);
+      if (category.backgroundColor) {
+        categoryElement.setAttribute("Background", category.backgroundColor);
+      }
+      if (category.stroke) {
+        categoryElement.setAttribute("Stroke", category.stroke);
+      }
       categoryElement.setAttribute("IsTag", "True");
       this.addNode(categoriesElement, categoryElement);
     }

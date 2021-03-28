@@ -21,32 +21,33 @@ export class Node {
   public attributes: Attribute[];
 
   public toJsonString(): string {
-    let nodeColorAttr = '';
+    let nodeShapeAttr = '';
     switch (this.nodeType) {
       case NodeType.rootNode:
-        nodeColorAttr = `, color: "${this.getNodeTypeColor(NodeType.rootNode)}", shape: "${this.config.visNodeShape}"`;
+        nodeShapeAttr = `, shape: "${this.config.visNodeShape}"`;
         break;
       case NodeType.component:
-        nodeColorAttr = `, color: "${this.getNodeTypeColor(NodeType.component)}", shape: "${this.config.componentNodeShape}"`;
+        nodeShapeAttr = `, shape: "${this.config.componentNodeShape}"`;
         break;
       case NodeType.module:
-        nodeColorAttr = `, color: "${this.getNodeTypeColor(NodeType.module)}", shape: "${this.config.moduleNodeShape}"`;
+        nodeShapeAttr = `, shape: "${this.config.moduleNodeShape}"`;
         break;
       case NodeType.pipe:
-        nodeColorAttr = `, color: "${this.getNodeTypeColor(NodeType.pipe)}", shape: "${this.config.pipeNodeShape}"`;
+        nodeShapeAttr = `, shape: "${this.config.pipeNodeShape}"`;
         break;
       case NodeType.directive:
-        nodeColorAttr = `, color: "${this.getNodeTypeColor(NodeType.directive)}", shape: "${this.config.directiveNodeShape}"`;
+        nodeShapeAttr = `, shape: "${this.config.directiveNodeShape}"`;
         break;
       case NodeType.injectable:
-        nodeColorAttr = `, color: "${this.getNodeTypeColor(NodeType.injectable)}", shape: "${this.config.injectableNodeShape}"`;
+        nodeShapeAttr = `, shape: "${this.config.injectableNodeShape}"`;
         break;
       default:
-        nodeColorAttr = '';
+        nodeShapeAttr = '';
         break;
     }
+    const nodeColorAttr = `, color: "${this.getNodeTypeColor(this.nodeType)}"`;
     const label = this.config.maximumNodeLabelLength !== -1 && this.name.length > this.config.maximumNodeLabelLength ? this.name.substr(0, this.config.maximumNodeLabelLength) + '...' : this.name;
-    return `{id: "${this.id}", label: "${label}" ${nodeColorAttr}}`;
+    return `{id: "${this.id}", label: "${label}"${nodeColorAttr}${nodeShapeAttr}}`;
   }
 
   public getNodeTypeColor(nodeType: NodeType): string {

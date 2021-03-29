@@ -71,8 +71,7 @@ export class DgmlManager {
     }
   }
 
-  public addNodesAndLinks(xmlDoc: Document, nodes: Node[], nodeInfos: NetworkNode[], edges: Edge[]) {
-    const nodeInfoDictionary = Object.assign({}, ...nodeInfos.map((nodeInfo) => ({ [nodeInfo.id]: nodeInfo })));
+  public addNodesAndLinks(xmlDoc: Document, nodes: Node[], nodeInfoDictionary: { [id: string]: NetworkNode}, edges: Edge[]) {
     const nodesElement = this.addNodeToRoot(xmlDoc, "Nodes");
     const linksElement = this.addNodeToRoot(xmlDoc, "Links");
     const categoryDictionary: { [nodeType: string]: Category } = {};

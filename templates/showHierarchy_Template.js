@@ -247,14 +247,14 @@
   }
 
   function saveAsDgml() {
-    const nodeExport = [];
+    const nodeExport = {};
     nodes.forEach(node => {
-      nodeExport.push({
+      nodeExport[node.id] = {
         id: node.id,
         label: cleanLabel(node.label),
         position: network.getPosition(node.id),
         boundingBox: network.getBoundingBox(node.id)
-      });
+      };
     });
     const direction = hierarchicalOptionsDirectionSelect.value ? hierarchicalOptionsDirectionSelect.value : 'UD';
     vscode.postMessage({

@@ -247,7 +247,7 @@
         "angularTools.showModuleHierarchy.pipeNodeBackgroundColor": {
           "type": "string",
           "default": "#00897b",
-          "description": "The default color of the pipes representing modules."
+          "description": "The default color of the nodes representing pipes."
         },
         "angularTools.showModuleHierarchy.pipeNodeShape": {
           "type": "string",
@@ -271,7 +271,7 @@
         "angularTools.showModuleHierarchy.directiveNodeBackgroundColor": {
           "type": "string",
           "default": "#ffc107",
-          "description": "The default color of the directives representing modules."
+          "description": "The default color of the nodes representing directives."
         },
         "angularTools.showModuleHierarchy.directiveNodeShape": {
           "type": "string",
@@ -292,15 +292,49 @@
           ],
           "description": "The default shape of the nodes representing directives. Notice that 'ellipse','circle','database','box' and 'text' have the label inside the shape, the rest have the label outside the shape."
         },
-        "angularTools.showModuleHierarchy.importEdgeColor": {
+        "angularTools.dependencyInjectionGraph.injectableNodeBackgroundColor": {
+          "type": "string",
+          "default": "#97c2fc",
+          "description": "The default color of the nodes representing injected components."
+        },
+        "angularTools.dependencyInjectionGraph.injectableNodeShape": {
+          "type": "string",
+          "default": "box",
+          "enum": [
+            "ellipse",
+            "circle",
+            "database",
+            "box",
+            "text",
+            "diamond",
+            "dot",
+            "star",
+            "triangle",
+            "triangleDown",
+            "hexagon",
+            "square"
+          ],
+          "description": "The default shape of the nodes representing directives. Notice that 'ellipse','circle','database','box' and 'text' have the label inside the shape, the rest have the label outside the shape."
+        },
+        "angularTools.graph.importEdgeColor": {
           "type": "string",
           "default": "#43a047",
           "description": "The default color of the edges representing imports."
         },
-        "angularTools.showModuleHierarchy.exportEdgeColor": {
+        "angularTools.graph.exportEdgeColor": {
           "type": "string",
           "default": "#0288d1",
           "description": "The default color of the edges representing exports."
+        },
+        "angularTools.graph.injectableEdgeColor": {
+          "type": "string",
+          "default": "#0288d1",
+          "description": "The default color of the edges representing injectables."
+        },
+        "angularTools.graph.usesEdgeColor": {
+          "type": "string",
+          "default": "#0288d1",
+          "description": "The default color of the edges representing components using other components."
         },
         "angularTools.showModuleHierarchy.maximumNodeLabelLength": {
           "type": "number",

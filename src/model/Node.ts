@@ -24,7 +24,7 @@ export class Node {
     let nodeShapeAttr = '';
     switch (this.nodeType) {
       case NodeType.rootNode:
-        nodeShapeAttr = `, shape: "${this.config.visNodeShape}"`;
+        nodeShapeAttr = `, shape: "${this.config.rootNodeShape}"`;
         break;
       case NodeType.component:
         nodeShapeAttr = `, shape: "${this.config.componentNodeShape}"`;

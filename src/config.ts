@@ -21,46 +21,58 @@ export class Config {
     return value.split(";");
   }
 
-  // ComponentHierarchyDgml
-  public get dgmlGraphFilename(): string { return this.getSetting<string>('componentHierarchyDgml.defaultGraphFilename', 'ReadMe-ProjectStructure.dgml'); }
-  public get dgmlGraphLayout(): string { return this.getSetting<string>('componentHierarchyDgml.graphLayout', 'Sugiyama'); }
-  public get dgmlGraphDirection(): string { return this.getSetting<string>('componentHierarchyDgml.graphDirection', 'LeftToRight'); }
+  // Dgml graph
+  public get dgmlGraphLayout(): string { return this.getSetting<string>('dgmlGraph.graphLayout', 'Sugiyama'); }
+  public get dgmlGraphDirection(): string { return this.getSetting<string>('dgmlGraph.graphDirection', 'LeftToRight'); }
   public readonly dgmlZoomLevel = '-1';
-  public get rootNodeBackgroundColor(): string { return this.getSetting<string>('componentHierarchyDgml.rootNodeBackgroundColor', '#FF00AA00'); }
+  
+  // DependencyInjectionGraph
+  public get dependencyInjectionDgmlGraphFilename(): string { return this.getSetting<string>('dependencyInjectionGraph.dgmlGraphFilename', 'DependencyInjectionGraph.dgml'); }
+  public get dependencyInjectionPngFilename(): string { return this.getSetting<string>('dependencyInjectionGraph.dgmlGraphFilename', 'DependencyInjectionGraph.png'); }
+  public get dependencyInjectionEdgeArrowToType(): string { return this.getSetting<string>('dependencyInjectionGraph.edgeArrowToType', 'triangle'); }
+  
+  // ShowComponentHierarchy
+  public get componentHierarchyPngFilename(): string { return this.getSetting<string>('showComponentHierarchy.componentHierarchyPngFilename', 'ComponentHierarchy.png'); }
+  public get componentHierarchyDgmlGraphFilename(): string { return this.getSetting<string>('showComponentHierarchy.componentHierarchyDgmlGraphFilename', 'ComponentHierarchy.dgml'); }
+  public get componentHierarchyEdgeArrowToType(): string { return this.getSetting<string>('showComponentHierarchy.edgeArrowToType', 'triangle'); }
+  
+  // ShowModuleHierarchy
+  public get moduleHierarchyPngFilename(): string { return this.getSetting<string>('showModuleHierarchy.moduleHierarchyPngFilename', 'ModuleHierarchy.png'); }
+  public get moduleHierarchyDgmlGraphFilename(): string { return this.getSetting<string>('showModuleHierarchy.moduleHierarchyDgmlGraphFilename', 'ModuleHierarchy.dgml'); }
+  public get moduleHierarchyEdgeArrowToType(): string { return this.getSetting<string>('showModuleHierarchy.edgeArrowToType', 'triangle'); }
+
+  // GraphSelection
+  public get graphSelectionGuidelineColor(): string { return this.getSetting<string>('graphSelection.graphSelectionGuidelineColor', '#0288d1'); }
+  public get graphSelectionGuidelineWidth(): number { return this.getSetting<number>('graphSelection.graphSelectionGuidelineWidth', 1); }
+  public get graphSelectionColor(): string { return this.getSetting<string>('graphSelection.graphSelectionColor', '#e53935'); }
+  public get graphSelectionWidth(): number { return this.getSetting<number>('graphSelection.graphSelectionWidth', 2); }
+  
+  // GraphNodes
+  public get rootNodeBackgroundColor(): string { return this.getSetting<string>('graphNodes.rootNodeBackgroundColor', '#3abc3f'); }
+  public get rootNodeShape(): string { return this.getSetting<string>('graphNodes.rootNodeShape', 'box'); }
+  public get componentNodeBackgroundColor(): string { return this.getSetting<string>('graphNodes.componentNodeBackgroundColor', '#0288d1');}
+  public get componentNodeShape(): string { return this.getSetting<string>('graphNodes.componentNodeShape', 'box'); }
+  public get moduleNodeBackgroundColor(): string { return this.getSetting<string>('graphNodes.moduleNodeBackgroundColor', '#e53935');}
+  public get moduleNodeShape(): string { return this.getSetting<string>('graphNodes.moduleNodeShape', 'box'); }
+  public get pipeNodeBackgroundColor(): string { return this.getSetting<string>('graphNodes.pipeNodeBackgroundColor', '#00897b');}
+  public get pipeNodeShape(): string { return this.getSetting<string>('graphNodes.pipeNodeShape', 'box'); }
+  public get directiveNodeBackgroundColor(): string { return this.getSetting<string>('graphNodes.directiveNodeBackgroundColor', '#ffc107');}
+  public get directiveNodeShape(): string { return this.getSetting<string>('graphNodes.directiveNodeShape', 'box'); }
+  public get injectableNodeBackgroundColor(): string { return this.getSetting<string>('graphNodes.injectableNodeBackgroundColor', '#97c2fc'); }
+  public get injectableNodeShape(): string { return this.getSetting<string>('graphNodes.injectableNodeShape', 'box'); }
+  public get maximumNodeLabelLength(): number { return this.getSetting<number>('graphNodes.maximumNodeLabelLength', -1); }
+  
+  // Edges
+  public get importEdgeColor(): string { return this.getSetting<string>('edges.importEdgeColor', '#43a047'); }
+  public get exportEdgeColor(): string { return this.getSetting<string>('edges.exportEdgeColor', '#0288d1'); }
+  public get injectableEdgeColor(): string { return this.getSetting<string>('edges.exportEdgeColor', '#0288d1'); }
+  public get usesEdgeColor(): string { return this.getSetting<string>('edges.exportEdgeColor', '#0288d1'); }
 
   // PackageJsonToMarkdown
   public get packageJsonMarkdownFilename(): string { return this.getSetting<string>('packageJsonMarkdownFilename', 'ReadMe-PackagesJson.md'); }
 
   // ProjectDirectoryStructure
   public get projectDirectoryStructureMarkdownFilename(): string { return this.getSetting<string>('projectDirectoryStructureMarkdownFilename', 'ReadMe-ProjectDirectoryStructure.md'); }
-
-  // ShowComponentHierarchy
-  public get visRootNodeBackgroundColor(): string { return this.getSetting<string>('showComponentHierarchy.rootNodeBackgroundColor', '#3abc3f'); }
-  public get visNodeShape(): string { return this.getSetting<string>('showComponentHierarchy.nodeShape', 'box'); }
-  public get visEdgeArrowToType(): string { return this.getSetting<string>('showComponentHierarchy.edgeArrowToType', 'triangle'); }
-  public get graphSelectionGuidelineColor(): string { return this.getSetting<string>('showComponentHierarchy.graphSelectionGuidelineColor', '#0288d1'); }
-  public get graphSelectionGuidelineWidth(): number { return this.getSetting<number>('showComponentHierarchy.graphSelectionGuidelineWidth', 1); }
-  public get graphSelectionColor(): string { return this.getSetting<string>('showComponentHierarchy.graphSelectionColor', '#e53935'); }
-  public get graphSelectionWidth(): number { return this.getSetting<number>('showComponentHierarchy.graphSelectionWidth', 2); }
-  public get componentHierarchyFilename(): string { return this.getSetting<string>('showComponentHierarchy.componentHierarchyFilename', 'ComponentHierarchy.png'); }
-
-  // ShowModuleHierarchy
-  public get moduleHierarchyFilename(): string { return this.getSetting<string>('showModuleHierarchy.moduleHierarchyFilename', 'ModuleHierarchy.png'); }
-  public get componentNodeBackgroundColor(): string { return this.getSetting<string>('showModuleHierarchy.componentNodeBackgroundColor', '#0288d1');}
-  public get componentNodeShape(): string { return this.getSetting<string>('showModuleHierarchy.componentNodeShape', 'box'); }
-  public get moduleNodeBackgroundColor(): string { return this.getSetting<string>('showModuleHierarchy.moduleNodeBackgroundColor', '#e53935');}
-  public get moduleNodeShape(): string { return this.getSetting<string>('showModuleHierarchy.moduleNodeShape', 'box'); }
-  public get pipeNodeBackgroundColor(): string { return this.getSetting<string>('showModuleHierarchy.pipeNodeBackgroundColor', '#00897b');}
-  public get pipeNodeShape(): string { return this.getSetting<string>('showModuleHierarchy.pipeNodeShape', 'box'); }
-  public get directiveNodeBackgroundColor(): string { return this.getSetting<string>('showModuleHierarchy.directiveNodeBackgroundColor', '#ffc107');}
-  public get directiveNodeShape(): string { return this.getSetting<string>('showModuleHierarchy.directiveNodeShape', 'box'); }
-  public get injectableNodeBackgroundColor(): string { return this.getSetting<string>('dependencyInjectionGraph.injectableNodeBackgroundColor', '#97c2fc'); }
-  public get injectableNodeShape(): string { return this.getSetting<string>('dependencyInjectionGraph.injectableNodeShape', 'box'); }
-  public get importEdgeColor(): string { return this.getSetting<string>('graph.importEdgeColor', '#43a047'); }
-  public get exportEdgeColor(): string { return this.getSetting<string>('graph.exportEdgeColor', '#0288d1'); }
-  public get injectableEdgeColor(): string { return this.getSetting<string>('graph.exportEdgeColor', '#0288d1'); }
-  public get usesEdgeColor(): string { return this.getSetting<string>('graph.exportEdgeColor', '#0288d1'); }
-  public get maximumNodeLabelLength(): number { return this.getSetting<number>('showModuleHierarchy.maximumNodeLabelLength', -1); }
 
   // ComponentHierarchyMarkdown
   public get componentHierarchyMarkdownFilename(): string { return this.getSetting<string>('componentHierarchyMarkdownFilename', 'ComponentHierarchy.md'); }

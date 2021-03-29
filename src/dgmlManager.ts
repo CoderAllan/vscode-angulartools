@@ -181,20 +181,4 @@ export class DgmlManager {
     propertyElement.setAttribute("DataType", datatypeValue);
     this.addNode(propertiesElement, propertyElement);
   }
-
-  private addStyles(xmlDoc: Document) {
-    const stylesElement = this.addNodeToRoot(xmlDoc, "Styles");
-    const styleElement = xmlDoc.createElement("Style");
-    styleElement.setAttribute("TargetType", "Node");
-    styleElement.setAttribute("GroupLabel", "Root component");
-    styleElement.setAttribute("ValueLabel", "Has category");
-    const conditionElement = xmlDoc.createElement("Condition");
-    conditionElement.setAttribute("Expression", "HasCategory('RootComponent')");
-    styleElement.appendChild(conditionElement);
-    const setterElement = xmlDoc.createElement("Setter");
-    setterElement.setAttribute("Property", "Background");
-    setterElement.setAttribute("Property", "#FF00AA00");
-    styleElement.appendChild(setterElement);
-    this.addNode(stylesElement, styleElement, "GroupLabel");
-  }
 }

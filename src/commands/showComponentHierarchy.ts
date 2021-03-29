@@ -8,6 +8,8 @@ import * as vscode from 'vscode';
 export class ShowComponentHierarchy extends ShowHierarchyBase {
   public static get commandName(): string { return 'showComponentHierarchy'; }
 
+  private directoryPath: string = this.fsUtils.getWorkspaceFolder();
+
   public execute(webview: vscode.Webview) {
     this.checkForOpenWorkspace();
     webview.onDidReceiveMessage(
@@ -25,8 +27,7 @@ export class ShowComponentHierarchy extends ShowHierarchyBase {
       this.extensionContext.subscriptions
     );
 
-    var directoryPath: string = this.fsUtils.getWorkspaceFolder();
-    const components = ComponentManager.findComponents(directoryPath);
+    const components = ComponentManager.findComponents(this.directoryPath);
 
     this.nodes = [];
     this.edges = [];
@@ -72,7 +73,8 @@ export class ShowComponentHierarchy extends ShowHierarchyBase {
   }
 
   private generateDirectedGraphNodes(components: Component[], component: Component, isRoot: boolean, parentSelector: string, appendNodes: (nodeList: Node[]) => void) {
-    appendNodes([new Node(component.selector, component.selector, isRoot, isRoot ? NodeType.rootNode : NodeType.component)]);
+    const componentFilename = component.tsFilename.replace(this.directoryPath, '');
+    appendNodes([new Node(component.selector, component.selector, componentFilename, isRoot, isRoot ? NodeType.rootNode : NodeType.component)]);
     if (components.length > 0) {
       components.forEach((subComponent) => {
         if(parentSelector !== subComponent.selector) {

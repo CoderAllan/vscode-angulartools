@@ -1,8 +1,10 @@
 
 export class NamedEntity {
   public name: string = '';
-  public constructor(name: string) {
+  public filename: string = '';
+  public constructor(name: string, filename: string) {
     this.name = name;
+    this.filename = filename;
   }
 }
 

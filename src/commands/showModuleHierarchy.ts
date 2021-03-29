@@ -13,10 +13,10 @@ export class ShowModuleHierarchy extends ShowHierarchyBase {
       message => {
         switch (message.command) {
           case 'saveAsPng':
-            this.saveAsPng(this.config.moduleHierarchyFilename, message.text);
+            this.saveAsPng(this.config.moduleHierarchyPngFilename, message.text);
             return;
           case 'saveAsDgml':
-            this.saveAsDgml(this.config.dgmlGraphFilename, message.text, "'The modules hierarchy has been analyzed and a Directed Graph Markup Language (dgml) file has been created\nThe ModuleHierarchy.dgml file can now be viewed in Visual Studio'");
+            this.saveAsDgml(this.config.moduleHierarchyDgmlGraphFilename, message.text, `'The modules hierarchy has been analyzed and a Directed Graph Markup Language (dgml) file '${this.config.moduleHierarchyDgmlGraphFilename}' has been created'`);
             return;
         }
       },
@@ -76,7 +76,7 @@ export class ShowModuleHierarchy extends ShowHierarchyBase {
     let template = fs.readFileSync(this.extensionContext?.asAbsolutePath(path.join('templates', this.templateJsFilename)), 'utf8');
     let jsContent = template.replace('var nodes = new vis.DataSet([]);', `var nodes = new vis.DataSet([${nodesJson}]);`);
     jsContent = jsContent.replace('var edges = new vis.DataSet([]);', `var edges = new vis.DataSet([${edgesJson}]);`);
-    jsContent = jsContent.replace('type: "triangle" // edge arrow to type', `type: "${this.config.visEdgeArrowToType}" // edge arrow to type}`);
+    jsContent = jsContent.replace('type: "triangle" // edge arrow to type', `type: "${this.config.moduleHierarchyEdgeArrowToType}" // edge arrow to type}`);
     jsContent = jsContent.replace('ctx.strokeStyle = \'blue\'; // graph selection guideline color', `ctx.strokeStyle = '${this.config.graphSelectionGuidelineColor}'; // graph selection guideline color`);
     jsContent = jsContent.replace('ctx.lineWidth = 1; // graph selection guideline width', `ctx.lineWidth = ${this.config.graphSelectionGuidelineWidth}; // graph selection guideline width`);
     jsContent = jsContent.replace('selectionCanvasContext.strokeStyle = \'red\';', `selectionCanvasContext.strokeStyle = '${this.config.graphSelectionColor}';`);

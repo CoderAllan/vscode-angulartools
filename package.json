@@ -79,12 +79,7 @@
           "default": "bin;obj;node_modules;dist;packages;.git;.vs;.github",
           "description": "Semicolon separated list of directories that should be excluded when scanning for for Angular components."
         },
-        "angularTools.componentHierarchyDgml.defaultGraphFilename": {
-          "type": "string",
-          "default": "ReadMe-ProjectStructure.dgml",
-          "description": "The default filename used when saving a component hierarchy to a Directed Graph Markup Language (Dgml) file."
-        },
-        "angularTools.componentHierarchyDgml.graphLayout": {
+        "angularTools.dgmlGraph.graphLayout": {
           "type": "string",
           "default": "Sugiyama",
           "enum": [
@@ -93,7 +88,7 @@
           ],
           "description": "This is the algorithm used to layout the nodes of the graph. Sugiyama wil try to avoid crossing edges as far as possible. ForceDirected will try to cluster the nodes."
         },
-        "angularTools.componentHierarchyDgml.graphDirection": {
+        "angularTools.dgmlGraph.graphDirection": {
           "type": "string",
           "default": "LeftToRight",
           "enum": [
@@ -104,25 +99,33 @@
           ],
           "description": "This will make the layout algorithm position the graph nodes in the specified direction."
         },
-        "angularTools.componentHierarchyDgml.rootNodeBackgroundColor": {
+        "angularTools.dependencyInjectionGraph.defaultGraphFilename": {
           "type": "string",
-          "default": "#FF00AA00",
-          "description": "The color of the root nodes of the directed graph. The string should be in rgba format."
+          "default": "DependencyInjectionGraph.dgml",
+          "description": "The default filename used when saving a dependency injection hierarchy graph to a Directed Graph Markup Language (Dgml) file."
         },
-        "angularTools.packageJsonMarkdownFilename": {
+        "angularTools.dependencyInjectionGraph.componentHierarchyPngFilename": {
           "type": "string",
-          "default": "ReadMe-PackagesJson.md",
-          "description": "The default filename used when saving the packages.json as a markdown file."
+          "default": "DependencyInjectionGraph.png",
+          "description": "The default name used when saving the dependency injection hierarchy graph to a Png file."
         },
-        "angularTools.projectDirectoryStructureMarkdownFilename": {
+        "angularTools.dependencyInjectionGraph.edgeArrowToType": {
           "type": "string",
-          "default": "ReadMe-ProjectDirectoryStructure.md",
-          "description": "The default filename used when saving the project directory structure as a markdown file."
-        },
-        "angularTools.showComponentHierarchy.rootNodeBackgroundColor": {
-          "type": "string",
-          "default": "#00FF00",
-          "description": "The color of the root nodes of the component hierarchy graph. The string should be in rgba format or standard css color names."
+          "default": "triangle",
+          "enum": [
+            "arrow",
+            "bar",
+            "box",
+            "circle",
+            "crow",
+            "curve",
+            "diamond",
+            "inv_curve",
+            "inv_triangle",
+            "triangle",
+            "vee"
+          ],
+          "description": "The default ending of the edges."
         },
         "angularTools.showComponentHierarchy.edgeArrowToType": {
           "type": "string",
@@ -142,7 +145,70 @@
           ],
           "description": "The default ending of the edges."
         },
-        "angularTools.showComponentHierarchy.nodeShape": {
+        "angularTools.showComponentHierarchy.componentHierarchyPngFilename": {
+          "type": "string",
+          "default": "ComponentHierarchy.png",
+          "description": "The default name used when saving the component hierarchy to a Png file."
+        },
+        "angularTools.showComponentHierarchy.componentHierarchyDgmlGraphFilename": {
+          "type": "string",
+          "default": "ComponentHierarchy.dgml",
+          "description": "The default name used when saving the component hierarchy to a Dgml file."
+        },
+        "angularTools.showModuleHierarchy.moduleHierarchyPngFilename": {
+          "type": "string",
+          "default": "ModuleHierarchy.png",
+          "description": "The default name used when saving the module hierarchy to a Png file."
+        },
+        "angularTools.showModuleHierarchy.moduleHierarchyDgmlGraphFilename": {
+          "type": "string",
+          "default": "ModuleHierarchy.dgml",
+          "description": "The default name used when saving the module hierarchy to a Dgml file."
+        },
+        "angularTools.showModuleHierarchy.edgeArrowToType": {
+          "type": "string",
+          "default": "triangle",
+          "enum": [
+            "arrow",
+            "bar",
+            "box",
+            "circle",
+            "crow",
+            "curve",
+            "diamond",
+            "inv_curve",
+            "inv_triangle",
+            "triangle",
+            "vee"
+          ],
+          "description": "The default ending of the edges."
+        },
+        "angularTools.graphSelection.graphSelectionGuidelineColor": {
+          "type": "string",
+          "default": "blue",
+          "description": "The color of the guidelines used when selecting part of a component hierarchy graph. The string should be in rgba format or standard css color names."
+        },
+        "angularTools.graphSelection.graphSelectionGuidelineWidth": {
+          "type": "number",
+          "default": "1",
+          "description": "The width of the guide lines shown when selecting part of a component hierarchy graph"
+        },
+        "angularTools.graphSelection.graphSelectionColor": {
+          "type": "string",
+          "default": "red",
+          "description": "The color of the selection rectangle used when selecting part of a component hierarchy graph. The string should be in rgba format or standard css color names."
+        },
+        "angularTools.graphSelection.graphSelectionWidth": {
+          "type": "number",
+          "default": "2",
+          "description": "The width of the selection rectangle shown when selecting part of a component hierarchy graph"
+        },
+        "angularTools.graphNodes.rootNodeBackgroundColor": {
+          "type": "string",
+          "default": "#00FF00",
+          "description": "The color of the root nodes of the component hierarchy graph. The string should be in rgba format or standard css color names."
+        },
+        "angularTools.graphNodes.rootNodeNodeShape": {
           "type": "string",
           "default": "box",
           "enum": [
@@ -159,44 +225,14 @@
             "hexagon",
             "square"
           ],
-          "description": "The shape of the nodes in the component hierarchy graph. Notice that 'ellipse','circle','database','box' and 'text' have the label inside the shape, the rest have the label outside the shape."
+          "description": "The default shape of the nodes representing root nodes. Notice that 'ellipse','circle','database','box' and 'text' have the label inside the shape, the rest have the label outside the shape."
         },
-        "angularTools.showComponentHierarchy.graphSelectionGuidelineColor": {
-          "type": "string",
-          "default": "blue",
-          "description": "The color of the guidelines used when selecting part of a component hierarchy graph. The string should be in rgba format or standard css color names."
-        },
-        "angularTools.showComponentHierarchy.graphSelectionGuidelineWidth": {
-          "type": "number",
-          "default": "1",
-          "description": "The width of the guide lines shown when selecting part of a component hierarchy graph"
-        },
-        "angularTools.showComponentHierarchy.graphSelectionColor": {
-          "type": "string",
-          "default": "red",
-          "description": "The color of the selection rectangle used when selecting part of a component hierarchy graph. The string should be in rgba format or standard css color names."
-        },
-        "angularTools.showComponentHierarchy.graphSelectionWidth": {
-          "type": "number",
-          "default": "2",
-          "description": "The width of the selection rectangle shown when selecting part of a component hierarchy graph"
-        },
-        "angularTools.showComponentHierarchy.componentHierarchyFilename": {
-          "type": "string",
-          "default": "ComponentHierarchy.png",
-          "description": "The default name used when saving the component hierarchy to a Png file."
-        },
-        "angularTools.showModuleHierarchy.moduleHierarchyFilename": {
-          "type": "string",
-          "default": "ModuleHierarchy.png",
-          "description": "The default name used when saving the module hierarchy to a Png file."
-        },
-        "angularTools.showModuleHierarchy.componentNodeBackgroundColor": {
+        "angularTools.graphNodes.componentNodeBackgroundColor": {
           "type": "string",
           "default": "#0288d1",
           "description": "The default color of the nodes representing components."
         },
-        "angularTools.showModuleHierarchy.componentNodeShape": {
+        "angularTools.graphNodes.componentNodeShape": {
           "type": "string",
           "default": "box",
           "enum": [
@@ -215,12 +251,12 @@
           ],
           "description": "The default shape of the nodes representing components. Notice that 'ellipse','circle','database','box' and 'text' have the label inside the shape, the rest have the label outside the shape."
         },
-        "angularTools.showModuleHierarchy.moduleNodeBackgroundColor": {
+        "angularTools.graphNodes.moduleNodeBackgroundColor": {
           "type": "string",
           "default": "#e53935",
           "description": "The default color of the nodes representing modules."
         },
-        "angularTools.showModuleHierarchy.moduleNodeShape": {
+        "angularTools.graphNodes.moduleNodeShape": {
           "type": "string",
           "default": "box",
           "enum": [
@@ -239,12 +275,12 @@
           ],
           "description": "The default shape of the nodes representing modules. Notice that 'ellipse','circle','database','box' and 'text' have the label inside the shape, the rest have the label outside the shape."
         },
-        "angularTools.showModuleHierarchy.pipeNodeBackgroundColor": {
+        "angularTools.graphNodes.pipeNodeBackgroundColor": {
           "type": "string",
           "default": "#00897b",
           "description": "The default color of the nodes representing pipes."
         },
-        "angularTools.showModuleHierarchy.pipeNodeShape": {
+        "angularTools.graphNodes.pipeNodeShape": {
           "type": "string",
           "default": "box",
           "enum": [
@@ -263,12 +299,12 @@
           ],
           "description": "The default shape of the nodes representing pipes. Notice that 'ellipse','circle','database','box' and 'text' have the label inside the shape, the rest have the label outside the shape."
         },
-        "angularTools.showModuleHierarchy.directiveNodeBackgroundColor": {
+        "angularTools.graphNodes.directiveNodeBackgroundColor": {
           "type": "string",
           "default": "#ffc107",
           "description": "The default color of the nodes representing directives."
         },
-        "angularTools.showModuleHierarchy.directiveNodeShape": {
+        "angularTools.graphNodes.directiveNodeShape": {
           "type": "string",
           "default": "box",
           "enum": [
@@ -287,12 +323,12 @@
           ],
           "description": "The default shape of the nodes representing directives. Notice that 'ellipse','circle','database','box' and 'text' have the label inside the shape, the rest have the label outside the shape."
         },
-        "angularTools.dependencyInjectionGraph.injectableNodeBackgroundColor": {
+        "angularTools.graphNodes.injectableNodeBackgroundColor": {
           "type": "string",
           "default": "#97c2fc",
           "description": "The default color of the nodes representing injected components."
         },
-        "angularTools.dependencyInjectionGraph.injectableNodeShape": {
+        "angularTools.graphNodes.injectableNodeShape": {
           "type": "string",
           "default": "box",
           "enum": [
@@ -311,30 +347,40 @@
           ],
           "description": "The default shape of the nodes representing directives. Notice that 'ellipse','circle','database','box' and 'text' have the label inside the shape, the rest have the label outside the shape."
         },
-        "angularTools.graph.importEdgeColor": {
+        "angularTools.graphNodes.maximumNodeLabelLength": {
+          "type": "number",
+          "default": "40",
+          "description": "The maximum length of the label for the nodes in the hierarchy. If the class name, module definition, module imports, exports, directives or pipes are longer than the specified number of characters, it will be truncated to this length."
+        },
+        "angularTools.edges.importEdgeColor": {
           "type": "string",
           "default": "#43a047",
           "description": "The default color of the edges representing imports."
         },
-        "angularTools.graph.exportEdgeColor": {
+        "angularTools.edges.exportEdgeColor": {
           "type": "string",
           "default": "#0288d1",
           "description": "The default color of the edges representing exports."
         },
-        "angularTools.graph.injectableEdgeColor": {
+        "angularTools.edges.injectableEdgeColor": {
           "type": "string",
           "default": "#0288d1",
           "description": "The default color of the edges representing injectables."
         },
-        "angularTools.graph.usesEdgeColor": {
+        "angularTools.edges.usesEdgeColor": {
           "type": "string",
           "default": "#0288d1",
           "description": "The default color of the edges representing components using other components."
         },
-        "angularTools.showModuleHierarchy.maximumNodeLabelLength": {
-          "type": "number",
-          "default": "40",
-          "description": "The maximum length of the label for the nodes in the hierarchy. If the class name, module definition, module imports, exports, directives or pipes are longer than the specified number of characters, it will be truncated to this length."
+        "angularTools.packageJsonMarkdownFilename": {
+          "type": "string",
+          "default": "ReadMe-PackagesJson.md",
+          "description": "The default filename used when saving the packages.json as a markdown file."
+        },
+        "angularTools.projectDirectoryStructureMarkdownFilename": {
+          "type": "string",
+          "default": "ReadMe-ProjectDirectoryStructure.md",
+          "description": "The default filename used when saving the project directory structure as a markdown file."
         },
         "angularTools.componentHierarchyMarkdownFilename": {
           "type": "string",

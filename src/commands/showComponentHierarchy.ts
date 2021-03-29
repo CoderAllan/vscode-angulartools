@@ -14,10 +14,10 @@ export class ShowComponentHierarchy extends ShowHierarchyBase {
       message => {
         switch (message.command) {
           case 'saveAsPng':
-            this.saveAsPng(this.config.moduleHierarchyFilename, message.text);
+            this.saveAsPng(this.config.componentHierarchyPngFilename, message.text);
             return;
           case 'saveAsDgml':
-            this.saveAsDgml(this.config.dgmlGraphFilename, message.text, "'The component hierarchy has been analyzed and a Directed Graph Markup Language (dgml) file has been created\nThe ComponentHierarchy.dgml file can now be viewed in Visual Studio'");
+            this.saveAsDgml(this.config.componentHierarchyDgmlGraphFilename, message.text, `'The component hierarchy has been analyzed and a Directed Graph Markup Language (dgml) file '${this.config.componentHierarchyDgmlGraphFilename}' has been created'`);
             return;
         }
       },
@@ -99,9 +99,9 @@ export class ShowComponentHierarchy extends ShowHierarchyBase {
     let jsContent = template.replace('var nodes = new vis.DataSet([]);', `var nodes = new vis.DataSet([${nodesJson}]);`);
     jsContent = jsContent.replace('var rootNodes = [];', `var rootNodes = [${rootNodesJson}];`);
     jsContent = jsContent.replace('var edges = new vis.DataSet([]);', `var edges = new vis.DataSet([${edgesJson}]);`);
-    jsContent = jsContent.replace('background: "#00FF00" // rootNode background color', `background: "${this.config.visRootNodeBackgroundColor}" // rootNode background color`);
-    jsContent = jsContent.replace('shape: \'box\' // The shape of the nodes.', `shape: '${this.config.visNodeShape}'// The shape of the nodes.`);
-    jsContent = jsContent.replace('type: "triangle" // edge arrow to type', `type: "${this.config.visEdgeArrowToType}" // edge arrow to type}`);
+    jsContent = jsContent.replace('background: "#00FF00" // rootNode background color', `background: "${this.config.rootNodeBackgroundColor}" // rootNode background color`);
+    jsContent = jsContent.replace('shape: \'box\' // The shape of the nodes.', `shape: '${this.config.rootNodeShape}'// The shape of the nodes.`);
+    jsContent = jsContent.replace('type: "triangle" // edge arrow to type', `type: "${this.config.componentHierarchyEdgeArrowToType}" // edge arrow to type}`);
     jsContent = jsContent.replace('ctx.strokeStyle = \'blue\'; // graph selection guideline color', `ctx.strokeStyle = '${this.config.graphSelectionGuidelineColor}'; // graph selection guideline color`);
     jsContent = jsContent.replace('ctx.lineWidth = 1; // graph selection guideline width', `ctx.lineWidth = ${this.config.graphSelectionGuidelineWidth}; // graph selection guideline width`);
     jsContent = jsContent.replace('selectionCanvasContext.strokeStyle = \'red\';', `selectionCanvasContext.strokeStyle = '${this.config.graphSelectionColor}';`);

@@ -3,9 +3,10 @@ import { Config } from "@src";
 
 export class Node {
   private config: Config = new Config();
-  constructor(id: string, name: string, isRoot: boolean, nodeType: NodeType = NodeType.none, position: Position | undefined = undefined, boundingBox: BoundingBox | undefined = undefined, attributes: Attribute[] = []) {
+  constructor(id: string, name: string, filename: string | undefined, isRoot: boolean, nodeType: NodeType = NodeType.none, position: Position | undefined = undefined, boundingBox: BoundingBox | undefined = undefined, attributes: Attribute[] = []) {
     this.id = id;
     this.name = name;
+    this.tsFilename = filename;
     this.isRoot = isRoot;
     this.nodeType = nodeType;
     this.position = position;
@@ -14,6 +15,7 @@ export class Node {
   }
   public id: string;
   public name: string;
+  public tsFilename: string | undefined;
   public isRoot: boolean;
   public position: Position | undefined;
   public boundingBox: BoundingBox | undefined;

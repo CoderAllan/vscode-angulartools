@@ -122,6 +122,9 @@ export class DgmlManager {
         nodeElement.setAttribute(attribute.name, attribute.value);
       });
     }
+    if (node.tsFilename) {
+      nodeElement.setAttribute("TsFilename", node.tsFilename);
+    }
     this.addNode(nodesElement, nodeElement);
   }
   
@@ -161,15 +164,12 @@ export class DgmlManager {
 
   private addProperties(xmlDoc: Document) {
     const propertiesElement = this.addNodeToRoot(xmlDoc, "Properties");
-    this.addProperty(xmlDoc, propertiesElement, "ComponentFilename", "System.String");
+    this.addProperty(xmlDoc, propertiesElement, "TsFilename", "System.String");
     this.addProperty(xmlDoc, propertiesElement, "Background", "System.Windows.Media.Brush");
     this.addProperty(xmlDoc, propertiesElement, "GraphDirection", "Microsoft.VisualStudio.Diagrams.Layout.LayoutOrientation");
-    this.addProperty(xmlDoc, propertiesElement, "GroupLabel", "System.String");
     this.addProperty(xmlDoc, propertiesElement, "IsTag", "System.Boolean");
     this.addProperty(xmlDoc, propertiesElement, "Label", "System.String");
     this.addProperty(xmlDoc, propertiesElement, "Layout", "System.String");
-    this.addProperty(xmlDoc, propertiesElement, "TargetType", "System.String");
-    this.addProperty(xmlDoc, propertiesElement, "ValueLabel", "System.String");
     this.addProperty(xmlDoc, propertiesElement, "ZoomLevel", "System.String");
     this.addProperty(xmlDoc, propertiesElement, "Expression", "System.String");
   }

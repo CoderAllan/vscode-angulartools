@@ -57,22 +57,41 @@ export class ShowModuleHierarchy extends ShowHierarchyBase {
       this.showErrors(errors, `Parsing of ${errors.length > 1 ? 'some' : 'one'} of the modules failed.\n`);
     }
   }
-  addNodesAndEdges(project: Project, appendNodes: (nodeList: Node[]) => void, appendEdges: (edgeList: Edge[]) => void) {
+
+  private addNodesAndEdges(project: Project, appendNodes: (nodeList: Node[]) => void, appendEdges: (edgeList: Edge[]) => void) {
     project.modules.forEach(module => {
-      appendNodes([new Node(module.moduleName, module.moduleName, false, NodeType.module)]);
+      const moduleFilename = module.filename.replace(this.workspaceDirectory, '');
+      appendNodes([new Node(module.moduleName, module.moduleName, moduleFilename, false, NodeType.module)]);
       module.imports.forEach(_import => {
         const nodeType = Node.getNodeType(project, _import);
-        appendNodes([new Node(_import, _import, false, nodeType)]);
+        appendNodes([new Node(_import, _import, this.getNodeFilename(_import, nodeType, project), false, nodeType)]);
         appendEdges([new Edge((this.edges.length + 1).toString(), _import, module.moduleName, ArrowType.import)]);
       });
       module.exports.forEach(_export => {
         const nodeType = Node.getNodeType(project, _export);
-        appendNodes([new Node(_export, _export, false, nodeType)]);
+        appendNodes([new Node(_export, _export, this.getNodeFilename(_export, nodeType, project), false, nodeType)]);
         appendEdges([new Edge((this.edges.length + 1).toString(), module.moduleName, _export, ArrowType.export)]);
       });
     });
   }
-  generateJavascriptContent(nodesJson: string, edgesJson: string) {
+
+  private getNodeFilename(nodeName: string, nodeType: NodeType, project: Project): string | undefined {
+    let nodeFilename: string | undefined;
+    switch (nodeType) {
+      case (NodeType.directive):
+        nodeFilename = project.directives.get(nodeName)?.filename;
+        break;
+      case (NodeType.pipe):
+        nodeFilename = project.pipes.get(nodeName)?.filename;
+        break;
+      case (NodeType.component):
+        nodeFilename = project.components.get(nodeName)?.filename;
+        break;
+    }
+    return nodeFilename?.replace(this.workspaceDirectory, '');
+  }
+
+  private generateJavascriptContent(nodesJson: string, edgesJson: string) {
     let template = fs.readFileSync(this.extensionContext?.asAbsolutePath(path.join('templates', this.templateJsFilename)), 'utf8');
     let jsContent = template.replace('var nodes = new vis.DataSet([]);', `var nodes = new vis.DataSet([${nodesJson}]);`);
     jsContent = jsContent.replace('var edges = new vis.DataSet([]);', `var edges = new vis.DataSet([${edgesJson}]);`);

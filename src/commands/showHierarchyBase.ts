@@ -21,6 +21,7 @@ export class ShowHierarchyBase extends CommandBase {
   protected showComponentHierarchyJsFilename: string = 'showComponentHierarchy.js';
   protected showModuleHierarchyJsFilename: string = 'showModuleHierarchy.js';
   protected showHierarchyCssFilename: string = 'showHierarchy.css';
+  protected workspaceDirectory = this.fsUtils.getWorkspaceFolder();
 
   constructor(context: vscode.ExtensionContext) {
     super();
@@ -29,14 +30,20 @@ export class ShowHierarchyBase extends CommandBase {
   protected appendNodes = (nodeList: Node[]) => {
     nodeList.forEach(newNode => {
       if (!this.nodes.some(node => node.id === newNode.id)) {
-        this.nodes = this.nodes.concat(newNode);
+        this.nodes.push(newNode);
+      }
+      else {
+        const existingNode = this.nodes.find(node => node.id === newNode.id);
+        if (existingNode && (!existingNode.tsFilename || existingNode.tsFilename?.length === 0) && newNode.tsFilename && newNode.tsFilename.length > 0) {
+          existingNode.tsFilename = newNode.tsFilename;
+        }
       }
     });
   };
   protected appendEdges = (edgeList: Edge[]) => {
     edgeList.forEach(newEdge => {
       if (!this.edges.some(edge => edge.source === newEdge.source && edge.target === newEdge.target)) {
-        this.edges = this.edges.concat(newEdge);
+        this.edges.push(newEdge);
       }
     });
   };
@@ -55,8 +62,7 @@ export class ShowHierarchyBase extends CommandBase {
     if (dataUrl.length > 0) {
       const u8arr = Base64.toUint8Array(dataUrl[1]);
 
-      const workspaceDirectory = this.fsUtils.getWorkspaceFolder();
-      const newFilePath = path.join(workspaceDirectory, pngFilename);
+      const newFilePath = path.join(this.workspaceDirectory, pngFilename);
       this.fsUtils.writeFile(newFilePath, u8arr, () => { });
 
       vscode.window.showInformationMessage(`The file ${pngFilename} has been created in the root of the workspace.`);
@@ -81,7 +87,7 @@ export class ShowHierarchyBase extends CommandBase {
       vscode.window.showInformationMessage(popMessageText);
     });
   }
-  
+
   protected generateHtmlContent(webview: vscode.Webview, outputJsFilename: string): string {
     let htmlContent = fs.readFileSync(this.extensionContext?.asAbsolutePath(path.join('templates', this.templateHtmlFilename)), 'utf8');
 

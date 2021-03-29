@@ -13,7 +13,6 @@ Find it on the [Visual Studio Code marketplace](https://marketplace.visualstudio
 * Show the module hierarchy
 * Show the dependency injection graph
 * Show the component hierarchy
-* Generate DGML graph of project component hierarchy
 * Summarizes all the Angular modules
 * Generate a markdown file with the component hierarchy in Mermaid format.
 * Show the directory structure of the project
@@ -58,14 +57,6 @@ You can also choose to save a selection from the graph as shown in the example b
 By default the component hierarchy graph is rendered using a random layout. You can change the layout method to use a hierarchical layout to line up the nodes in the graph in different ways and also change how the layout engine sorts the nodes in the graph. This is all done by checking the 'Change layout' checkbox to show the drop down boxes with the available options.
 
 ![Show component hierarchy](https://github.com/CoderAllan/vscode-angulartools/raw/main/images/ShowComponentHierarchy3.gif)
-
-### Generate DGML graph of project component hierarchy [#](#generate-dgml-graph- 'Generate DGML graph of project component hierarchy')
-
-The Generate Directed Graph Markup Language ([dgml](https://docs.microsoft.com/en-us/visualstudio/modeling/directed-graph-markup-language-dgml-reference)) file command analyzes the all angular components and generates a graph of the relationship between the components.
-
-The dgml file can be viewed and modified using Microsoft Visual Studio. I have also created an extension for Visual Studio Code for viewing dgml files. The [DGML Viewer extension](https://github.com/CoderAllan/vscode-dgmlviewer) can be found on the [Visual Studio code marketplace](https://marketplace.visualstudio.com/items?itemName=coderAllan.vscode-dgmlviewer).
-
-![Generate DGML graph](https://github.com/CoderAllan/vscode-angulartools/raw/main/images/GenerateDgml.gif)
 
 ### Generate a markdown file with the component hierarchy in Mermaid format [#](#component-hierarchy-markdown- 'Component hierarchy in Mermaid format')
 

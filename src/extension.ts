@@ -3,7 +3,6 @@
 import * as vscode from 'vscode';
 
 import {
-  ComponentHierarchyDgml,
   ComponentHierarchyMarkdown,
   ListAllImports,
   ModulesToMarkdown,
@@ -42,12 +41,6 @@ export function activate(context: vscode.ExtensionContext) {
   });
   context.subscriptions.push(packageJsonToMarkdownDisposable);
 
-  const componentHierarchyDgmlDisposable = vscode.commands.registerCommand(`${cmdPrefix}.${ComponentHierarchyDgml.commandName}`, () => {
-    const command = new ComponentHierarchyDgml();
-    command.execute();
-  });
-  context.subscriptions.push(componentHierarchyDgmlDisposable);
-  
   const componentHierarchyMarkdownDisposable = vscode.commands.registerCommand(`${cmdPrefix}.${ComponentHierarchyMarkdown.commandName}`, () => {
     const command = new ComponentHierarchyMarkdown();
     command.execute();

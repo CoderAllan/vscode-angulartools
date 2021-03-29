@@ -26,7 +26,6 @@
     "tools"
   ],
   "activationEvents": [
-    "onCommand:angulartools.componentHierarchyDgml",
     "onCommand:angulartools.listAllImports",
     "onCommand:angulartools.projectDirectoryStructure",
     "onCommand:angulartools.modulesToMarkdown",
@@ -54,10 +53,6 @@
       {
         "command": "angulartools.packageJsonToMarkdown",
         "title": "AngularTools: Generate a Markdown file from package.json files in the workspace."
-      },
-      {
-        "command": "angulartools.componentHierarchyDgml",
-        "title": "AngularTools: Generate a Directed Graph file (dgml) showing the components in the current project."
       },
       {
         "command": "angulartools.showComponentHierarchy",

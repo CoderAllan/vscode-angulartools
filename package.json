@@ -4,7 +4,7 @@
   "displayName": "AngularTools",
   "description": "AngularTools is a collection of tools for exploring an Angular project, help you with documenting, reverse engineering a project or help when refactoring.",
   "icon": "logo.png",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "license": "MIT",
   "repository": "https://github.com/CoderAllan/vscode-angulartools",
   "author": {
@@ -99,35 +99,17 @@
           ],
           "description": "This will make the layout algorithm position the graph nodes in the specified direction."
         },
-        "angularTools.dependencyInjectionGraph.defaultGraphFilename": {
-          "type": "string",
-          "default": "DependencyInjectionGraph.dgml",
-          "description": "The default filename used when saving a dependency injection hierarchy graph to a Directed Graph Markup Language (Dgml) file."
-        },
-        "angularTools.dependencyInjectionGraph.componentHierarchyPngFilename": {
+        "angularTools.dependencyInjectionGraph.pngGraphFilename": {
           "type": "string",
           "default": "DependencyInjectionGraph.png",
           "description": "The default name used when saving the dependency injection hierarchy graph to a Png file."
         },
-        "angularTools.dependencyInjectionGraph.edgeArrowToType": {
+        "angularTools.dependencyInjectionGraph.dgmlGraphFilename": {
           "type": "string",
-          "default": "triangle",
-          "enum": [
-            "arrow",
-            "bar",
-            "box",
-            "circle",
-            "crow",
-            "curve",
-            "diamond",
-            "inv_curve",
-            "inv_triangle",
-            "triangle",
-            "vee"
-          ],
-          "description": "The default ending of the edges."
+          "default": "DependencyInjectionGraph.dgml",
+          "description": "The default filename used when saving a dependency injection hierarchy graph to a Directed Graph Markup Language (Dgml) file."
         },
-        "angularTools.showComponentHierarchy.edgeArrowToType": {
+        "angularTools.dependencyInjectionGraph.edgeArrowToType": {
           "type": "string",
           "default": "triangle",
           "enum": [
@@ -154,6 +136,24 @@
           "type": "string",
           "default": "ComponentHierarchy.dgml",
           "description": "The default name used when saving the component hierarchy to a Dgml file."
+        },
+        "angularTools.showComponentHierarchy.edgeArrowToType": {
+          "type": "string",
+          "default": "triangle",
+          "enum": [
+            "arrow",
+            "bar",
+            "box",
+            "circle",
+            "crow",
+            "curve",
+            "diamond",
+            "inv_curve",
+            "inv_triangle",
+            "triangle",
+            "vee"
+          ],
+          "description": "The default ending of the edges."
         },
         "angularTools.showModuleHierarchy.moduleHierarchyPngFilename": {
           "type": "string",
@@ -186,7 +186,7 @@
         "angularTools.graphSelection.graphSelectionGuidelineColor": {
           "type": "string",
           "default": "blue",
-          "description": "The color of the guidelines used when selecting part of a component hierarchy graph. The string should be in rgba format or standard css color names."
+          "description": "The color of the guidelines used when selecting part of a component hierarchy graph. The string should be in rgb format or standard css color names."
         },
         "angularTools.graphSelection.graphSelectionGuidelineWidth": {
           "type": "number",
@@ -196,7 +196,7 @@
         "angularTools.graphSelection.graphSelectionColor": {
           "type": "string",
           "default": "red",
-          "description": "The color of the selection rectangle used when selecting part of a component hierarchy graph. The string should be in rgba format or standard css color names."
+          "description": "The color of the selection rectangle used when selecting part of a component hierarchy graph. The string should be in rgb format or standard css color names."
         },
         "angularTools.graphSelection.graphSelectionWidth": {
           "type": "number",
@@ -205,8 +205,8 @@
         },
         "angularTools.graphNodes.rootNodeBackgroundColor": {
           "type": "string",
-          "default": "#00FF00",
-          "description": "The color of the root nodes of the component hierarchy graph. The string should be in rgba format or standard css color names."
+          "default": "#00ff00",
+          "description": "The color of the root nodes of the component hierarchy graph. The string should be in rgb format or standard css color names."
         },
         "angularTools.graphNodes.rootNodeNodeShape": {
           "type": "string",

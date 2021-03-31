@@ -27,8 +27,8 @@ export class Config {
   public readonly dgmlZoomLevel = '-1';
   
   // DependencyInjectionGraph
+  public get dependencyInjectionPngFilename(): string { return this.getSetting<string>('dependencyInjectionGraph.pngGraphFilename', 'DependencyInjectionGraph.png'); }
   public get dependencyInjectionDgmlGraphFilename(): string { return this.getSetting<string>('dependencyInjectionGraph.dgmlGraphFilename', 'DependencyInjectionGraph.dgml'); }
-  public get dependencyInjectionPngFilename(): string { return this.getSetting<string>('dependencyInjectionGraph.dgmlGraphFilename', 'DependencyInjectionGraph.png'); }
   public get dependencyInjectionEdgeArrowToType(): string { return this.getSetting<string>('dependencyInjectionGraph.edgeArrowToType', 'triangle'); }
   
   // ShowComponentHierarchy

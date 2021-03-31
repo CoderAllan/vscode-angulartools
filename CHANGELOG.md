@@ -1,5 +1,10 @@
 # Change Log
 
+## Version 1.7.0
+
+- All three graph types: Dependency injection graph, module hierarchy graph and component hierarchy graph can now be saved as a dgml file.
+- Component hierarchy dgml command has been removed because its now obsolete.
+
 ## Version 1.6.0
 
 - Added Dependency injection graph command that visualizes what services are injected into the components. Graph also include all the inputs, outputs, viewchild, viewchildren, contentchild and contentchildren of each component.

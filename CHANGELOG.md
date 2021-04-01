@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 1.7.1
+
+- Bugfix: input, outputs, viewchilds, etc. are now shown correctly in the dependency injection graph.
+
 ## Version 1.7.0
 
 - All three graph types: Dependency injection graph, module hierarchy graph and component hierarchy graph can now be saved as a dgml file.

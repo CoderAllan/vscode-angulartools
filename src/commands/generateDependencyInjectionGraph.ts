@@ -62,27 +62,27 @@ export class GenerateDependencyInjectionGraph extends ShowHierarchyBase {
     let nodeContent: string = '';
     nodeContent = `<b>${component.name}</b>`;
     if(component.inputs.length > 0) {
-      const inputs = component.inputs.join(", ");
+      const inputs = component.inputs.map(i => i.name).join(", ");
       nodeContent += `\\n<b>Inputs:</b> ${inputs}`;
     }
     if(component.outputs.length > 0) {
-      const outputs = component.outputs.join(", ");
+      const outputs = component.outputs.map(i => i.name).join(", ");
       nodeContent += `\\n<b>Outputs:</b> ${outputs}`;
     }
     if(component.viewchilds.length > 0) {
-      const viewchilds = component.viewchilds.join(", ");
+      const viewchilds = component.viewchilds.map(i => i.name).join(", ");
       nodeContent += `\\n<b>Viewchilds:</b> ${viewchilds}`;
     }
     if(component.viewchildren.length > 0) {
-      const viewchildren = component.viewchildren.join(", ");
+      const viewchildren = component.viewchildren.map(i => i.name).join(", ");
       nodeContent += `\\n<b>Viewchildren:</b> ${viewchildren}`;
     }
     if(component.contentchilds.length > 0) {
-      const contentchilds = component.contentchilds.join(", ");
+      const contentchilds = component.contentchilds.map(i => i.name).join(", ");
       nodeContent += `\\n<b>Contentchilds:</b> ${contentchilds}`;
     }
     if(component.contentchildren.length > 0) {
-      const contentchildren = component.contentchildren.join(", ");
+      const contentchildren = component.contentchildren.map(i => i.name).join(", ");
       nodeContent += `\\n<b>Contentchildren:</b> ${contentchildren}`;
     }
     return nodeContent;

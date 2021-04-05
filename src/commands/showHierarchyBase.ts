@@ -85,7 +85,7 @@ export class ShowHierarchyBase extends CommandBase {
     // Write the prettified xml string to the ReadMe-ProjectStructure.dgml file.
     var directoryPath: string = this.fsUtils.getWorkspaceFolder();
     this.fsUtils.writeFile(path.join(directoryPath, dgmlGraphFilename), fileContent, () => {
-      vscode.window.showInformationMessage(popMessageText);
+      vscode.window.setStatusBarMessage(popMessageText, 10000);
     });
   }
 

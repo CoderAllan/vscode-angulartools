@@ -79,7 +79,8 @@ export class ShowHierarchyBase extends CommandBase {
     // Serialize the xml into a string
     const xmlAsString = xmlSerializer.serializeToString(xmlDocument.documentElement);
     let fileContent = prettifyXml(xmlAsString);
-    fileContent = fileContent.replace('HasCategory(&apos;RootComponent&apos;)', "HasCategory('RootComponent')");
+    const xmlProlog = '<?xml version="1.0" encoding="utf-8"?>\n';
+    fileContent = xmlProlog + fileContent.replace('HasCategory(&apos;RootComponent&apos;)', "HasCategory('RootComponent')");
 
     // Write the prettified xml string to the ReadMe-ProjectStructure.dgml file.
     var directoryPath: string = this.fsUtils.getWorkspaceFolder();

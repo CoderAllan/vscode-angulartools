@@ -1,5 +1,13 @@
 # Change Log
 
+## Version 1.7.2
+
+- Added missing xml prolog to generated dgml file.
+- Added missing properties to generated dgml file.
+- Removed unused properties in generated dgml file.
+- Changed property TsFilename to TypescriptFilepath and made it a reference attribute.
+- Now only show message in the vscode status bar when dgml or png file has been saved.
+
 ## Version 1.7.1
 
 - Bugfix: input, outputs, viewchilds, etc. are now shown correctly in the dependency injection graph.

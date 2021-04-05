@@ -123,7 +123,7 @@ export class DgmlManager {
       });
     }
     if (node.tsFilename) {
-      nodeElement.setAttribute("TsFilename", node.tsFilename);
+      nodeElement.setAttribute("TypescriptFilepath", node.tsFilename);
     }
     this.addNode(nodesElement, nodeElement);
   }
@@ -164,20 +164,26 @@ export class DgmlManager {
 
   private addProperties(xmlDoc: Document) {
     const propertiesElement = this.addNodeToRoot(xmlDoc, "Properties");
-    this.addProperty(xmlDoc, propertiesElement, "TsFilename", "System.String");
+    this.addProperty(xmlDoc, propertiesElement, "TypescriptFilepath", "System.String", "Typescript filepath", true);
     this.addProperty(xmlDoc, propertiesElement, "Background", "System.Windows.Media.Brush");
     this.addProperty(xmlDoc, propertiesElement, "GraphDirection", "Microsoft.VisualStudio.Diagrams.Layout.LayoutOrientation");
-    this.addProperty(xmlDoc, propertiesElement, "IsTag", "System.Boolean");
+    this.addProperty(xmlDoc, propertiesElement, "UseManualLocation", "System.Boolean");
     this.addProperty(xmlDoc, propertiesElement, "Label", "System.String");
     this.addProperty(xmlDoc, propertiesElement, "Layout", "System.String");
     this.addProperty(xmlDoc, propertiesElement, "ZoomLevel", "System.String");
-    this.addProperty(xmlDoc, propertiesElement, "Expression", "System.String");
+    this.addProperty(xmlDoc, propertiesElement, "Bounds", "System.Windows.Rect");
   }
 
-  private addProperty(xmlDoc: Document, propertiesElement: Element | null, idValue: string, datatypeValue: string) {
+  private addProperty(xmlDoc: Document, propertiesElement: Element | null, idValue: string, datatypeValue: string, label: string | undefined = undefined, isReference: boolean | undefined = undefined) {
     const propertyElement = xmlDoc.createElement("Property");
     propertyElement.setAttribute("Id", idValue);
     propertyElement.setAttribute("DataType", datatypeValue);
+    if ( label !== undefined && label.length > 0) {
+      propertyElement.setAttribute("Label", label);
+    }
+    if (isReference !== undefined && isReference) {
+      propertyElement.setAttribute("IsReference", isReference.toString());
+    }
     this.addNode(propertiesElement, propertyElement);
   }
 }

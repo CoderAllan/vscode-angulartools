@@ -60,7 +60,8 @@ export class ShowModuleHierarchy extends ShowHierarchyBase {
 
   private addNodesAndEdges(project: Project, appendNodes: (nodeList: Node[]) => void, appendEdges: (edgeList: Edge[]) => void) {
     project.modules.forEach(module => {
-      const moduleFilename = module.filename.replace(this.workspaceDirectory, '');
+      let moduleFilename = module.filename.replace(this.workspaceDirectory, '.');
+      moduleFilename = moduleFilename.split('\\').join('/');
       appendNodes([new Node(module.moduleName, module.moduleName, moduleFilename, false, NodeType.module)]);
       module.imports.forEach(_import => {
         const nodeType = Node.getNodeType(project, _import);

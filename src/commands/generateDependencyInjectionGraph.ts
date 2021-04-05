@@ -90,7 +90,8 @@ export class GenerateDependencyInjectionGraph extends ShowHierarchyBase {
 
   addNodesAndEdges(project: Project, appendNodes: (nodeList: Node[]) => void, appendEdges: (edgeList: Edge[]) => void) {
     project.components.forEach(component => {
-      const componentFilename = component.filename.replace(this.workspaceDirectory, '');
+      let componentFilename = component.filename.replace(this.workspaceDirectory, '.');
+      componentFilename = componentFilename.split('\\').join('/');
       appendNodes([new Node(component.name, this.generatedComponentNode(component), componentFilename, false, NodeType.component)]);
       component.dependencyInjections.forEach(injectable => {
         appendNodes([new Node(injectable.name, injectable.name, injectable.filename.replace(this.workspaceDirectory, ''), false, NodeType.injectable)]);

@@ -65,7 +65,7 @@ export class ShowHierarchyBase extends CommandBase {
       const newFilePath = path.join(this.workspaceDirectory, pngFilename);
       this.fsUtils.writeFile(newFilePath, u8arr, () => { });
 
-      vscode.window.showInformationMessage(`The file ${pngFilename} has been created in the root of the workspace.`);
+      vscode.window.setStatusBarMessage(`The file ${pngFilename} has been created in the root of the workspace.`);
     }
   }
 

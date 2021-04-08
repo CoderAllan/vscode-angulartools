@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 1.7.3
+
+- Bugfix: GraphDirection is now saved correctly when saving as Dgml.
+
 ## Version 1.7.2
 
 - Added missing xml prolog to generated dgml file.

@@ -74,7 +74,7 @@ export class ShowHierarchyBase extends CommandBase {
     const direction = message.direction;
     const domImpl = new xmldom.DOMImplementation();
     const dgmlManager = new DgmlManager();
-    const xmlDocument = dgmlManager.createNewDirectedGraph(domImpl, direction, "", "-1");
+    const xmlDocument = dgmlManager.createNewDirectedGraph(domImpl, this.fixGraphDirection(direction), "Sugiyama", "-1");
     dgmlManager.addNodesAndLinks(xmlDocument, this.nodes, message.nodes, this.edges);
     // Serialize the xml into a string
     const xmlAsString = xmlSerializer.serializeToString(xmlDocument.documentElement);
@@ -87,6 +87,28 @@ export class ShowHierarchyBase extends CommandBase {
     this.fsUtils.writeFile(path.join(directoryPath, dgmlGraphFilename), fileContent, () => {
       vscode.window.setStatusBarMessage(popMessageText, 10000);
     });
+  }
+
+  private fixGraphDirection(direction: string): string {
+    let fixedDirection: string;
+    switch (direction) {
+      case 'UD':
+        fixedDirection = 'TopToBottom';
+        break;
+      case 'DU':
+        fixedDirection = 'BottomToTop';
+        break;
+      case 'LR':
+        fixedDirection = 'LeftToRight';
+        break;
+      case 'RL':
+        fixedDirection = 'RightToLeft';
+        break;
+      default:
+        fixedDirection = '';
+        break;
+    }
+    return fixedDirection;
   }
 
   protected generateHtmlContent(webview: vscode.Webview, outputJsFilename: string): string {

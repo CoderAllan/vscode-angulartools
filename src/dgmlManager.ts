@@ -5,7 +5,9 @@ export class DgmlManager {
   public createNewDirectedGraph(domImpl: DOMImplementation, direction: string, layout: string, zoomLevel: string) {
     let xmlDoc: Document = domImpl.createDocument('', null, null);
     const root = xmlDoc.createElement("DirectedGraph");
-    root.setAttribute("GraphDirection", direction);
+    if (direction.length > 0) {
+      root.setAttribute("GraphDirection", direction);
+    }
     root.setAttribute("Layout", layout);
     root.setAttribute("ZoomLevel", zoomLevel);
     root.setAttribute("xmlns", "http://schemas.microsoft.com/vs/2009/dgml");

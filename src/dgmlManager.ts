@@ -2,7 +2,7 @@ import { ArrowType, BoundingBox, Category, Edge, NetworkNode, Node, NodeType, Po
 
 export class DgmlManager {
 
-  public createNewDirectedGraph(domImpl: DOMImplementation, direction: string, layout: string, zoomLevel: string) {
+  public createNewDirectedGraph(domImpl: DOMImplementation, direction: string, layout: string, zoomLevel: string): Document {
     let xmlDoc: Document = domImpl.createDocument('', null, null);
     const root = xmlDoc.createElement("DirectedGraph");
     if (direction.length > 0) {

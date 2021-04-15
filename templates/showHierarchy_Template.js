@@ -57,6 +57,8 @@
   saveAsPngButton.addEventListener('click', saveAsPng);
   const saveAsDgmlButton = document.getElementById('saveAsDgmlButton');
   saveAsDgmlButton.addEventListener('click', saveAsDgml);
+  const saveAsDotButton = document.getElementById('saveAsDotButton');
+  saveAsDotButton.addEventListener('click', saveAsDot);
   const saveSelectionAsPngButton = document.getElementById('saveSelectionAsPngButton');
   saveSelectionAsPngButton.addEventListener('click', saveSelectionAsPng);
   const copyToClipboardButton = document.getElementById('copyToClipboardButton');
@@ -259,6 +261,26 @@
     const direction = hierarchicalOptionsDirectionSelect.value ? hierarchicalOptionsDirectionSelect.value : 'UD';
     vscode.postMessage({
       command: 'saveAsDgml',
+      text: JSON.stringify({
+        nodes: nodeExport,
+        direction: direction
+      })
+    });
+  }
+
+  function saveAsDot() {
+    const nodeExport = {};
+    nodes.forEach(node => {
+      nodeExport[node.id] = {
+        id: node.id,
+        label: cleanLabel(node.label),
+        position: network.getPosition(node.id),
+        boundingBox: network.getBoundingBox(node.id)
+      };
+    });
+    const direction = hierarchicalOptionsDirectionSelect.value ? hierarchicalOptionsDirectionSelect.value : 'UD';
+    vscode.postMessage({
+      command: 'saveAsDot',
       text: JSON.stringify({
         nodes: nodeExport,
         direction: direction

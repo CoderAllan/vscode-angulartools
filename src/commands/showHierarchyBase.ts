@@ -1,5 +1,5 @@
 import { CommandBase } from '@commands';
-import { Config, DgmlManager, FileSystemUtils } from '@src';
+import { Config, DgmlManager, FileSystemUtils, GraphVizManager } from '@src';
 import { Edge, Node } from '@model';
 import { Base64 } from 'js-base64';
 import * as fs from 'fs';
@@ -109,6 +109,17 @@ export class ShowHierarchyBase extends CommandBase {
         break;
     }
     return fixedDirection;
+  }
+
+  protected saveAsGraphViz(graphVizFilename: string, messageText: string, graphType: string, popMessageText: string) {
+    const graphVizManager = new GraphVizManager();
+    const fileContent = graphVizManager.createGraphVizDiagram(graphType, this.nodes, this.edges);
+
+    // Write the prettified xml string to the ReadMe-ProjectStructure.dgml file.
+    var directoryPath: string = this.fsUtils.getWorkspaceFolder();
+    this.fsUtils.writeFile(path.join(directoryPath, graphVizFilename), fileContent, () => {
+      vscode.window.setStatusBarMessage(popMessageText, 10000);
+    });
   }
 
   protected generateHtmlContent(webview: vscode.Webview, outputJsFilename: string): string {

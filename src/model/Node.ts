@@ -52,6 +52,23 @@ export class Node {
     return `{id: "${this.id}", label: "${label}"${nodeColorAttr}${nodeShapeAttr}}`;
   }
 
+  public toGraphViz(): string {
+    const regex = /\W/g;
+    const id = this.id.replace(regex, '_');
+    const attributes: string[] = [];
+    attributes.push(`label="${this.name}"`);
+    const color = this.getNodeTypeColor(this.nodeType);
+    if (color) {
+      attributes.push(`color="${color}"`);
+      attributes.push(`style="filled"`);
+    }
+    let attributesStr: string = '';
+    if (attributes.length > 0) {
+      attributesStr = ` [${attributes.join(', ')}]`;
+    }
+    return `${id}${attributesStr};`;
+  }
+
   public getNodeTypeColor(nodeType: NodeType): string {
     let nodeTypeColor = '';
     switch (nodeType) {

@@ -15,8 +15,24 @@ export class Edge {
   public arrowType: ArrowType;
 
   public toJsonString(): string {
-    let arrowColorAttr = `, color: "${this.getEdgeTypeColor(this.arrowType)}"`;;
+    let arrowColorAttr = `, color: "${this.getEdgeTypeColor(this.arrowType)}"`;
     return `{from: "${this.source}", to: "${this.target}", arrows: arrowAttr${arrowColorAttr} }`;
+  }
+
+  public toGraphViz(): string {
+    const regex = /\W/g;
+    const source = this.source.replace(regex, '_');
+    const target = this.target.replace(regex, '_');
+    const attributes: string[] = [];
+    const color = this.getEdgeTypeColor(this.arrowType);
+    if (color) {
+      attributes.push(`color="${color}"`);
+    }
+    let attributesStr: string = '';
+    if (attributes.length > 0) {
+      attributesStr = ` [${attributes.join(', ')}]`;
+    }
+    return `${source} -> ${target}${attributesStr};`;
   }
 
   public getEdgeTypeColor(arrowType: ArrowType): string {

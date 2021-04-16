@@ -112,8 +112,9 @@ export class ShowHierarchyBase extends CommandBase {
   }
 
   protected saveAsGraphViz(graphVizFilename: string, messageText: string, graphType: string, popMessageText: string) {
+    const message = JSON.parse(messageText);
     const graphVizManager = new GraphVizManager();
-    const fileContent = graphVizManager.createGraphVizDiagram(graphType, this.nodes, this.edges);
+    const fileContent = graphVizManager.createGraphVizDiagram(graphType, this.nodes, message.nodes, this.edges);
 
     // Write the prettified xml string to the ReadMe-ProjectStructure.dgml file.
     var directoryPath: string = this.fsUtils.getWorkspaceFolder();

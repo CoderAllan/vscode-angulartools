@@ -56,11 +56,17 @@ export class Node {
     const regex = /\W/g;
     const id = this.id.replace(regex, '_');
     const attributes: string[] = [];
-    attributes.push(`label="${this.name}"`);
+    const label = this.config.maximumNodeLabelLength !== -1 && this.name.length > this.config.maximumNodeLabelLength ? this.name.substr(0, this.config.maximumNodeLabelLength) + '...' : this.name;
+    attributes.push(`label="${label}"`);
     const color = this.getNodeTypeColor(this.nodeType);
     if (color) {
       attributes.push(`color="${color}"`);
       attributes.push(`style="filled"`);
+    }
+    if (this.position !== undefined) {
+      const x = this.position.x;
+      const y = this.position.y;
+      attributes.push(`pos="${x},${y}!"`);
     }
     let attributesStr: string = '';
     if (attributes.length > 0) {

@@ -29,16 +29,19 @@ export class Config {
   // DependencyInjectionGraph
   public get dependencyInjectionPngFilename(): string { return this.getSetting<string>('dependencyInjectionGraph.pngGraphFilename', 'DependencyInjectionGraph.png'); }
   public get dependencyInjectionDgmlGraphFilename(): string { return this.getSetting<string>('dependencyInjectionGraph.dgmlGraphFilename', 'DependencyInjectionGraph.dgml'); }
+  public get dependencyInjectionDotGraphFilename(): string { return this.getSetting<string>('dependencyInjectionGraph.dotGraphFilename', 'DependencyInjectionGraph.dot'); }
   public get dependencyInjectionEdgeArrowToType(): string { return this.getSetting<string>('dependencyInjectionGraph.edgeArrowToType', 'triangle'); }
   
   // ShowComponentHierarchy
   public get componentHierarchyPngFilename(): string { return this.getSetting<string>('showComponentHierarchy.componentHierarchyPngFilename', 'ComponentHierarchy.png'); }
   public get componentHierarchyDgmlGraphFilename(): string { return this.getSetting<string>('showComponentHierarchy.componentHierarchyDgmlGraphFilename', 'ComponentHierarchy.dgml'); }
+  public get componentHierarchyDotGraphFilename(): string { return this.getSetting<string>('showComponentHierarchy.componentHierarchyDotGraphFilename', 'ComponentHierarchy.dot'); }
   public get componentHierarchyEdgeArrowToType(): string { return this.getSetting<string>('showComponentHierarchy.edgeArrowToType', 'triangle'); }
   
   // ShowModuleHierarchy
   public get moduleHierarchyPngFilename(): string { return this.getSetting<string>('showModuleHierarchy.moduleHierarchyPngFilename', 'ModuleHierarchy.png'); }
   public get moduleHierarchyDgmlGraphFilename(): string { return this.getSetting<string>('showModuleHierarchy.moduleHierarchyDgmlGraphFilename', 'ModuleHierarchy.dgml'); }
+  public get moduleHierarchyDotGraphFilename(): string { return this.getSetting<string>('showModuleHierarchy.moduleHierarchyDotGraphFilename', 'ModuleHierarchy.dot'); }
   public get moduleHierarchyEdgeArrowToType(): string { return this.getSetting<string>('showModuleHierarchy.edgeArrowToType', 'triangle'); }
 
   // GraphSelection

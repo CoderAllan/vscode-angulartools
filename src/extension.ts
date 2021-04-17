@@ -63,6 +63,7 @@ export function activate(context: vscode.ExtensionContext) {
       componentHierarchyPanel.onDidDispose(() => {
       }, null, context.subscriptions);
     }
+    componentHierarchyPanel.onDidDispose(() => componentHierarchyPanel = undefined, undefined, context.subscriptions);
     const command = new ShowComponentHierarchy(context);
     command.execute(componentHierarchyPanel.webview);
   });
@@ -84,6 +85,7 @@ export function activate(context: vscode.ExtensionContext) {
       moduleHierarchyPanel.onDidDispose(() => {
       }, null, context.subscriptions);
     }
+    moduleHierarchyPanel.onDidDispose(() => moduleHierarchyPanel = undefined, undefined, context.subscriptions);
     const command = new ShowModuleHierarchy(context);
     command.execute(moduleHierarchyPanel.webview);
   });
@@ -105,6 +107,7 @@ export function activate(context: vscode.ExtensionContext) {
       dependencyInjectionGraphPanel.onDidDispose(() => {
       }, null, context.subscriptions);
     }
+    dependencyInjectionGraphPanel.onDidDispose(() => dependencyInjectionGraphPanel = undefined, undefined, context.subscriptions);
     const command = new GenerateDependencyInjectionGraph(context);
     command.execute(dependencyInjectionGraphPanel.webview);
   });

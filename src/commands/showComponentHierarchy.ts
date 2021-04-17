@@ -21,6 +21,9 @@ export class ShowComponentHierarchy extends ShowHierarchyBase {
           case 'saveAsDgml':
             this.saveAsDgml(this.config.componentHierarchyDgmlGraphFilename, message.text, `'The component hierarchy has been analyzed and a Directed Graph Markup Language (dgml) file '${this.config.componentHierarchyDgmlGraphFilename}' has been created'`);
             return;
+          case 'saveAsDot':
+            this.saveAsDot(this.config.componentHierarchyDotGraphFilename, message.text, 'componentHierarchy', `'The component hierarchy has been analyzed and a GraphViz (dot) file '${this.config.componentHierarchyDotGraphFilename}' has been created'`);
+            return;
         }
       },
       undefined,
@@ -78,7 +81,7 @@ export class ShowComponentHierarchy extends ShowHierarchyBase {
     appendNodes([new Node(component.selector, component.selector, componentFilename, isRoot, isRoot ? NodeType.rootNode : NodeType.component)]);
     if (components.length > 0) {
       components.forEach((subComponent) => {
-        if(parentSelector !== subComponent.selector) {
+        if (parentSelector !== subComponent.selector) {
           this.generateDirectedGraphNodes(subComponent.subComponents, subComponent, subComponent.isRoot, component.selector, appendNodes);
         }
       });

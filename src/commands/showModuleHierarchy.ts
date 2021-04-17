@@ -19,7 +19,7 @@ export class ShowModuleHierarchy extends ShowHierarchyBase {
             this.saveAsDgml(this.config.moduleHierarchyDgmlGraphFilename, message.text, `'The modules hierarchy has been analyzed and a Directed Graph Markup Language (dgml) file '${this.config.moduleHierarchyDgmlGraphFilename}' has been created'`);
             return;
           case 'saveAsDot':
-            this.saveAsGraphViz('ModuleHierarchy.dot', message.text, 'moduleHierarchy', `'The modules hierarchy has been analyzed and a Directed Graph Markup Language (dgml) file 'ModuleHierarchy.dot' has been created'`);
+            this.saveAsDot(this.config.moduleHierarchyDotGraphFilename, message.text, 'moduleHierarchy', `'The modules hierarchy has been analyzed and a GraphViz (dot) file '${this.config.moduleHierarchyDotGraphFilename}' has been created'`);
             return;
         }
       },

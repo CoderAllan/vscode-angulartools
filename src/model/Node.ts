@@ -66,7 +66,7 @@ export class Node {
     if (this.position !== undefined) {
       const x = this.position.x;
       const y = this.position.y;
-      attributes.push(`pos="${x},${y}!"`);
+      attributes.push(`pos="${x},${y}"`);
     }
     let attributesStr: string = '';
     if (attributes.length > 0) {

@@ -47,53 +47,69 @@ export function activate(context: vscode.ExtensionContext) {
   });
   context.subscriptions.push(componentHierarchyMarkdownDisposable);
 
+  let componentHierarchyPanel: vscode.WebviewPanel | undefined = undefined;
   const showComponentHierarchyDisposable = vscode.commands.registerCommand(`${cmdPrefix}.${ShowComponentHierarchy.commandName}`, () => {
-    const componentHierarchyPanel = vscode.window.createWebviewPanel(
-      'angularTools_showComponentHierarchy',
-      'Angular component hierarchy',
-      vscode.ViewColumn.One,
-      {
-        enableScripts: true
-      }
-    );
-    componentHierarchyPanel.onDidDispose(() => {
-    }, null, context.subscriptions);
+    if (componentHierarchyPanel !== undefined) {
+      componentHierarchyPanel.reveal(vscode.ViewColumn.One);
+    } else {
+      componentHierarchyPanel = vscode.window.createWebviewPanel(
+        'angularTools_showComponentHierarchy',
+        'Angular component hierarchy',
+        vscode.ViewColumn.One,
+        {
+          enableScripts: true
+        }
+      );
+      componentHierarchyPanel.onDidDispose(() => {
+      }, null, context.subscriptions);
+    }
     const command = new ShowComponentHierarchy(context);
     command.execute(componentHierarchyPanel.webview);
   });
   context.subscriptions.push(showComponentHierarchyDisposable);
-  
+
+  let moduleHierarchyPanel: vscode.WebviewPanel | undefined = undefined;
   const showModuleHierarchyDisposable = vscode.commands.registerCommand(`${cmdPrefix}.${ShowModuleHierarchy.commandName}`, () => {
-    const moduleHierarchyPanel = vscode.window.createWebviewPanel(
-      'angularTools_showModuleHierarchy',
-      'Angular module hierarchy',
-      vscode.ViewColumn.One,
-      {
-        enableScripts: true
-      }
-    );
-    moduleHierarchyPanel.onDidDispose(() => {
-    }, null, context.subscriptions);
+    if (moduleHierarchyPanel !== undefined) {
+      moduleHierarchyPanel.reveal(vscode.ViewColumn.One);
+    } else {
+      moduleHierarchyPanel = vscode.window.createWebviewPanel(
+        'angularTools_showModuleHierarchy',
+        'Angular module hierarchy',
+        vscode.ViewColumn.One,
+        {
+          enableScripts: true
+        }
+      );
+      moduleHierarchyPanel.onDidDispose(() => {
+      }, null, context.subscriptions);
+    }
     const command = new ShowModuleHierarchy(context);
     command.execute(moduleHierarchyPanel.webview);
   });
   context.subscriptions.push(showModuleHierarchyDisposable);
-  
+
+  let dependencyInjectionGraphPanel: vscode.WebviewPanel | undefined = undefined;
   const generateDependencyInjectionGraphDisposable = vscode.commands.registerCommand(`${cmdPrefix}.${GenerateDependencyInjectionGraph.commandName}`, () => {
-    const dependencyInjectionGraphPanel = vscode.window.createWebviewPanel(
-      'angularTools_generateDependencyInjectionGraph',
-      'Angular dependency injection graph',
-      vscode.ViewColumn.One,
-      {
-        enableScripts: true
-      }
-    );
-    dependencyInjectionGraphPanel.onDidDispose(() => {
-    }, null, context.subscriptions);
+    if (dependencyInjectionGraphPanel !== undefined) {
+      dependencyInjectionGraphPanel.reveal(vscode.ViewColumn.One);
+    } else {
+      dependencyInjectionGraphPanel = vscode.window.createWebviewPanel(
+        'angularTools_generateDependencyInjectionGraph',
+        'Angular dependency injection graph',
+        vscode.ViewColumn.One,
+        {
+          enableScripts: true
+        }
+      );
+      dependencyInjectionGraphPanel.onDidDispose(() => {
+      }, null, context.subscriptions);
+    }
     const command = new GenerateDependencyInjectionGraph(context);
     command.execute(dependencyInjectionGraphPanel.webview);
   });
-  context.subscriptions.push(generateDependencyInjectionGraphDisposable);}
+  context.subscriptions.push(generateDependencyInjectionGraphDisposable);
+}
 
 // this method is called when your extension is deactivated
 export function deactivate() { }

@@ -18,6 +18,9 @@ export class GenerateDependencyInjectionGraph extends ShowHierarchyBase {
           case 'saveAsDgml':
             this.saveAsDgml(this.config.dependencyInjectionDgmlGraphFilename, message.text, `'The components hierarchy has been analyzed and a Directed Graph Markup Language (dgml) file '${this.config.dependencyInjectionDgmlGraphFilename}' has been created'`);
             return;
+          case 'saveAsDot':
+            this.saveAsDot(this.config.dependencyInjectionDotGraphFilename, message.text, 'dependencyInjectionGraph', `'The components hierarchy has been analyzed and a GraphViz (dot) file '${this.config.dependencyInjectionDotGraphFilename}' has been created'`);
+            return;
         }
       },
       undefined,
@@ -36,8 +39,8 @@ export class GenerateDependencyInjectionGraph extends ShowHierarchyBase {
     const edgesJson = this.edges
       .map((edge, index, arr) => { return edge.toJsonString(); })
       .join(',\n');
-    
-      try {
+
+    try {
       const jsContent = this.generateJavascriptContent(nodesJson, edgesJson);
       const outputJsFilename = this.showModuleHierarchyJsFilename;
       let htmlContent = this.generateHtmlContent(webview, this.showModuleHierarchyJsFilename);
@@ -61,29 +64,29 @@ export class GenerateDependencyInjectionGraph extends ShowHierarchyBase {
   generatedComponentNode(component: Component): string {
     let nodeContent: string = '';
     nodeContent = `<b>${component.name}</b>`;
-    if(component.inputs.length > 0) {
+    if (component.inputs.length > 0) {
       const inputs = component.inputs.map(i => i.name).join(", ");
-      nodeContent += `\\n<b>Inputs:</b> ${inputs}`;
+      nodeContent += `\\n<b>Inputs: </b> ${inputs}`;
     }
-    if(component.outputs.length > 0) {
+    if (component.outputs.length > 0) {
       const outputs = component.outputs.map(i => i.name).join(", ");
-      nodeContent += `\\n<b>Outputs:</b> ${outputs}`;
+      nodeContent += `\\n<b>Outputs: </b> ${outputs}`;
     }
-    if(component.viewchilds.length > 0) {
+    if (component.viewchilds.length > 0) {
       const viewchilds = component.viewchilds.map(i => i.name).join(", ");
-      nodeContent += `\\n<b>Viewchilds:</b> ${viewchilds}`;
+      nodeContent += `\\n<b>Viewchilds: </b> ${viewchilds}`;
     }
-    if(component.viewchildren.length > 0) {
+    if (component.viewchildren.length > 0) {
       const viewchildren = component.viewchildren.map(i => i.name).join(", ");
-      nodeContent += `\\n<b>Viewchildren:</b> ${viewchildren}`;
+      nodeContent += `\\n<b>Viewchildren: </b> ${viewchildren}`;
     }
-    if(component.contentchilds.length > 0) {
+    if (component.contentchilds.length > 0) {
       const contentchilds = component.contentchilds.map(i => i.name).join(", ");
-      nodeContent += `\\n<b>Contentchilds:</b> ${contentchilds}`;
+      nodeContent += `\\n<b>Contentchilds: </b> ${contentchilds}`;
     }
-    if(component.contentchildren.length > 0) {
+    if (component.contentchildren.length > 0) {
       const contentchildren = component.contentchildren.map(i => i.name).join(", ");
-      nodeContent += `\\n<b>Contentchildren:</b> ${contentchildren}`;
+      nodeContent += `\\n<b>Contentchildren: </b> ${contentchildren}`;
     }
     return nodeContent;
   }

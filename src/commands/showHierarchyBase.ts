@@ -111,7 +111,7 @@ export class ShowHierarchyBase extends CommandBase {
     return fixedDirection;
   }
 
-  protected saveAsGraphViz(graphVizFilename: string, messageText: string, graphType: string, popMessageText: string) {
+  protected saveAsDot(graphVizFilename: string, messageText: string, graphType: string, popMessageText: string) {
     const message = JSON.parse(messageText);
     const graphVizManager = new GraphVizManager();
     const fileContent = graphVizManager.createGraphVizDiagram(graphType, this.nodes, message.nodes, this.edges);

@@ -249,26 +249,14 @@
   }
 
   function saveAsDgml() {
-    const nodeExport = {};
-    nodes.forEach(node => {
-      nodeExport[node.id] = {
-        id: node.id,
-        label: cleanLabel(node.label),
-        position: network.getPosition(node.id),
-        boundingBox: network.getBoundingBox(node.id)
-      };
-    });
-    const direction = hierarchicalOptionsDirectionSelect.value ? hierarchicalOptionsDirectionSelect.value : 'UD';
-    vscode.postMessage({
-      command: 'saveAsDgml',
-      text: JSON.stringify({
-        nodes: nodeExport,
-        direction: direction
-      })
-    });
+    postSaveAsCommand('saveAsDgml');
   }
 
   function saveAsDot() {
+    postSaveAsCommand('saveAsDot');
+  }
+
+  function postSaveAsCommand(command) {
     const nodeExport = {};
     nodes.forEach(node => {
       nodeExport[node.id] = {
@@ -280,7 +268,7 @@
     });
     const direction = hierarchicalOptionsDirectionSelect.value ? hierarchicalOptionsDirectionSelect.value : 'UD';
     vscode.postMessage({
-      command: 'saveAsDot',
+      command: command,
       text: JSON.stringify({
         nodes: nodeExport,
         direction: direction

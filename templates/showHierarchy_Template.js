@@ -261,7 +261,7 @@
     nodes.forEach(node => {
       nodeExport[node.id] = {
         id: node.id,
-        label: cleanLabel(node.label),
+        label: command==='saveAsDgml' ? cleanLabelDgml(node.label) : cleanLabelDot(node.label),
         position: network.getPosition(node.id),
         boundingBox: network.getBoundingBox(node.id)
       };
@@ -276,11 +276,27 @@
     });
   }
 
-  function cleanLabel(label) {
-    let regex = /(<([^>]+)>)/ig;
-    let cleanedLabel = label.replace(regex, '');
-    regex = /\s+/g;
-    cleanedLabel = cleanedLabel.replace(regex, ' ');
+  function cleanLabelDgml(label) {
+    let cleanedLabel = removeHtmlTags(label);
+    cleanedLabel = removeNewlines(cleanedLabel);
+    return cleanedLabel;
+  }
+
+  function cleanLabelDot(label) {
+    let cleanedLabel = convertNewlinesToDotNewlines(label) + '<br align="left"/>';
+    return cleanedLabel;
+  }
+
+  function removeHtmlTags(label) {
+    let cleanedLabel = label.replace(/(<([^>]+)>)/ig, '');
+    return cleanedLabel;
+  }
+  function removeNewlines(label) {
+    let cleanedLabel = label.replace(/\s+/g, '');
+    return cleanedLabel;
+  }
+  function convertNewlinesToDotNewlines(label) {
+    let cleanedLabel = label.replace(/\n/g, '<br align="left"/>');
     return cleanedLabel;
   }
 

@@ -57,11 +57,12 @@ export class Node {
     const id = this.id.replace(regex, '_');
     const attributes: string[] = [];
     const label = this.config.maximumNodeLabelLength !== -1 && this.name.length > this.config.maximumNodeLabelLength ? this.name.substr(0, this.config.maximumNodeLabelLength) + '...' : this.name;
-    attributes.push(`label="${label}"`);
+    attributes.push(`label=<${label}>`);
+    attributes.push('shape="box"');
+    attributes.push(`style="filled,rounded"`);
     const color = this.getNodeTypeColor(this.nodeType);
     if (color) {
       attributes.push(`color="${color}"`);
-      attributes.push(`style="filled"`);
     }
     if (this.position !== undefined) {
       const x = this.position.x;

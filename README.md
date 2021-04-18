@@ -13,6 +13,7 @@ Find it on the [Visual Studio Code marketplace](https://marketplace.visualstudio
 * Show the module hierarchy
 * Show the dependency injection graph
 * Show the component hierarchy
+* Save the graphs as png, dgml or dot files
 * Summarizes all the Angular modules
 * Generate a markdown file with the component hierarchy in Mermaid format.
 * Show the directory structure of the project
@@ -46,9 +47,12 @@ In the visualization the components will by default be colored dark blue and the
 
 The 'Show the component hierarchy' command is used for visualizing the component hierarchy and Angular application. It analyses all the *.component.ts files and all the corresponding template files to determine how the component use each other and then generates a directed graph showing the component hierarchy.
 
-The command uses a vscode webview extension component to render the hierarchy using html, javascript and the [Vis.js](https://visjs.org/index.html) javascript library. This has the downside that copying the generated graph to the clipboard is not yet possible due to limitations in the vscode extension api. So to overcome this limitation the generated graph can be saved as a Png file to the root of the project you are analyzing. You can also save the graph in the Dgml format.
+The command uses a vscode webview extension component to render the hierarchy using html, javascript and the [Vis.js](https://visjs.org/index.html) javascript library. This has the downside that copying the generated graph to the clipboard is not yet possible due to limitations in the vscode extension api. So to overcome this limitation the generated graph can be saved as a Png file to the root of the project you are analyzing. You can also save the graph in the Dgml format or in the GraphViz Dot format.
 
 ![Show component hierarchy](https://github.com/CoderAllan/vscode-angulartools/raw/main/images/ShowComponentHierarchy.gif)
+
+Save as GraphViz dot format and generate a graph from the dot file:
+![Save as GraphViz dot format](https://github.com/CoderAllan/vscode-angulartools/raw/main/images/SaveAsDot.gif)
 
 You can also choose to save a selection from the graph as shown in the example below.
 

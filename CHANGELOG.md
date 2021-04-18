@@ -1,5 +1,11 @@
 # Change Log
 
+## Version 1.8.0
+
+- All three graph type can now be saved as a dot file.
+- A file icon is added to nodes when saving to a dgml file.
+- Bugfix: If a graph window has already been opened for a specific graph then it is reused next time the graph is generated instead of opening a new window every time.
+
 ## Version 1.7.3
 
 - Bugfix: GraphDirection is now saved correctly when saving as Dgml.

@@ -1,6 +1,6 @@
 import { CommandBase } from '@commands';
 import { Config, DgmlManager, FileSystemUtils, GraphVizManager } from '@src';
-import { Edge, Node } from '@model';
+import { Edge, GraphState, Node } from '@model';
 import { Base64 } from 'js-base64';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -14,6 +14,7 @@ export class ShowHierarchyBase extends CommandBase {
   protected fsUtils: FileSystemUtils = new FileSystemUtils();
   protected config = new Config();
   protected extensionContext: vscode.ExtensionContext;
+  protected graphState: GraphState;
   protected nodes: Node[] = [];
   protected edges: Edge[] = [];
   protected templateJsFilename: string = 'showHierarchy_Template.js';
@@ -23,9 +24,10 @@ export class ShowHierarchyBase extends CommandBase {
   protected showHierarchyCssFilename: string = 'showHierarchy.css';
   protected workspaceDirectory = this.fsUtils.getWorkspaceFolder();
 
-  constructor(context: vscode.ExtensionContext) {
+  constructor(context: vscode.ExtensionContext, graphState: GraphState) {
     super();
     this.extensionContext = context;
+    this.graphState = graphState;
   }
   protected appendNodes = (nodeList: Node[]) => {
     nodeList.forEach(newNode => {

@@ -36,6 +36,7 @@
   network.on("stabilizationIterationsDone", function () {
     network.setOptions( { physics: false } );
   });
+  network.on('dragEnd', postGraphState);
 
   const vscode = acquireVsCodeApi();
   const helpTextDiv = document.getElementById('helpText');
@@ -362,6 +363,41 @@
     network.on("stabilizationIterationsDone", function () {
       network.setOptions( { physics: false } );
     });
+    network.on('dragEnd', postGraphState);
+    vscode.postMessage({
+      command: 'setGraphState',
+      text: JSON.stringify({
+        networkSeed: seed,
+        graphDirection: hierarchicalOptionsDirectionSelect.value,
+        graphLayout: hierarchicalOptionsSortMethodSelect.value,
+        nodePositions: getNodePositions()
+      })
+    });  
   }
 
+  function postGraphState() {
+    const message = JSON.stringify({
+      networkSeed: seed,
+      // graphDirection: hierarchicalOptionsDirectionSelect.value,
+      // graphLayout: hierarchicalOptionsSortMethodSelect.value,
+      nodePositions: getNodePositions()
+    });
+    console.log('postGraphState', message);
+    vscode.postMessage({
+      command: 'setGraphState',
+      text: message
+    });
+  }
+
+  function getNodePositions() {
+    const nodePositions = {};
+    nodes.forEach(node => {
+      nodePositions[node.id] = {
+        id: node.id,
+        position: network.getPosition(node.id)
+      };
+    });
+    return nodePositions;
+  }
+  
 }());

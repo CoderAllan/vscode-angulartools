@@ -15,6 +15,7 @@ export class ShowHierarchyBase extends CommandBase {
   protected config = new Config();
   protected extensionContext: vscode.ExtensionContext;
   protected graphState: GraphState;
+  protected setNewState: (newGraphState: GraphState) => any;
   protected nodes: Node[] = [];
   protected edges: Edge[] = [];
   protected templateJsFilename: string = 'showHierarchy_Template.js';
@@ -24,9 +25,10 @@ export class ShowHierarchyBase extends CommandBase {
   protected showHierarchyCssFilename: string = 'showHierarchy.css';
   protected workspaceDirectory = this.fsUtils.getWorkspaceFolder();
 
-  constructor(context: vscode.ExtensionContext, graphState: GraphState) {
+  constructor(context: vscode.ExtensionContext, graphState: GraphState, setNewState: (newGraphState: GraphState) => any) {
     super();
     this.extensionContext = context;
+    this.setNewState = setNewState;
     this.graphState = graphState;
   }
   protected appendNodes = (nodeList: Node[]) => {
@@ -123,6 +125,13 @@ export class ShowHierarchyBase extends CommandBase {
     this.fsUtils.writeFile(path.join(directoryPath, graphVizFilename), fileContent, () => {
       vscode.window.setStatusBarMessage(popMessageText, 10000);
     });
+  }
+
+  protected setGraphState(jsContent: string): string {
+    if (this.graphState.networkSeed !== undefined) {
+      jsContent = jsContent.replace('var seed = network.getSeed();', `var seed = ${this.graphState.networkSeed};`);
+    }
+    return jsContent;
   }
 
   protected generateHtmlContent(webview: vscode.Webview, outputJsFilename: string): string {

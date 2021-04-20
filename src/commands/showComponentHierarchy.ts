@@ -1,6 +1,6 @@
 import { ShowHierarchyBase } from './showHierarchyBase';
 import { Component, ComponentManager } from '@src';
-import { ArrowType, Edge, Node, NodeType } from '@model';
+import { ArrowType, Edge, GraphState, Node, NodeType } from '@model';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as vscode from 'vscode';
@@ -23,6 +23,12 @@ export class ShowComponentHierarchy extends ShowHierarchyBase {
             return;
           case 'saveAsDot':
             this.saveAsDot(this.config.componentHierarchyDotGraphFilename, message.text, 'componentHierarchy', `'The component hierarchy has been analyzed and a GraphViz (dot) file '${this.config.componentHierarchyDotGraphFilename}' has been created'`);
+            return;
+          case 'setGraphState':
+            const newGraphState: GraphState = JSON.parse(message.text);
+            this.graphState.networkSeed = newGraphState.networkSeed;
+            this.graphState.nodePositions = newGraphState.nodePositions;
+            this.setNewState(this.graphState);
             return;
         }
       },
@@ -112,6 +118,7 @@ export class ShowComponentHierarchy extends ShowHierarchyBase {
     jsContent = jsContent.replace('ctx.lineWidth = 1; // graph selection guideline width', `ctx.lineWidth = ${this.config.graphSelectionGuidelineWidth}; // graph selection guideline width`);
     jsContent = jsContent.replace('selectionCanvasContext.strokeStyle = \'red\';', `selectionCanvasContext.strokeStyle = '${this.config.graphSelectionColor}';`);
     jsContent = jsContent.replace('selectionCanvasContext.lineWidth = 2;', `selectionCanvasContext.lineWidth = ${this.config.graphSelectionWidth};`);
+    jsContent = this.setGraphState(jsContent);
     return jsContent;
   }
 }

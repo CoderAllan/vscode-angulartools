@@ -23,33 +23,35 @@ export class Node {
   public attributes: Attribute[];
 
   public toJsonString(): string {
-    let nodeShapeAttr = '';
+    const jsStringProperties: string[] = [];
+    jsStringProperties.push(`id: "${this.id}"`);
+    const label = this.config.maximumNodeLabelLength !== -1 && this.name.length > this.config.maximumNodeLabelLength ? this.name.substr(0, this.config.maximumNodeLabelLength) + '...' : this.name;
+    jsStringProperties.push(`label: "${label}"`);
+    jsStringProperties.push(`color: "${this.getNodeTypeColor(this.nodeType)}"`);
     switch (this.nodeType) {
       case NodeType.rootNode:
-        nodeShapeAttr = `, shape: "${this.config.rootNodeShape}"`;
+        jsStringProperties.push(`shape: "${this.config.rootNodeShape}"`);
         break;
       case NodeType.component:
-        nodeShapeAttr = `, shape: "${this.config.componentNodeShape}"`;
+        jsStringProperties.push(`shape: "${this.config.componentNodeShape}"`);
         break;
       case NodeType.module:
-        nodeShapeAttr = `, shape: "${this.config.moduleNodeShape}"`;
+        jsStringProperties.push(`shape: "${this.config.moduleNodeShape}"`);
         break;
       case NodeType.pipe:
-        nodeShapeAttr = `, shape: "${this.config.pipeNodeShape}"`;
+        jsStringProperties.push(`shape: "${this.config.pipeNodeShape}"`);
         break;
       case NodeType.directive:
-        nodeShapeAttr = `, shape: "${this.config.directiveNodeShape}"`;
+        jsStringProperties.push(`shape: "${this.config.directiveNodeShape}"`);
         break;
       case NodeType.injectable:
-        nodeShapeAttr = `, shape: "${this.config.injectableNodeShape}"`;
+        jsStringProperties.push(`shape: "${this.config.injectableNodeShape}"`);
         break;
       default:
-        nodeShapeAttr = '';
         break;
     }
-    const nodeColorAttr = `, color: "${this.getNodeTypeColor(this.nodeType)}"`;
-    const label = this.config.maximumNodeLabelLength !== -1 && this.name.length > this.config.maximumNodeLabelLength ? this.name.substr(0, this.config.maximumNodeLabelLength) + '...' : this.name;
-    return `{id: "${this.id}", label: "${label}"${nodeColorAttr}${nodeShapeAttr}}`;
+    if (this.position !== undefined && this.position.x !== undefined && this.position.y !== undefined) { jsStringProperties.push(`x: ${this.position.x}, y: ${this.position.y}, fixed: { x: true, y: true}`); }
+    return `{ ${jsStringProperties.join(', ')} }`;
   }
 
   public toGraphViz(): string {

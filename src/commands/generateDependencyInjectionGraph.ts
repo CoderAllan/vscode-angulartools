@@ -1,6 +1,6 @@
 import { ShowHierarchyBase } from './showHierarchyBase';
 import { ModuleManager } from '@src';
-import { ArrowType, Component, Edge, GraphState, Node, NodeType, Project } from '@model';
+import { ArrowType, Component, Edge, GraphState, Node, NodeType, Position, Project } from '@model';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as vscode from 'vscode';
@@ -22,9 +22,8 @@ export class GenerateDependencyInjectionGraph extends ShowHierarchyBase {
             this.saveAsDot(this.config.dependencyInjectionDotGraphFilename, message.text, 'dependencyInjectionGraph', `'The components hierarchy has been analyzed and a GraphViz (dot) file '${this.config.dependencyInjectionDotGraphFilename}' has been created'`);
             return;
           case 'setGraphState':
-          const newGraphState: GraphState = JSON.parse(message.text);
-          this.graphState.networkSeed = newGraphState.networkSeed;
-          this.graphState.nodePositions = newGraphState.nodePositions;
+            const newGraphState: GraphState = JSON.parse(message.text);
+            this.graphState = newGraphState;
             this.setNewState(this.graphState);
             return;
         }
@@ -35,7 +34,6 @@ export class GenerateDependencyInjectionGraph extends ShowHierarchyBase {
     var workspaceFolder = this.fsUtils.getWorkspaceFolder();
     const errors: string[] = [];
     const project: Project = ModuleManager.scanProject(workspaceFolder, errors, this.isTypescriptFile);
-
     this.nodes = [];
     this.edges = [];
     this.addNodesAndEdges(project, this.appendNodes, this.appendEdges);
@@ -101,7 +99,8 @@ export class GenerateDependencyInjectionGraph extends ShowHierarchyBase {
     project.components.forEach(component => {
       let componentFilename = component.filename.replace(this.workspaceDirectory, '.');
       componentFilename = componentFilename.split('\\').join('/');
-      appendNodes([new Node(component.name, this.generatedComponentNode(component), componentFilename, false, NodeType.component)]);
+      const position = this.graphState.nodePositions[component.name];
+      appendNodes([new Node(component.name, this.generatedComponentNode(component), componentFilename, false, NodeType.component, position)]);
       component.dependencyInjections.forEach(injectable => {
         appendNodes([new Node(injectable.name, injectable.name, injectable.filename.replace(this.workspaceDirectory, ''), false, NodeType.injectable)]);
         appendEdges([new Edge((this.edges.length + 1).toString(), injectable.name, component.name, ArrowType.injectable)]);

@@ -6,6 +6,7 @@ export class GraphState {
   }
   public graphLayout: string | undefined;
   public graphDirection: string | undefined;
-  public networkSeed: number | undefined;
+  public networkSeed: string | undefined;
   public nodePositions: { [id: string]: Position };
+  public showHierarchicalOptions: boolean = false;
 }

@@ -34,7 +34,16 @@
   var network = new vis.Network(container, data, options);
   var seed = network.getSeed();
   network.on("stabilizationIterationsDone", function () {
-    network.setOptions( { physics: false } );
+    network.setOptions({
+      physics: false
+    });
+    nodes.forEach(function (node) {
+      nodes.update({
+        id: node.id,
+        fixed: false
+      });
+    });
+    postGraphState();
   });
   network.on('dragEnd', postGraphState);
 
@@ -52,6 +61,7 @@
   let selectionCanvasContext;
 
   const hierarchicalOptionsDirectionSelect = document.getElementById('direction');
+  const showHierarchicalOptionsCheckbox = document.getElementById('showHierarchicalOptions');
 
   // add button event listeners
   const saveAsPngButton = document.getElementById('saveAsPngButton');
@@ -262,7 +272,7 @@
     nodes.forEach(node => {
       nodeExport[node.id] = {
         id: node.id,
-        label: command==='saveAsDgml' ? cleanLabelDgml(node.label) : cleanLabelDot(node.label),
+        label: command === 'saveAsDgml' ? cleanLabelDgml(node.label) : cleanLabelDot(node.label),
         position: network.getPosition(node.id),
         boundingBox: network.getBoundingBox(node.id)
       };
@@ -292,10 +302,12 @@
     let cleanedLabel = label.replace(/(<([^>]+)>)/ig, '');
     return cleanedLabel;
   }
+
   function removeNewlines(label) {
     let cleanedLabel = label.replace(/\s+/g, '');
     return cleanedLabel;
   }
+
   function convertNewlinesToDotNewlines(label) {
     let cleanedLabel = label.replace(/\n/g, '<br align="left"/>');
     return cleanedLabel;
@@ -306,7 +318,7 @@
   }
 
   function setRandomLayout() {
-    options.layout ={
+    options.layout = {
       hierarchical: {
         enabled: false
       }
@@ -322,7 +334,7 @@
 
   function setHierarchicalLayout(direction, sortMethod) {
     options.layout = {
-        hierarchical: {
+      hierarchical: {
         enabled: true,
         levelSeparation: 200,
         nodeSpacing: 200,
@@ -342,7 +354,6 @@
   function setNetworkLayout() {
     const hierarchicalOptionsDirection = document.getElementById('hierarchicalOptions_direction');
     const hierarchicalOptionsSortMethod = document.getElementById('hierarchicalOptions_sortmethod');
-    const showHierarchicalOptionsCheckbox = document.getElementById('showHierarchicalOptions');
     hierarchicalOptionsDirection.style['display'] = showHierarchicalOptionsCheckbox.checked ? 'block' : 'none';
     hierarchicalOptionsSortMethod.style['display'] = showHierarchicalOptionsCheckbox.checked ? 'block' : 'none';
     const hierarchicalOptionsSortMethodSelect = document.getElementById('sortMethod');
@@ -361,28 +372,29 @@
     options.layout.randomSeed = seed;
     network = new vis.Network(container, data, options);
     network.on("stabilizationIterationsDone", function () {
-      network.setOptions( { physics: false } );
+      network.setOptions({
+        physics: false
+      });
+      nodes.forEach(function (node) {
+        nodes.update({
+          id: node.id,
+          fixed: false
+        });
+      });
+      postGraphState();
     });
     network.on('dragEnd', postGraphState);
-    vscode.postMessage({
-      command: 'setGraphState',
-      text: JSON.stringify({
-        networkSeed: seed,
-        graphDirection: hierarchicalOptionsDirectionSelect.value,
-        graphLayout: hierarchicalOptionsSortMethodSelect.value,
-        nodePositions: getNodePositions()
-      })
-    });  
+    postGraphState();
   }
 
   function postGraphState() {
     const message = JSON.stringify({
       networkSeed: seed,
-      // graphDirection: hierarchicalOptionsDirectionSelect.value,
-      // graphLayout: hierarchicalOptionsSortMethodSelect.value,
+      graphDirection: showHierarchicalOptionsCheckbox.checked ? hierarchicalOptionsDirectionSelect.value : undefined,
+      graphLayout: showHierarchicalOptionsCheckbox.checked ? hierarchicalOptionsSortMethodSelect.value : undefined,
+      showHierarchicalOptions: showHierarchicalOptionsCheckbox.checked,
       nodePositions: getNodePositions()
     });
-    console.log('postGraphState', message);
     vscode.postMessage({
       command: 'setGraphState',
       text: message
@@ -392,12 +404,13 @@
   function getNodePositions() {
     const nodePositions = {};
     nodes.forEach(node => {
+      const position = network.getPosition(node.id);
       nodePositions[node.id] = {
-        id: node.id,
-        position: network.getPosition(node.id)
+        x: position.x,
+        y: position.y
       };
     });
     return nodePositions;
   }
-  
+
 }());

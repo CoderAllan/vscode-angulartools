@@ -129,7 +129,10 @@ export class ShowHierarchyBase extends CommandBase {
 
   protected setGraphState(jsContent: string): string {
     if (this.graphState.networkSeed !== undefined) {
-      jsContent = jsContent.replace('var seed = network.getSeed();', `var seed = ${this.graphState.networkSeed};`);
+      // console.log(this.graphState.networkSeed);
+      // const seedParts = this.graphState.networkSeed.indexOf(':') > 0 ? this.graphState.networkSeed.split(':') : [this.graphState.networkSeed, ''];
+      // console.log(seedParts);
+      // jsContent = jsContent.replace('var seed = network.getSeed();', `var seed = ${seedParts[0]};`);
     }
     return jsContent;
   }

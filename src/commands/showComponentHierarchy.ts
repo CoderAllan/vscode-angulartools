@@ -26,8 +26,7 @@ export class ShowComponentHierarchy extends ShowHierarchyBase {
             return;
           case 'setGraphState':
             const newGraphState: GraphState = JSON.parse(message.text);
-            this.graphState.networkSeed = newGraphState.networkSeed;
-            this.graphState.nodePositions = newGraphState.nodePositions;
+            this.graphState = newGraphState;
             this.setNewState(this.graphState);
             return;
         }

@@ -37,12 +37,7 @@
     network.setOptions({
       physics: false
     });
-    nodes.forEach(function (node) {
-      nodes.update({
-        id: node.id,
-        fixed: false
-      });
-    });
+    unfixNodes();
     postGraphState();
   });
   network.on('dragEnd', postGraphState);
@@ -375,12 +370,7 @@
       network.setOptions({
         physics: false
       });
-      nodes.forEach(function (node) {
-        nodes.update({
-          id: node.id,
-          fixed: false
-        });
-      });
+      unfixNodes();
       postGraphState();
     });
     network.on('dragEnd', postGraphState);
@@ -411,6 +401,15 @@
       };
     });
     return nodePositions;
+  }
+
+  function unfixNodes() {
+    nodes.forEach(function (node) {
+      nodes.update({
+        id: node.id,
+        fixed: false
+      });
+    });
   }
 
 }());

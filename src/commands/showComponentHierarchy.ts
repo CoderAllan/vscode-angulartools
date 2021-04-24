@@ -83,7 +83,8 @@ export class ShowComponentHierarchy extends ShowHierarchyBase {
   private generateDirectedGraphNodes(components: Component[], component: Component, isRoot: boolean, parentSelector: string, appendNodes: (nodeList: Node[]) => void) {
     let componentFilename = component.tsFilename.replace(this.directoryPath, '.');
     componentFilename = componentFilename.split('\\').join('/');
-    appendNodes([new Node(component.selector, component.selector, componentFilename, isRoot, isRoot ? NodeType.rootNode : NodeType.component)]);
+    const componentPosition = this.graphState.nodePositions[component.selector];
+    appendNodes([new Node(component.selector, component.selector, componentFilename, isRoot, isRoot ? NodeType.rootNode : NodeType.component, componentPosition)]);
     if (components.length > 0) {
       components.forEach((subComponent) => {
         if (parentSelector !== subComponent.selector) {

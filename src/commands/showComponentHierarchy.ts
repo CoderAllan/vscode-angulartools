@@ -108,9 +108,9 @@ export class ShowComponentHierarchy extends ShowHierarchyBase {
 
   private generateJavascriptContent(nodesJson: string, rootNodesJson: string, edgesJson: string): string {
     let template = fs.readFileSync(this.extensionContext?.asAbsolutePath(path.join('templates', this.templateJsFilename)), 'utf8');
-    let jsContent = template.replace('var nodes = new vis.DataSet([]);', `var nodes = new vis.DataSet([${nodesJson}]);`);
-    jsContent = jsContent.replace('var rootNodes = [];', `var rootNodes = [${rootNodesJson}];`);
-    jsContent = jsContent.replace('var edges = new vis.DataSet([]);', `var edges = new vis.DataSet([${edgesJson}]);`);
+    let jsContent = template.replace('const nodes = new vis.DataSet([]);', `var nodes = new vis.DataSet([${nodesJson}]);`);
+    jsContent = jsContent.replace('const rootNodes = [];', `var rootNodes = [${rootNodesJson}];`);
+    jsContent = jsContent.replace('const edges = new vis.DataSet([]);', `var edges = new vis.DataSet([${edgesJson}]);`);
     jsContent = jsContent.replace('background: "#00FF00" // rootNode background color', `background: "${this.config.rootNodeBackgroundColor}" // rootNode background color`);
     jsContent = jsContent.replace('shape: \'box\' // The shape of the nodes.', `shape: '${this.config.rootNodeShape}'// The shape of the nodes.`);
     jsContent = jsContent.replace('type: "triangle" // edge arrow to type', `type: "${this.config.componentHierarchyEdgeArrowToType}" // edge arrow to type}`);

@@ -27,7 +27,7 @@
   z-index: 300;
 }
 
-input[type=button] {
+button {
   margin-right: 10px;
 }
 

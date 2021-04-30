@@ -1,26 +1,26 @@
 (function () {
-  var nodes = new vis.DataSet([]);
+  const nodes = new vis.DataSet([]);
 
-  var rootNodes = [];
+  const rootNodes = [];
   rootNodes.forEach(nodeId => {
     nodes.get(nodeId).color = {
       background: "#00FF00" // rootNode background color
     };
   });
 
-  var arrowAttr = {
+  const arrowAttr = {
     to: {
       enabled: true,
       type: "triangle" // edge arrow to type
     }
   };
-  var edges = new vis.DataSet([]);
+  const edges = new vis.DataSet([]);
 
-  var data = {
+  const data = {
     nodes: nodes,
     edges: edges
   };
-  var options = {
+  let options = {
     edges: {
       smooth: false // Make edges straight lines.
     },
@@ -30,9 +30,11 @@
     }
   };
   setRandomLayout();
-  var container = document.getElementById('network');
-  var network = new vis.Network(container, data, options);
-  var seed = network.getSeed();
+  const container = document.getElementById('network');
+  let network = new vis.Network(container, data, options);
+  let seed = network.getSeed();
+  let nodePositions = [];
+  
   network.on("stabilizationIterationsDone", function () {
     network.setOptions({
       physics: false
@@ -48,9 +50,9 @@
   let mouseX = mouseY = 0;
   let selection;
   // get the vis.js canvas
-  var graphDiv = document.getElementById('network');
-  var visDiv = graphDiv.firstElementChild;
-  var graphCanvas = visDiv.firstElementChild;
+  const graphDiv = document.getElementById('network');
+  const visDiv = graphDiv.firstElementChild;
+  const graphCanvas = visDiv.firstElementChild;
   const selectionLayer = document.getElementById('selectionLayer');
   const selectionCanvas = selectionLayer.firstElementChild;
   let selectionCanvasContext;
@@ -65,17 +67,17 @@
   saveAsDgmlButton.addEventListener('click', saveAsDgml);
   const saveAsDotButton = document.getElementById('saveAsDotButton');
   saveAsDotButton.addEventListener('click', saveAsDot);
+  const regenerateGraphButton = document.getElementById('regenerateGraphButton');
+  regenerateGraphButton.addEventListener('click', regenerateGraph);
   const saveSelectionAsPngButton = document.getElementById('saveSelectionAsPngButton');
   saveSelectionAsPngButton.addEventListener('click', saveSelectionAsPng);
-  const copyToClipboardButton = document.getElementById('copyToClipboardButton');
-  copyToClipboardButton.addEventListener('click', copyToClipboard);
-  copyToClipboardButton.style['display'] = 'none'; // TODO: Remove when copyToClipboard is implemented
   const showHierarchicalOptionsButton = document.getElementById('showHierarchicalOptions');
   showHierarchicalOptionsButton.addEventListener('click', setNetworkLayout);
   const hierarchicalDirectionSelect = document.getElementById('direction');
   hierarchicalDirectionSelect.addEventListener('change', setNetworkLayout);
   const hierarchicalSortMethodSelect = document.getElementById('sortMethod');
   hierarchicalSortMethodSelect.addEventListener('change', setNetworkLayout);
+  const hierarchicalOptionsSortMethodSelect = document.getElementById('sortMethod');
 
   function mouseUpEventListener(event) {
     // Convert the canvas to image data that can be saved
@@ -128,7 +130,7 @@
   }
 
   function showGuideLines() {
-    var tmpSelectionCanvasContext = selectionCanvas.getContext("2d");
+    const tmpSelectionCanvasContext = selectionCanvas.getContext("2d");
     tmpSelectionCanvasContext.clearRect(0, 0, selectionCanvas.width, selectionCanvas.height);
     drawGuideLine(tmpSelectionCanvasContext, mouseX, -1);
     drawGuideLine(tmpSelectionCanvasContext, -1, mouseY);
@@ -157,10 +159,6 @@
   }
 
   function saveSelectionAsPng() {
-    graphDiv = document.getElementById('network');
-    visDiv = graphDiv.firstElementChild;
-    graphCanvas = visDiv.firstElementChild;
-
     // show the help text
     helpTextDiv.style['display'] = 'block';
 
@@ -180,9 +178,6 @@
   }
 
   function saveAsPng() {
-    graphDiv = document.getElementById('network');
-    visDiv = graphDiv.firstElementChild;
-    graphCanvas = visDiv.firstElementChild;
     // Calculate the bounding box of all the elements on the canvas
     const boundingBox = getBoundingBox();
 
@@ -204,42 +199,42 @@
   }
 
   function getBoundingBox() {
-    var ctx = graphCanvas.getContext('2d');
+    const ctx = graphCanvas.getContext('2d');
     const imgData = ctx.getImageData(0, 0, graphCanvas.width, graphCanvas.height);
-    var bytesPerPixels = 4;
-    var cWidth = graphCanvas.width * bytesPerPixels;
-    var cHeight = graphCanvas.height;
-    var minY = minX = maxY = maxX = -1;
-    for (var y = cHeight; y > 0 && maxY === -1; y--) {
-      for (var x = 0; x < cWidth; x += bytesPerPixels) {
-        var arrayPos = x + y * cWidth;
+    const bytesPerPixels = 4;
+    const cWidth = graphCanvas.width * bytesPerPixels;
+    const cHeight = graphCanvas.height;
+    let minY = minX = maxY = maxX = -1;
+    for (let y = cHeight; y > 0 && maxY === -1; y--) {
+      for (let x = 0; x < cWidth; x += bytesPerPixels) {
+        const arrayPos = x + y * cWidth;
         if (imgData.data[arrayPos + 3] > 0 && maxY === -1) {
           maxY = y;
           break;
         }
       }
     }
-    for (var x = cWidth; x >= 0 && maxX === -1; x -= bytesPerPixels) {
-      for (var y = 0; y < maxY; y++) {
-        var arrayPos = x + y * cWidth;
+    for (let x = cWidth; x >= 0 && maxX === -1; x -= bytesPerPixels) {
+      for (let y = 0; y < maxY; y++) {
+        const arrayPos = x + y * cWidth;
         if (imgData.data[arrayPos + 3] > 0 && maxX === -1) {
           maxX = x / bytesPerPixels;
           break;
         }
       }
     }
-    for (var x = 0; x < maxX * bytesPerPixels && minX === -1; x += bytesPerPixels) {
-      for (var y = 0; y < maxY; y++) {
-        var arrayPos = x + y * cWidth;
+    for (let x = 0; x < maxX * bytesPerPixels && minX === -1; x += bytesPerPixels) {
+      for (let y = 0; y < maxY; y++) {
+        const arrayPos = x + y * cWidth;
         if (imgData.data[arrayPos + 3] > 0 && minX === -1) {
           minX = x / bytesPerPixels;
           break;
         }
       }
     }
-    for (var y = 0; y < maxY && minY === -1; y++) {
-      for (var x = minX * bytesPerPixels; x < maxX * bytesPerPixels; x += bytesPerPixels) {
-        var arrayPos = x + y * cWidth;
+    for (let y = 0; y < maxY && minY === -1; y++) {
+      for (let x = minX * bytesPerPixels; x < maxX * bytesPerPixels; x += bytesPerPixels) {
+        const arrayPos = x + y * cWidth;
         if (imgData.data[arrayPos + 3] > 0 && minY === -1) {
           minY = y;
           break;
@@ -308,8 +303,17 @@
     return cleanedLabel;
   }
 
-  function copyToClipboard() {
-    console.log('Not implemented yet...');
+  function regenerateGraph() {
+    seed = Math.random();
+    nodes.forEach(function (node) {
+      nodes.update({
+        id: node.id,
+        fixed: false,
+        x: undefined,
+        y: undefined
+      });
+    });
+    setNetworkLayout();
   }
 
   function setRandomLayout() {
@@ -351,11 +355,9 @@
     const hierarchicalOptionsSortMethod = document.getElementById('hierarchicalOptions_sortmethod');
     hierarchicalOptionsDirection.style['display'] = showHierarchicalOptionsCheckbox.checked ? 'block' : 'none';
     hierarchicalOptionsSortMethod.style['display'] = showHierarchicalOptionsCheckbox.checked ? 'block' : 'none';
-    const hierarchicalOptionsSortMethodSelect = document.getElementById('sortMethod');
     if (showHierarchicalOptionsCheckbox.checked) {
       if (hierarchicalOptionsDirectionSelect.value && hierarchicalOptionsDirectionSelect.value === 'Random') {
         setRandomLayout();
-        seed = Math.random();
       } else {
         const direction = hierarchicalOptionsDirectionSelect.value ? hierarchicalOptionsDirectionSelect.value : 'UD';
         const sortMethod = hierarchicalOptionsSortMethodSelect.value ? hierarchicalOptionsSortMethodSelect.value : 'hubsize';

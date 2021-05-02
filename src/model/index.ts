@@ -4,6 +4,7 @@ export * from './BoundingBox';
 export * from './Category';
 export * from './Component';
 export * from './Edge';
+export * from './GraphState';
 export * from './NamedEntity';
 export * from './NetworkNode';
 export * from './Node';

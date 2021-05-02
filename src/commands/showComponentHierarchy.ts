@@ -1,6 +1,6 @@
 import { ShowHierarchyBase } from './showHierarchyBase';
 import { Component, ComponentManager } from '@src';
-import { ArrowType, Edge, Node, NodeType } from '@model';
+import { ArrowType, Edge, GraphState, Node, NodeType } from '@model';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as vscode from 'vscode';
@@ -24,6 +24,16 @@ export class ShowComponentHierarchy extends ShowHierarchyBase {
           case 'saveAsDot':
             this.saveAsDot(this.config.componentHierarchyDotGraphFilename, message.text, 'componentHierarchy', `'The component hierarchy has been analyzed and a GraphViz (dot) file '${this.config.componentHierarchyDotGraphFilename}' has been created'`);
             return;
+          case 'setGraphState':
+            const newGraphState: GraphState = JSON.parse(message.text);
+            this.graphState = newGraphState;
+            this.setNewState(this.graphState);
+            this.nodes.forEach(node => {
+              node.position = this.graphState.nodePositions[node.id];
+            });
+            this.addNodesAndEdges(components, this.appendNodes, this.appendEdges);
+            this.generateAndSaveJavascriptContent(() => { });
+            return;
         }
       },
       undefined,
@@ -35,7 +45,12 @@ export class ShowComponentHierarchy extends ShowHierarchyBase {
     this.nodes = [];
     this.edges = [];
     this.addNodesAndEdges(components, this.appendNodes, this.appendEdges);
+    const htmlContent = this.generateHtmlContent(webview, this.showComponentHierarchyJsFilename);
+    //this.fsUtils.writeFile(this.extensionContext?.asAbsolutePath(path.join('out', ShowComponentHierarchy.Name + '.html')), htmlContent, () => { }); // For debugging
+    this.generateAndSaveJavascriptContent(() => { webview.html = htmlContent; });
+  }
 
+  private generateAndSaveJavascriptContent(callback: () => any) {
     const nodesJson = this.nodes
       .map((node, index, arr) => { return node.toJsonString(); })
       .join(',\n');
@@ -49,16 +64,10 @@ export class ShowComponentHierarchy extends ShowHierarchyBase {
 
     try {
       const jsContent = this.generateJavascriptContent(nodesJson, rootNodesJson, edgesJson);
-      const outputJsFilename = this.showComponentHierarchyJsFilename;
-      let htmlContent = this.generateHtmlContent(webview, outputJsFilename);
-
-      //this.fsUtils.writeFile(this.extensionContext?.asAbsolutePath(path.join('out', ShowComponentHierarchy.Name + '.html')), htmlContent, () => { }); // For debugging
       this.fsUtils.writeFile(
-        this.extensionContext?.asAbsolutePath(path.join('.', outputJsFilename)),
+        this.extensionContext?.asAbsolutePath(path.join('.', this.showComponentHierarchyJsFilename)),
         jsContent,
-        () => {
-          webview.html = htmlContent;
-        }
+        callback
       );
     } catch (ex) {
       console.log('Angular Tools Exception:' + ex);
@@ -78,7 +87,8 @@ export class ShowComponentHierarchy extends ShowHierarchyBase {
   private generateDirectedGraphNodes(components: Component[], component: Component, isRoot: boolean, parentSelector: string, appendNodes: (nodeList: Node[]) => void) {
     let componentFilename = component.tsFilename.replace(this.directoryPath, '.');
     componentFilename = componentFilename.split('\\').join('/');
-    appendNodes([new Node(component.selector, component.selector, componentFilename, isRoot, isRoot ? NodeType.rootNode : NodeType.component)]);
+    const componentPosition = this.graphState.nodePositions[component.selector];
+    appendNodes([new Node(component.selector, component.selector, componentFilename, isRoot, isRoot ? NodeType.rootNode : NodeType.component, componentPosition)]);
     if (components.length > 0) {
       components.forEach((subComponent) => {
         if (parentSelector !== subComponent.selector) {
@@ -102,9 +112,9 @@ export class ShowComponentHierarchy extends ShowHierarchyBase {
 
   private generateJavascriptContent(nodesJson: string, rootNodesJson: string, edgesJson: string): string {
     let template = fs.readFileSync(this.extensionContext?.asAbsolutePath(path.join('templates', this.templateJsFilename)), 'utf8');
-    let jsContent = template.replace('var nodes = new vis.DataSet([]);', `var nodes = new vis.DataSet([${nodesJson}]);`);
-    jsContent = jsContent.replace('var rootNodes = [];', `var rootNodes = [${rootNodesJson}];`);
-    jsContent = jsContent.replace('var edges = new vis.DataSet([]);', `var edges = new vis.DataSet([${edgesJson}]);`);
+    let jsContent = template.replace('const nodes = new vis.DataSet([]);', `var nodes = new vis.DataSet([${nodesJson}]);`);
+    jsContent = jsContent.replace('const rootNodes = [];', `var rootNodes = [${rootNodesJson}];`);
+    jsContent = jsContent.replace('const edges = new vis.DataSet([]);', `var edges = new vis.DataSet([${edgesJson}]);`);
     jsContent = jsContent.replace('background: "#00FF00" // rootNode background color', `background: "${this.config.rootNodeBackgroundColor}" // rootNode background color`);
     jsContent = jsContent.replace('shape: \'box\' // The shape of the nodes.', `shape: '${this.config.rootNodeShape}'// The shape of the nodes.`);
     jsContent = jsContent.replace('type: "triangle" // edge arrow to type', `type: "${this.config.componentHierarchyEdgeArrowToType}" // edge arrow to type}`);
@@ -112,6 +122,7 @@ export class ShowComponentHierarchy extends ShowHierarchyBase {
     jsContent = jsContent.replace('ctx.lineWidth = 1; // graph selection guideline width', `ctx.lineWidth = ${this.config.graphSelectionGuidelineWidth}; // graph selection guideline width`);
     jsContent = jsContent.replace('selectionCanvasContext.strokeStyle = \'red\';', `selectionCanvasContext.strokeStyle = '${this.config.graphSelectionColor}';`);
     jsContent = jsContent.replace('selectionCanvasContext.lineWidth = 2;', `selectionCanvasContext.lineWidth = ${this.config.graphSelectionWidth};`);
+    jsContent = this.setGraphState(jsContent);
     return jsContent;
   }
 }

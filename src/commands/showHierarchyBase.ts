@@ -1,6 +1,6 @@
 import { CommandBase } from '@commands';
 import { Config, DgmlManager, FileSystemUtils, GraphVizManager } from '@src';
-import { Edge, Node } from '@model';
+import { Edge, GraphState, Node } from '@model';
 import { Base64 } from 'js-base64';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -14,6 +14,8 @@ export class ShowHierarchyBase extends CommandBase {
   protected fsUtils: FileSystemUtils = new FileSystemUtils();
   protected config = new Config();
   protected extensionContext: vscode.ExtensionContext;
+  protected graphState: GraphState;
+  protected setNewState: (newGraphState: GraphState) => any;
   protected nodes: Node[] = [];
   protected edges: Edge[] = [];
   protected templateJsFilename: string = 'showHierarchy_Template.js';
@@ -21,11 +23,16 @@ export class ShowHierarchyBase extends CommandBase {
   protected showComponentHierarchyJsFilename: string = 'showComponentHierarchy.js';
   protected showModuleHierarchyJsFilename: string = 'showModuleHierarchy.js';
   protected showHierarchyCssFilename: string = 'showHierarchy.css';
+  protected fontAwesomeCssFilename: string = 'all.min.css';
+  protected fontAwesomeFontFilename: string = '../webfonts/fa-';
+  
   protected workspaceDirectory = this.fsUtils.getWorkspaceFolder();
 
-  constructor(context: vscode.ExtensionContext) {
+  constructor(context: vscode.ExtensionContext, graphState: GraphState, setNewState: (newGraphState: GraphState) => any) {
     super();
     this.extensionContext = context;
+    this.setNewState = setNewState;
+    this.graphState = graphState;
   }
   protected appendNodes = (nodeList: Node[]) => {
     nodeList.forEach(newNode => {
@@ -123,6 +130,13 @@ export class ShowHierarchyBase extends CommandBase {
     });
   }
 
+  protected setGraphState(jsContent: string): string {
+    if (this.graphState.networkSeed !== undefined) {
+      jsContent = jsContent.replace('var seed = network.getSeed();', `var seed = '${this.graphState.networkSeed}';`);
+    }
+    return jsContent;
+  }
+
   protected generateHtmlContent(webview: vscode.Webview, outputJsFilename: string): string {
     let htmlContent = fs.readFileSync(this.extensionContext?.asAbsolutePath(path.join('templates', this.templateHtmlFilename)), 'utf8');
 
@@ -130,19 +144,35 @@ export class ShowHierarchyBase extends CommandBase {
     const visUri = webview.asWebviewUri(visPath);
     htmlContent = htmlContent.replace('vis-network.min.js', visUri.toString());
 
-    const cssPath = vscode.Uri.joinPath(this.extensionContext.extensionUri, 'stylesheet', this.showHierarchyCssFilename);
-    const cssUri = webview.asWebviewUri(cssPath);
+    let cssPath = vscode.Uri.joinPath(this.extensionContext.extensionUri, 'stylesheet', this.showHierarchyCssFilename);
+    let cssUri = webview.asWebviewUri(cssPath);
     htmlContent = htmlContent.replace(this.showHierarchyCssFilename, cssUri.toString());
+
+    const vscodyfiedFontAwesomeCssFilename = this.fixFontAwesomeFontUri(webview);
+    cssPath = vscode.Uri.joinPath(this.extensionContext.extensionUri, 'stylesheet', vscodyfiedFontAwesomeCssFilename);
+    cssUri = webview.asWebviewUri(cssPath);
+    htmlContent = htmlContent.replace(this.fontAwesomeCssFilename, cssUri.toString());
 
     const nonce = this.getNonce();
     htmlContent = htmlContent.replace('nonce-nonce', `nonce-${nonce}`);
     htmlContent = htmlContent.replace(/<script /g, `<script nonce="${nonce}" `);
-    htmlContent = htmlContent.replace('cspSource', webview.cspSource);
+    htmlContent = htmlContent.replace(/cspSource/g, webview.cspSource);
 
     const jsPath = vscode.Uri.joinPath(this.extensionContext.extensionUri, outputJsFilename);
     const jsUri = webview.asWebviewUri(jsPath);
     htmlContent = htmlContent.replace('showHierarchy.js', jsUri.toString());
     return htmlContent;
+  }
+
+  private fixFontAwesomeFontUri(webview: vscode.Webview): string {
+    const fontPath = vscode.Uri.joinPath(this.extensionContext.extensionUri, this.fontAwesomeFontFilename.replace('../', ''));
+    const fontPathUri = webview.asWebviewUri(fontPath);
+    let cssFileContent = fs.readFileSync(this.extensionContext?.asAbsolutePath(path.join('stylesheet', this.fontAwesomeCssFilename)), 'utf8');
+    var regex = new RegExp(this.fontAwesomeFontFilename, "g");
+    cssFileContent = cssFileContent.replace(regex, fontPathUri.toString());
+    const newCssFilename = 'all.vscode.min.css';
+    this.fsUtils.writeFile(this.extensionContext?.asAbsolutePath(path.join('stylesheet', newCssFilename)), cssFileContent, () => {});
+    return newCssFilename;
   }
 
   protected showErrors(errors: string[], errorMessage: string) {

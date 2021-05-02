@@ -1,5 +1,10 @@
 # Change Log
 
+## Version 1.8.1
+
+- The position of nodes are now persisted. If you rearrange the nodes you work won't be lost when changing to another tab and back again.
+- You now has to click the 'Regenerate graph' button to generate a new random graph.
+
 ## Version 1.8.0
 
 - All three graph type can now be saved as a dot file.

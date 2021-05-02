@@ -1,5 +1,5 @@
 
-export interface Position {
-  x: number;
-  y: number;
+export class Position {
+  public x: number | undefined;
+  public y: number | undefined;
 }

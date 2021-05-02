@@ -12,6 +12,7 @@ import {
   ShowModuleHierarchy,
   GenerateDependencyInjectionGraph
 } from '@commands';
+import { GraphState } from '@model';
 
 export function activate(context: vscode.ExtensionContext) {
 
@@ -48,6 +49,7 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(componentHierarchyMarkdownDisposable);
 
   let componentHierarchyPanel: vscode.WebviewPanel | undefined = undefined;
+  let componentHierarchyGraphState: GraphState = new GraphState();
   const showComponentHierarchyDisposable = vscode.commands.registerCommand(`${cmdPrefix}.${ShowComponentHierarchy.commandName}`, () => {
     if (componentHierarchyPanel !== undefined) {
       componentHierarchyPanel.reveal(vscode.ViewColumn.One);
@@ -64,12 +66,14 @@ export function activate(context: vscode.ExtensionContext) {
       }, null, context.subscriptions);
     }
     componentHierarchyPanel.onDidDispose(() => componentHierarchyPanel = undefined, undefined, context.subscriptions);
-    const command = new ShowComponentHierarchy(context);
+    const setNewState = (newGraphState: GraphState) => { componentHierarchyGraphState = newGraphState; };
+    const command = new ShowComponentHierarchy(context, componentHierarchyGraphState, setNewState);
     command.execute(componentHierarchyPanel.webview);
   });
   context.subscriptions.push(showComponentHierarchyDisposable);
 
   let moduleHierarchyPanel: vscode.WebviewPanel | undefined = undefined;
+  let moduleHierarchyGraphState: GraphState = new GraphState();
   const showModuleHierarchyDisposable = vscode.commands.registerCommand(`${cmdPrefix}.${ShowModuleHierarchy.commandName}`, () => {
     if (moduleHierarchyPanel !== undefined) {
       moduleHierarchyPanel.reveal(vscode.ViewColumn.One);
@@ -86,12 +90,14 @@ export function activate(context: vscode.ExtensionContext) {
       }, null, context.subscriptions);
     }
     moduleHierarchyPanel.onDidDispose(() => moduleHierarchyPanel = undefined, undefined, context.subscriptions);
-    const command = new ShowModuleHierarchy(context);
+    const setNewState = (newGraphState: GraphState) => { moduleHierarchyGraphState = newGraphState; };
+    const command = new ShowModuleHierarchy(context, moduleHierarchyGraphState, setNewState);
     command.execute(moduleHierarchyPanel.webview);
   });
   context.subscriptions.push(showModuleHierarchyDisposable);
 
   let dependencyInjectionGraphPanel: vscode.WebviewPanel | undefined = undefined;
+  let dependencyInjectionGraphState: GraphState = new GraphState();
   const generateDependencyInjectionGraphDisposable = vscode.commands.registerCommand(`${cmdPrefix}.${GenerateDependencyInjectionGraph.commandName}`, () => {
     if (dependencyInjectionGraphPanel !== undefined) {
       dependencyInjectionGraphPanel.reveal(vscode.ViewColumn.One);
@@ -108,7 +114,8 @@ export function activate(context: vscode.ExtensionContext) {
       }, null, context.subscriptions);
     }
     dependencyInjectionGraphPanel.onDidDispose(() => dependencyInjectionGraphPanel = undefined, undefined, context.subscriptions);
-    const command = new GenerateDependencyInjectionGraph(context);
+    const setNewState = (newGraphState: GraphState) => { dependencyInjectionGraphState = newGraphState; };
+    const command = new GenerateDependencyInjectionGraph(context, dependencyInjectionGraphState, setNewState);
     command.execute(dependencyInjectionGraphPanel.webview);
   });
   context.subscriptions.push(generateDependencyInjectionGraphDisposable);

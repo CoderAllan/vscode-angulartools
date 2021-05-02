@@ -2,10 +2,11 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src cspSource; script-src 'nonce-nonce';">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; font-src cspSource; style-src cspSource; script-src 'nonce-nonce';">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <link href="showHierarchy.css" rel="stylesheet">
+  <link href="all.min.css" rel="stylesheet">
 
   <script type="text/javascript" src="vis-network.min.js"></script>
 
@@ -14,15 +15,15 @@
 <body>
   <div id="buttons">
     <div class="dropdown">
-      <input type="button" id="saveAsButton" value="Save as ...">
+      <button id="saveAsButton" ><i class="fas fa-file-download"></i> Save as ...</button>
       <div class="dropdown-content">
-        <a href="#" id="saveAsPngButton">Save as Png</a>
-        <a href="#" Id="saveAsDgmlButton">Save as Dgml</a>
-        <a href="#" Id="saveAsDotButton">Save as Dot</a>
+        <a href="#" id="saveAsPngButton"><i class="fas fa-file-image"></i> Save as Png</a>
+        <a href="#" Id="saveAsDgmlButton"><i class="fas fa-file-code"></i> Save as Dgml</a>
+        <a href="#" Id="saveAsDotButton"><i class="fas fa-project-diagram"></i> Save as Dot</a>
       </div>
     </div>
-    <input type="button" id="saveSelectionAsPngButton" value="Save selection as png">
-    <input type="button" id="copyToClipboardButton" value="Copy to clipboard">
+    <button id="regenerateGraphButton" title="Regenerate the graph"><i class="fas fa-sync"></i></button>
+    <button id="saveSelectionAsPngButton"><i class="fas fa-file-download"></i> Save selection as png</button>
     <div id="hierarchical">Change layout:<input type="checkbox" id="showHierarchicalOptions"></div>
     <div id="hierarchicalOptions_direction">
       Direction: <select id="direction">

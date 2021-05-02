@@ -152,6 +152,7 @@ See the full list of settings below the screenshot.
 
 * [Vis.js](https://visjs.org/index.html) - Used for generating the directed graph for showing the component hierarchy.
 * [npmjs.com](https://www.npmjs.com/) - The extension queries the NpmJs.com api.
+* [Fontawesome](https://fontawesome.com/) - Provides icons for the buttons.
 * [Directed Graph Markup Language (DGML) reference](https://schemas.microsoft.com/vs/2009/dgml/)
 * [DGMLViewer VsCode extension](https://marketplace.visualstudio.com/items?itemName=coderAllan.vscode-dgmlviewer)
 * [Mermaid markdown notation](https://mermaid-js.github.io/mermaid/#/)

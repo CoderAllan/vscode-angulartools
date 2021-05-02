@@ -1,6 +1,6 @@
 import { ShowHierarchyBase } from './showHierarchyBase';
 import { ModuleManager } from '@src';
-import { ArrowType, Component, Edge, Node, NodeType, Project } from '@model';
+import { ArrowType, Component, Edge, GraphState, Node, NodeType, Position, Project } from '@model';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as vscode from 'vscode';
@@ -21,6 +21,16 @@ export class GenerateDependencyInjectionGraph extends ShowHierarchyBase {
           case 'saveAsDot':
             this.saveAsDot(this.config.dependencyInjectionDotGraphFilename, message.text, 'dependencyInjectionGraph', `'The components hierarchy has been analyzed and a GraphViz (dot) file '${this.config.dependencyInjectionDotGraphFilename}' has been created'`);
             return;
+          case 'setGraphState':
+            const newGraphState: GraphState = JSON.parse(message.text);
+            this.graphState = newGraphState;
+            this.setNewState(this.graphState);
+            this.nodes.forEach(node => {
+              node.position = this.graphState.nodePositions[node.id];
+            });
+            this.addNodesAndEdges(project, this.appendNodes, this.appendEdges);
+            this.generateAndSaveJavascriptContent(() => { });
+            return;
         }
       },
       undefined,
@@ -29,10 +39,18 @@ export class GenerateDependencyInjectionGraph extends ShowHierarchyBase {
     var workspaceFolder = this.fsUtils.getWorkspaceFolder();
     const errors: string[] = [];
     const project: Project = ModuleManager.scanProject(workspaceFolder, errors, this.isTypescriptFile);
-
     this.nodes = [];
     this.edges = [];
     this.addNodesAndEdges(project, this.appendNodes, this.appendEdges);
+    let htmlContent = this.generateHtmlContent(webview, this.showModuleHierarchyJsFilename);
+    // this.fsUtils.writeFile(this.extensionContext?.asAbsolutePath(path.join('out', GenerateDependencyInjectionGraph.commandName + '.html')), htmlContent, () => { }); // For debugging
+    this.generateAndSaveJavascriptContent(() => { webview.html = htmlContent; });
+    if (errors.length > 0) {
+      this.showErrors(errors, `Parsing of ${errors.length > 1 ? 'some' : 'one'} of the project files failed.\n`);
+    }
+  }
+
+  private generateAndSaveJavascriptContent(callback: () => any) {
     const nodesJson = this.nodes
       .map((node, index, arr) => { return node.toJsonString(); })
       .join(',\n');
@@ -42,22 +60,14 @@ export class GenerateDependencyInjectionGraph extends ShowHierarchyBase {
 
     try {
       const jsContent = this.generateJavascriptContent(nodesJson, edgesJson);
-      const outputJsFilename = this.showModuleHierarchyJsFilename;
-      let htmlContent = this.generateHtmlContent(webview, this.showModuleHierarchyJsFilename);
-      //this.fsUtils.writeFile(this.extensionContext?.asAbsolutePath(path.join('out', ShowComponentHierarchy.Name + '.html')), htmlContent, () => { }); // For debugging
       this.fsUtils.writeFile(
-        this.extensionContext?.asAbsolutePath(path.join('.', outputJsFilename)),
+        this.extensionContext?.asAbsolutePath(path.join('.', this.showModuleHierarchyJsFilename)),
         jsContent,
-        () => {
-          webview.html = htmlContent;
-        }
+        callback
       );
     }
     catch (ex) {
       console.log('Angular Tools Exception:' + ex);
-    }
-    if (errors.length > 0) {
-      this.showErrors(errors, `Parsing of ${errors.length > 1 ? 'some' : 'one'} of the project files failed.\n`);
     }
   }
 
@@ -95,9 +105,11 @@ export class GenerateDependencyInjectionGraph extends ShowHierarchyBase {
     project.components.forEach(component => {
       let componentFilename = component.filename.replace(this.workspaceDirectory, '.');
       componentFilename = componentFilename.split('\\').join('/');
-      appendNodes([new Node(component.name, this.generatedComponentNode(component), componentFilename, false, NodeType.component)]);
+      const componentPosition = this.graphState.nodePositions[component.name];
+      appendNodes([new Node(component.name, this.generatedComponentNode(component), componentFilename, false, NodeType.component, componentPosition)]);
       component.dependencyInjections.forEach(injectable => {
-        appendNodes([new Node(injectable.name, injectable.name, injectable.filename.replace(this.workspaceDirectory, ''), false, NodeType.injectable)]);
+        const injectablePosition = this.graphState.nodePositions[injectable.name];
+        appendNodes([new Node(injectable.name, injectable.name, injectable.filename.replace(this.workspaceDirectory, ''), false, NodeType.injectable, injectablePosition)]);
         appendEdges([new Edge((this.edges.length + 1).toString(), injectable.name, component.name, ArrowType.injectable)]);
       });
     });
@@ -105,13 +117,14 @@ export class GenerateDependencyInjectionGraph extends ShowHierarchyBase {
 
   generateJavascriptContent(nodesJson: string, edgesJson: string) {
     let template = fs.readFileSync(this.extensionContext?.asAbsolutePath(path.join('templates', this.templateJsFilename)), 'utf8');
-    let jsContent = template.replace('var nodes = new vis.DataSet([]);', `var nodes = new vis.DataSet([${nodesJson}]);`);
-    jsContent = jsContent.replace('var edges = new vis.DataSet([]);', `var edges = new vis.DataSet([${edgesJson}]);`);
+    let jsContent = template.replace('const nodes = new vis.DataSet([]);', `var nodes = new vis.DataSet([${nodesJson}]);`);
+    jsContent = jsContent.replace('const edges = new vis.DataSet([]);', `var edges = new vis.DataSet([${edgesJson}]);`);
     jsContent = jsContent.replace('type: "triangle" // edge arrow to type', `type: "${this.config.dependencyInjectionEdgeArrowToType}" // edge arrow to type}`);
     jsContent = jsContent.replace('ctx.strokeStyle = \'blue\'; // graph selection guideline color', `ctx.strokeStyle = '${this.config.graphSelectionGuidelineColor}'; // graph selection guideline color`);
     jsContent = jsContent.replace('ctx.lineWidth = 1; // graph selection guideline width', `ctx.lineWidth = ${this.config.graphSelectionGuidelineWidth}; // graph selection guideline width`);
     jsContent = jsContent.replace('selectionCanvasContext.strokeStyle = \'red\';', `selectionCanvasContext.strokeStyle = '${this.config.graphSelectionColor}';`);
     jsContent = jsContent.replace('selectionCanvasContext.lineWidth = 2;', `selectionCanvasContext.lineWidth = ${this.config.graphSelectionWidth};`);
+    jsContent = this.setGraphState(jsContent);
     return jsContent;
   }
 }

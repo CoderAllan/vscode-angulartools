@@ -25,6 +25,11 @@ export class GenerateDependencyInjectionGraph extends ShowHierarchyBase {
             const newGraphState: GraphState = JSON.parse(message.text);
             this.graphState = newGraphState;
             this.setNewState(this.graphState);
+            this.nodes.forEach(node => {
+              node.position = this.graphState.nodePositions[node.id];
+            });
+            this.addNodesAndEdges(project, this.appendNodes, this.appendEdges);
+            this.generateAndSaveJavascriptContent(() => { });
             return;
         }
       },
@@ -37,6 +42,15 @@ export class GenerateDependencyInjectionGraph extends ShowHierarchyBase {
     this.nodes = [];
     this.edges = [];
     this.addNodesAndEdges(project, this.appendNodes, this.appendEdges);
+    let htmlContent = this.generateHtmlContent(webview, this.showModuleHierarchyJsFilename);
+    // this.fsUtils.writeFile(this.extensionContext?.asAbsolutePath(path.join('out', GenerateDependencyInjectionGraph.commandName + '.html')), htmlContent, () => { }); // For debugging
+    this.generateAndSaveJavascriptContent(() => { webview.html = htmlContent; });
+    if (errors.length > 0) {
+      this.showErrors(errors, `Parsing of ${errors.length > 1 ? 'some' : 'one'} of the project files failed.\n`);
+    }
+  }
+
+  private generateAndSaveJavascriptContent(callback: () => any) {
     const nodesJson = this.nodes
       .map((node, index, arr) => { return node.toJsonString(); })
       .join(',\n');
@@ -46,22 +60,14 @@ export class GenerateDependencyInjectionGraph extends ShowHierarchyBase {
 
     try {
       const jsContent = this.generateJavascriptContent(nodesJson, edgesJson);
-      const outputJsFilename = this.showModuleHierarchyJsFilename;
-      let htmlContent = this.generateHtmlContent(webview, this.showModuleHierarchyJsFilename);
-      this.fsUtils.writeFile(this.extensionContext?.asAbsolutePath(path.join('out', GenerateDependencyInjectionGraph.commandName + '.html')), htmlContent, () => { }); // For debugging
       this.fsUtils.writeFile(
-        this.extensionContext?.asAbsolutePath(path.join('.', outputJsFilename)),
+        this.extensionContext?.asAbsolutePath(path.join('.', this.showModuleHierarchyJsFilename)),
         jsContent,
-        () => {
-          webview.html = htmlContent;
-        }
+        callback
       );
     }
     catch (ex) {
       console.log('Angular Tools Exception:' + ex);
-    }
-    if (errors.length > 0) {
-      this.showErrors(errors, `Parsing of ${errors.length > 1 ? 'some' : 'one'} of the project files failed.\n`);
     }
   }
 

@@ -46,8 +46,8 @@ export class ShowComponentHierarchy extends ShowHierarchyBase {
     this.edges = [];
     this.addNodesAndEdges(components, this.appendNodes, this.appendEdges);
     const htmlContent = this.generateHtmlContent(webview, this.showComponentHierarchyJsFilename);
-      //this.fsUtils.writeFile(this.extensionContext?.asAbsolutePath(path.join('out', ShowComponentHierarchy.Name + '.html')), htmlContent, () => { }); // For debugging
-      this.generateAndSaveJavascriptContent(() => { webview.html = htmlContent; });
+    //this.fsUtils.writeFile(this.extensionContext?.asAbsolutePath(path.join('out', ShowComponentHierarchy.Name + '.html')), htmlContent, () => { }); // For debugging
+    this.generateAndSaveJavascriptContent(() => { webview.html = htmlContent; });
   }
 
   private generateAndSaveJavascriptContent(callback: () => any) {

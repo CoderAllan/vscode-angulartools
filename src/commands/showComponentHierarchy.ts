@@ -28,6 +28,11 @@ export class ShowComponentHierarchy extends ShowHierarchyBase {
             const newGraphState: GraphState = JSON.parse(message.text);
             this.graphState = newGraphState;
             this.setNewState(this.graphState);
+            this.nodes.forEach(node => {
+              node.position = this.graphState.nodePositions[node.id];
+            });
+            this.addNodesAndEdges(components, this.appendNodes, this.appendEdges);
+            this.generateAndSaveJavascriptContent(() => { });
             return;
         }
       },
@@ -40,7 +45,12 @@ export class ShowComponentHierarchy extends ShowHierarchyBase {
     this.nodes = [];
     this.edges = [];
     this.addNodesAndEdges(components, this.appendNodes, this.appendEdges);
+    const htmlContent = this.generateHtmlContent(webview, this.showComponentHierarchyJsFilename);
+      //this.fsUtils.writeFile(this.extensionContext?.asAbsolutePath(path.join('out', ShowComponentHierarchy.Name + '.html')), htmlContent, () => { }); // For debugging
+      this.generateAndSaveJavascriptContent(() => { webview.html = htmlContent; });
+  }
 
+  private generateAndSaveJavascriptContent(callback: () => any) {
     const nodesJson = this.nodes
       .map((node, index, arr) => { return node.toJsonString(); })
       .join(',\n');
@@ -54,16 +64,10 @@ export class ShowComponentHierarchy extends ShowHierarchyBase {
 
     try {
       const jsContent = this.generateJavascriptContent(nodesJson, rootNodesJson, edgesJson);
-      const outputJsFilename = this.showComponentHierarchyJsFilename;
-      let htmlContent = this.generateHtmlContent(webview, outputJsFilename);
-
-      //this.fsUtils.writeFile(this.extensionContext?.asAbsolutePath(path.join('out', ShowComponentHierarchy.Name + '.html')), htmlContent, () => { }); // For debugging
       this.fsUtils.writeFile(
-        this.extensionContext?.asAbsolutePath(path.join('.', outputJsFilename)),
+        this.extensionContext?.asAbsolutePath(path.join('.', this.showComponentHierarchyJsFilename)),
         jsContent,
-        () => {
-          webview.html = htmlContent;
-        }
+        callback
       );
     } catch (ex) {
       console.log('Angular Tools Exception:' + ex);

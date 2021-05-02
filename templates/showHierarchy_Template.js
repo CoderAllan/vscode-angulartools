@@ -33,7 +33,6 @@
   const container = document.getElementById('network');
   let network = new vis.Network(container, data, options);
   let seed = network.getSeed();
-  let nodePositions = [];
   
   network.on("stabilizationIterationsDone", function () {
     network.setOptions({
@@ -58,7 +57,6 @@
   let selectionCanvasContext;
 
   const hierarchicalOptionsDirectionSelect = document.getElementById('direction');
-  const showHierarchicalOptionsCheckbox = document.getElementById('showHierarchicalOptions');
 
   // add button event listeners
   const saveAsPngButton = document.getElementById('saveAsPngButton');
@@ -71,13 +69,15 @@
   regenerateGraphButton.addEventListener('click', regenerateGraph);
   const saveSelectionAsPngButton = document.getElementById('saveSelectionAsPngButton');
   saveSelectionAsPngButton.addEventListener('click', saveSelectionAsPng);
-  const showHierarchicalOptionsButton = document.getElementById('showHierarchicalOptions');
-  showHierarchicalOptionsButton.addEventListener('click', setNetworkLayout);
+  const showHierarchicalOptionsCheckbox = document.getElementById('showHierarchicalOptions');
+  showHierarchicalOptionsCheckbox.addEventListener('click', showHierarchicalOptions);
   const hierarchicalDirectionSelect = document.getElementById('direction');
   hierarchicalDirectionSelect.addEventListener('change', setNetworkLayout);
   const hierarchicalSortMethodSelect = document.getElementById('sortMethod');
   hierarchicalSortMethodSelect.addEventListener('change', setNetworkLayout);
   const hierarchicalOptionsSortMethodSelect = document.getElementById('sortMethod');
+  const hierarchicalOptionsDirection = document.getElementById('hierarchicalOptions_direction');
+  const hierarchicalOptionsSortMethod = document.getElementById('hierarchicalOptions_sortmethod');
 
   function mouseUpEventListener(event) {
     // Convert the canvas to image data that can be saved
@@ -305,14 +305,7 @@
 
   function regenerateGraph() {
     seed = Math.random();
-    nodes.forEach(function (node) {
-      nodes.update({
-        id: node.id,
-        fixed: false,
-        x: undefined,
-        y: undefined
-      });
-    });
+    removeNodePositions();
     setNetworkLayout();
   }
 
@@ -350,21 +343,38 @@
     };
   }
 
+  function showHierarchicalOptions(){
+    if (showHierarchicalOptionsCheckbox.checked) {
+      hierarchicalOptionsDirection.style['display'] = 'block';
+      hierarchicalOptionsSortMethod.style['display'] = 'block';
+      if (hierarchicalOptionsDirectionSelect.value && hierarchicalOptionsDirectionSelect.value === 'Random') {
+        regenerateGraphButton.style['display'] = 'block';
+      } else {
+        regenerateGraphButton.style['display'] = 'none';
+      }
+    } else {
+      hierarchicalOptionsDirection.style['display'] = 'none';
+      hierarchicalOptionsSortMethod.style['display'] = 'none';
+      regenerateGraphButton.style['display'] = 'block';
+    }
+  }
+
   function setNetworkLayout() {
-    const hierarchicalOptionsDirection = document.getElementById('hierarchicalOptions_direction');
-    const hierarchicalOptionsSortMethod = document.getElementById('hierarchicalOptions_sortmethod');
-    hierarchicalOptionsDirection.style['display'] = showHierarchicalOptionsCheckbox.checked ? 'block' : 'none';
-    hierarchicalOptionsSortMethod.style['display'] = showHierarchicalOptionsCheckbox.checked ? 'block' : 'none';
     if (showHierarchicalOptionsCheckbox.checked) {
       if (hierarchicalOptionsDirectionSelect.value && hierarchicalOptionsDirectionSelect.value === 'Random') {
         setRandomLayout();
+        seed = Math.random();
+        removeNodePositions();
+        regenerateGraphButton.style['display'] = 'block';
       } else {
         const direction = hierarchicalOptionsDirectionSelect.value ? hierarchicalOptionsDirectionSelect.value : 'UD';
         const sortMethod = hierarchicalOptionsSortMethodSelect.value ? hierarchicalOptionsSortMethodSelect.value : 'hubsize';
         setHierarchicalLayout(direction, sortMethod);
+        regenerateGraphButton.style['display'] = 'none';
       }
     } else {
       options.layout = {};
+      regenerateGraphButton.style['display'] = 'block';
     }
     options.layout.randomSeed = seed;
     network = new vis.Network(container, data, options);
@@ -410,6 +420,17 @@
       nodes.update({
         id: node.id,
         fixed: false
+      });
+    });
+  }
+
+  function removeNodePositions() {
+    nodes.forEach(function (node) {
+      nodes.update({
+        id: node.id,
+        fixed: false,
+        x: undefined,
+        y: undefined
       });
     });
   }

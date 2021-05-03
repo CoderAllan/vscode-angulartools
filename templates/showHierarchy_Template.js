@@ -284,7 +284,7 @@
   }
 
   function cleanLabelDot(label) {
-    let cleanedLabel = convertNewlinesToDotNewlines(label) + '<br align="left"/>';
+    let cleanedLabel = convertNewlinesToDotNewlines(label);
     return cleanedLabel;
   }
 

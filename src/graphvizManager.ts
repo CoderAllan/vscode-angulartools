@@ -3,18 +3,21 @@ import { Edge, NetworkNode, Node, Position } from "@model";
 export class GraphVizManager {
 
   public createGraphVizDiagram(graphType: string, nodes: Node[], nodeInfoDictionary: { [id: string]: NetworkNode }, edges: Edge[]): string {
+    const graphVizNodes: Node[] = [];
     nodes.forEach(node => {
-      if(node.id in nodeInfoDictionary){
-        const networkNode = nodeInfoDictionary[node.id];
+      const graphVizNode = Object.create(node);
+      if(graphVizNode.id in nodeInfoDictionary){
+        const networkNode = nodeInfoDictionary[graphVizNode.id];
         if (networkNode.label) {
-          node.name = networkNode.label;
+          graphVizNode.name = networkNode.label;
         }
-        if (node.id in nodeInfoDictionary) {
-          node.position = { x: networkNode.position.x, y: -1 * networkNode.position.y};
+        if (graphVizNode.id in nodeInfoDictionary) {
+          graphVizNode.position = { x: networkNode.position.x, y: -1 * networkNode.position.y};
         }
       }
+      graphVizNodes.push(graphVizNode);
     });
-    const digraphNodes = this.generateDigraphNodes(nodes);
+    const digraphNodes = this.generateDigraphNodes(graphVizNodes);
     const digraphEdges = this.generateDigraphEdges(edges);
     const graphVizDigraph = this.addRootNode(graphType, digraphNodes, digraphEdges);
 

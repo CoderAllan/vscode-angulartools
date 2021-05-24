@@ -423,7 +423,7 @@
   },
   "dependencies": {
     "@types/xmldom": "^0.1.30",
-    "js-base64": "^3.6.0",
+    "js-base64": "^3.6.1",
     "npm-registry-fetch": "^10.1.2",
     "prettify-xml": "^1.2.0",
     "tscpaths": "0.0.9",

@@ -423,6 +423,7 @@
   },
   "dependencies": {
     "@types/xmldom": "^0.1.30",
+    "browserslist": ">=4.16.5",
     "js-base64": "^3.6.1",
     "npm-registry-fetch": "^10.1.2",
     "prettify-xml": "^1.2.0",

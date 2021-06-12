@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 1.8.2
+
+- The state of the checkbox and the dropdown boxes are now persisted.
+
 ## Version 1.8.1
 
 - The position of nodes are now persisted. If you rearrange the nodes you work won't be lost when changing to another tab and back again.

@@ -48,6 +48,7 @@
   let lastMouseX = lastMouseY = 0;
   let mouseX = mouseY = 0;
   let selection;
+  
   // get the vis.js canvas
   const graphDiv = document.getElementById('network');
   const visDiv = graphDiv.firstElementChild;
@@ -78,6 +79,12 @@
   const hierarchicalOptionsSortMethodSelect = document.getElementById('sortMethod');
   const hierarchicalOptionsDirection = document.getElementById('hierarchicalOptions_direction');
   const hierarchicalOptionsSortMethod = document.getElementById('hierarchicalOptions_sortmethod');
+
+  let hierarchicalOptionsDirectionSelectValue = undefined;
+  let hierarchicalOptionsSortMethodSelectValue = undefined;
+  let showHierarchicalOptionsCheckboxChecked = false;
+  showHierarchicalOptionsCheckbox.checked = showHierarchicalOptionsCheckboxChecked;
+  showHierarchicalOptions();
 
   function mouseUpEventListener(event) {
     // Convert the canvas to image data that can be saved
@@ -305,6 +312,10 @@
 
   function regenerateGraph() {
     seed = Math.random();
+    hierarchicalOptionsDirectionSelect.value = 'Random';
+    hierarchicalOptionsDirectionSelectValue = hierarchicalOptionsDirectionSelect.value;
+    hierarchicalOptionsSortMethodSelect.value = 'hubsize';
+    hierarchicalOptionsSortMethodSelectValue = hierarchicalOptionsSortMethodSelect.value;
     removeNodePositions();
     setNetworkLayout();
   }
@@ -344,9 +355,12 @@
   }
 
   function showHierarchicalOptions(){
+    showHierarchicalOptionsCheckboxChecked = showHierarchicalOptionsCheckbox.checked;
     if (showHierarchicalOptionsCheckbox.checked) {
       hierarchicalOptionsDirection.style['display'] = 'block';
+      hierarchicalOptionsDirectionSelect.value = hierarchicalOptionsDirectionSelectValue ? hierarchicalOptionsDirectionSelectValue : 'Random';
       hierarchicalOptionsSortMethod.style['display'] = 'block';
+      hierarchicalOptionsSortMethodSelect.value = hierarchicalOptionsSortMethodSelectValue ? hierarchicalOptionsSortMethodSelectValue : 'hubsize';
       if (hierarchicalOptionsDirectionSelect.value && hierarchicalOptionsDirectionSelect.value === 'Random') {
         regenerateGraphButton.style['display'] = 'block';
       } else {
@@ -357,6 +371,7 @@
       hierarchicalOptionsSortMethod.style['display'] = 'none';
       regenerateGraphButton.style['display'] = 'block';
     }
+    postGraphState();
   }
 
   function setNetworkLayout() {
@@ -392,8 +407,8 @@
   function postGraphState() {
     const message = JSON.stringify({
       networkSeed: seed,
-      graphDirection: showHierarchicalOptionsCheckbox.checked ? hierarchicalOptionsDirectionSelect.value : undefined,
-      graphLayout: showHierarchicalOptionsCheckbox.checked ? hierarchicalOptionsSortMethodSelect.value : undefined,
+      graphDirection: showHierarchicalOptionsCheckbox.checked ? hierarchicalOptionsDirectionSelect.value : 'Random',
+      graphLayout: showHierarchicalOptionsCheckbox.checked ? hierarchicalOptionsSortMethodSelect.value : 'hubsize',
       showHierarchicalOptions: showHierarchicalOptionsCheckbox.checked,
       nodePositions: getNodePositions()
     });

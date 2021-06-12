@@ -118,6 +118,9 @@ export class ShowModuleHierarchy extends ShowHierarchyBase {
     jsContent = jsContent.replace('ctx.lineWidth = 1; // graph selection guideline width', `ctx.lineWidth = ${this.config.graphSelectionGuidelineWidth}; // graph selection guideline width`);
     jsContent = jsContent.replace('selectionCanvasContext.strokeStyle = \'red\';', `selectionCanvasContext.strokeStyle = '${this.config.graphSelectionColor}';`);
     jsContent = jsContent.replace('selectionCanvasContext.lineWidth = 2;', `selectionCanvasContext.lineWidth = ${this.config.graphSelectionWidth};`);
+    jsContent = jsContent.replace('let showHierarchicalOptionsCheckboxChecked = false;', `let showHierarchicalOptionsCheckboxChecked = ${this.graphState.showHierarchicalOptions};`);
+    jsContent = jsContent.replace('let hierarchicalOptionsDirectionSelectValue = undefined;', `let hierarchicalOptionsDirectionSelectValue = '${this.graphState.graphDirection}';`);
+    jsContent = jsContent.replace('let hierarchicalOptionsSortMethodSelectValue = undefined;', `let hierarchicalOptionsSortMethodSelectValue = '${this.graphState.graphLayout}';`);
     jsContent = this.setGraphState(jsContent);
     return jsContent;
   }

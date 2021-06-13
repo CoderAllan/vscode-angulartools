@@ -13,10 +13,21 @@ export class Edge {
   public source: string;
   public target: string;
   public arrowType: ArrowType;
+  public mutualEdgeCount: number = 1;
 
   public toJsonString(): string {
     let arrowColorAttr = `, color: "${this.getEdgeTypeColor(this.arrowType)}"`;
-    return `{from: "${this.source}", to: "${this.target}", arrows: arrowAttr${arrowColorAttr} }`;
+    const jsStringProperties: string[] = [
+      `from: "${this.source}"`,
+      `to: "${this.target}"`,
+      `arrows: arrowAttr${arrowColorAttr}`
+    ];
+    if (this.mutualEdgeCount > 1) {
+      jsStringProperties.push(`smooth: {type: 'curvedCW', roundness: 0.2}`);
+    } else {
+      jsStringProperties.push(`smooth: false`);
+    }
+    return `{${jsStringProperties.join(', ')}}`;
   }
 
   public toGraphViz(): string {

@@ -25,7 +25,7 @@ export class ShowHierarchyBase extends CommandBase {
   protected showHierarchyCssFilename: string = 'showHierarchy.css';
   protected fontAwesomeCssFilename: string = 'all.min.css';
   protected fontAwesomeFontFilename: string = '../webfonts/fa-';
-  
+
   protected workspaceDirectory = this.fsUtils.getWorkspaceFolder();
 
   constructor(context: vscode.ExtensionContext, graphState: GraphState, setNewState: (newGraphState: GraphState) => any) {
@@ -49,6 +49,11 @@ export class ShowHierarchyBase extends CommandBase {
   };
   protected appendEdges = (edgeList: Edge[]) => {
     edgeList.forEach(newEdge => {
+      const mutualEdges = this.edges.filter(edge => edge.target === newEdge.source && edge. source=== newEdge.target);
+      if (mutualEdges.length > 0) {
+        newEdge.mutualEdgeCount += 1;
+        mutualEdges.forEach(e => e.mutualEdgeCount += 1 );
+      }
       if (!this.edges.some(edge => edge.source === newEdge.source && edge.target === newEdge.target)) {
         this.edges.push(newEdge);
       }
@@ -171,7 +176,7 @@ export class ShowHierarchyBase extends CommandBase {
     var regex = new RegExp(this.fontAwesomeFontFilename, "g");
     cssFileContent = cssFileContent.replace(regex, fontPathUri.toString());
     const newCssFilename = 'all.vscode.min.css';
-    this.fsUtils.writeFile(this.extensionContext?.asAbsolutePath(path.join('stylesheet', newCssFilename)), cssFileContent, () => {});
+    this.fsUtils.writeFile(this.extensionContext?.asAbsolutePath(path.join('stylesheet', newCssFilename)), cssFileContent, () => { });
     return newCssFilename;
   }
 

@@ -20,7 +20,10 @@
     nodes: nodes,
     edges: edges
   };
-  let options = {
+  const options = {
+    interaction: {
+      hover: true
+    },
     nodes: {
       font: { multi: 'html' },
       shape: 'box' // The shape of the nodes.
@@ -37,6 +40,21 @@
     });
     unfixNodes();
     postGraphState();
+    network.on("selectNode", function (params) {
+      if (params.nodes.length === 1) {
+        var node = nodes.get(params.nodes[0]);
+        openFileInVsCode(node.filepath);
+      }
+    });
+    network.on("hoverNode", function (params) {
+      var node = nodes.get(params.node);
+      if (node.filepath && node.filepath.length > 0) {
+        network.canvas.body.container.style.cursor = 'pointer';
+      }
+    });
+    network.on("blurNode", function (params) {
+      network.canvas.body.container.style.cursor = 'default';
+    });
   });
   network.on('dragEnd', postGraphState);
 
@@ -307,6 +325,13 @@
     return cleanedLabel;
   }
 
+  function openFileInVsCode(filepath) {
+    vscode.postMessage({
+      command: 'openFile',
+      text: filepath
+    });
+  }
+
   function regenerateGraph() {
     seed = Math.random();
     hierarchicalOptionsDirectionSelect.value = 'Random';
@@ -399,6 +424,21 @@
     });
     network.on('dragEnd', postGraphState);
     postGraphState();
+    network.on("selectNode", function (params) {
+      if (params.nodes.length === 1) {
+        var node = nodes.get(params.nodes[0]);
+        openFileInVsCode(node.filepath);
+      }
+    });
+    network.on("hoverNode", function (params) {
+      var node = nodes.get(params.node);
+      if (node.filepath && node.filepath.length > 0) {
+        network.canvas.body.container.style.cursor = 'pointer';
+      }
+    });
+    network.on("blurNode", function (params) {
+      network.canvas.body.container.style.cursor = 'default';
+    });
   }
 
   function postGraphState() {

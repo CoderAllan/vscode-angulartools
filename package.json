@@ -4,7 +4,7 @@
   "displayName": "AngularTools",
   "description": "AngularTools is a collection of tools for exploring an Angular project, help you with documenting, reverse engineering a project or help when refactoring.",
   "icon": "logo.png",
-  "version": "1.8.2",
+  "version": "1.8.3",
   "license": "MIT",
   "repository": "https://github.com/CoderAllan/vscode-angulartools",
   "author": {
@@ -391,6 +391,11 @@
           "type": "string",
           "default": "Modules.md",
           "description": "The default name used when saving the project module to a markdown file."
+        },
+        "angularTools.showPopupsOverNodesAndEdges": {
+          "type": "boolean",
+          "default": true,
+          "description": "When the setting is set to true a popup with various information from node or edge will be shown when the mouse pointer hovers over nodes and edges."
         }
       }
     }

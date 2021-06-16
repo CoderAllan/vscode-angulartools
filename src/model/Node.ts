@@ -3,10 +3,20 @@ import { Config } from "@src";
 
 export class Node {
   private config: Config = new Config();
-  constructor(id: string, name: string, filename: string | undefined, isRoot: boolean, nodeType: NodeType = NodeType.none, position: Position | undefined = undefined, boundingBox: BoundingBox | undefined = undefined, attributes: Attribute[] = []) {
+  constructor(
+    id: string,
+    name: string,
+    tsFilename: string | undefined,
+    filename: string | undefined,
+    isRoot: boolean,
+    nodeType: NodeType = NodeType.none,
+    position: Position | undefined = undefined,
+    boundingBox: BoundingBox | undefined = undefined,
+    attributes: Attribute[] = []) {
     this.id = id;
     this.name = name;
-    this.tsFilename = filename;
+    this.tsFilename = tsFilename;
+    this.filename = filename;
     this.isRoot = isRoot;
     this.nodeType = nodeType;
     this.position = position;
@@ -15,12 +25,14 @@ export class Node {
   }
   public id: string;
   public name: string;
+  public filename: string | undefined;
   public tsFilename: string | undefined;
   public isRoot: boolean;
   public position: Position | undefined;
   public boundingBox: BoundingBox | undefined;
   public nodeType: NodeType;
   public attributes: Attribute[];
+  public showPopupsOverNodesAndEdges: boolean = true;
 
   public toJsonString(): string {
     const jsStringProperties: string[] = [];
@@ -49,6 +61,17 @@ export class Node {
         break;
       default:
         break;
+    }
+    if (this.showPopupsOverNodesAndEdges) {
+      const name = this.name.replace(/<b>|<\/b>/ig, '');
+      const filename = this.tsFilename ? `\\nFilename: ${this.tsFilename?.replace(/\\/g, '/')}` : '';
+
+      jsStringProperties.push(`title: "Name: ${name}\\nType: ${this.getNodeTypeTitle()}${filename}"`);
+    }
+
+    if (this.filename) {
+      const filename = this.filename?.replace(/\\/g, '/');
+      jsStringProperties.push(`filepath: "${filename}"`);
     }
     if (this.position !== undefined && this.position.x !== undefined && this.position.y !== undefined) { jsStringProperties.push(`x: ${this.position.x}, y: ${this.position.y}, fixed: { x: true, y: true}`); }
     return `{ ${jsStringProperties.join(', ')} }`;
@@ -124,5 +147,23 @@ export class Node {
       nodeType = NodeType.injectable;
     }
     return nodeType;
+  }
+  public getNodeTypeTitle() {
+    switch (this.nodeType) {
+      case NodeType.component:
+        return 'Component';
+      case NodeType.directive:
+        return 'Directive';
+      case NodeType.injectable:
+        return 'Injectable';
+      case NodeType.module:
+        return 'Module';
+      case NodeType.pipe:
+        return 'Pipe';
+      case NodeType.rootNode:
+        return 'Root node';
+      default:
+        return '';
+    }
   }
 }

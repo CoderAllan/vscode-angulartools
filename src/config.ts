@@ -71,6 +71,9 @@ export class Config {
   public get injectableEdgeColor(): string { return this.getSetting<string>('edges.exportEdgeColor', '#0288d1'); }
   public get usesEdgeColor(): string { return this.getSetting<string>('edges.exportEdgeColor', '#0288d1'); }
 
+  // Popups
+  public get showPopupsOverNodesAndEdges(): boolean { return this.getSetting<boolean>('showPopupsOverNodesAndEdges', true); }
+
   // PackageJsonToMarkdown
   public get packageJsonMarkdownFilename(): string { return this.getSetting<string>('packageJsonMarkdownFilename', 'ReadMe-PackagesJson.md'); }
 

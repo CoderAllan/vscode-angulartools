@@ -31,6 +31,15 @@ export class ShowModuleHierarchy extends ShowHierarchyBase {
             this.addNodesAndEdges(project, this.appendNodes, this.appendEdges);
             this.generateAndSaveJavascriptContent(() => { });
             return;
+          case 'openFile':
+            const filename = message.text;
+            if (this.fsUtils.fileExists(filename)) {
+              var openPath = vscode.Uri.parse("file:///" + filename);
+              vscode.workspace.openTextDocument(openPath).then(doc => {
+                vscode.window.showTextDocument(doc);
+              });
+            }
+            return;
         }
       },
       undefined,
@@ -75,19 +84,21 @@ export class ShowModuleHierarchy extends ShowHierarchyBase {
   private addNodesAndEdges(project: Project, appendNodes: (nodeList: Node[]) => void, appendEdges: (edgeList: Edge[]) => void) {
     project.modules.forEach(module => {
       let moduleFilename = module.filename.replace(this.workspaceDirectory, '.');
-      moduleFilename = moduleFilename.split('\\').join('/');
+      moduleFilename = moduleFilename.replace(/\\/g, '/');
       const modulePosition = this.graphState.nodePositions[module.moduleName];
-      appendNodes([new Node(module.moduleName, module.moduleName, moduleFilename, false, NodeType.module, modulePosition)]);
+      appendNodes([new Node(module.moduleName, module.moduleName, moduleFilename, module.filename, false, NodeType.module, modulePosition)]);
       module.imports.forEach(_import => {
         const nodeType = Node.getNodeType(project, _import);
         const importPosition = this.graphState.nodePositions[_import];
-        appendNodes([new Node(_import, _import, this.getNodeFilename(_import, nodeType, project), false, nodeType, importPosition)]);
+        const nodeFilename = this.getNodeFilename(_import, nodeType, project);
+        appendNodes([new Node(_import, _import, nodeFilename?.replace(this.workspaceDirectory, ''), nodeFilename, false, nodeType, importPosition)]);
         appendEdges([new Edge((this.edges.length + 1).toString(), _import, module.moduleName, ArrowType.import)]);
       });
       module.exports.forEach(_export => {
         const nodeType = Node.getNodeType(project, _export);
         const exportPosition = this.graphState.nodePositions[_export];
-        appendNodes([new Node(_export, _export, this.getNodeFilename(_export, nodeType, project), false, nodeType, exportPosition)]);
+        const nodeFilename = this.getNodeFilename(_export, nodeType, project);
+        appendNodes([new Node(_export, _export, nodeFilename?.replace(this.workspaceDirectory, ''), nodeFilename, false, nodeType, exportPosition)]);
         appendEdges([new Edge((this.edges.length + 1).toString(), module.moduleName, _export, ArrowType.export)]);
       });
     });
@@ -105,8 +116,10 @@ export class ShowModuleHierarchy extends ShowHierarchyBase {
       case (NodeType.component):
         nodeFilename = project.components.get(nodeName)?.filename;
         break;
+      default:
+        nodeFilename = '';
     }
-    return nodeFilename?.replace(this.workspaceDirectory, '');
+    return nodeFilename;
   }
 
   private generateJavascriptContent(nodesJson: string, edgesJson: string) {

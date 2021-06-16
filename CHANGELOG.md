@@ -1,5 +1,11 @@
 # Change Log
 
+## Version 1.8.3
+
+- When edges have the same source and target the edges no longer overlap.
+- A popup is now shown when the mouse pointer is hovered above an edge or a node.
+- It is now possible to click a node in the graphs to open the file the node is associated with.
+
 ## Version 1.8.2
 
 - The state of the checkbox and the dropdown boxes are now persisted.

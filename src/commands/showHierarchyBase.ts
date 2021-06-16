@@ -36,6 +36,7 @@ export class ShowHierarchyBase extends CommandBase {
   }
   protected appendNodes = (nodeList: Node[]) => {
     nodeList.forEach(newNode => {
+      newNode.showPopupsOverNodesAndEdges = this.config.showPopupsOverNodesAndEdges;
       if (!this.nodes.some(node => node.id === newNode.id)) {
         this.nodes.push(newNode);
       }
@@ -43,12 +44,14 @@ export class ShowHierarchyBase extends CommandBase {
         const existingNode = this.nodes.find(node => node.id === newNode.id);
         if (existingNode && (!existingNode.tsFilename || existingNode.tsFilename?.length === 0) && newNode.tsFilename && newNode.tsFilename.length > 0) {
           existingNode.tsFilename = newNode.tsFilename;
+          existingNode.filename = newNode.filename;
         }
       }
     });
   };
   protected appendEdges = (edgeList: Edge[]) => {
     edgeList.forEach(newEdge => {
+      newEdge.showPopupsOverNodesAndEdges = this.config.showPopupsOverNodesAndEdges;
       const mutualEdges = this.edges.filter(edge => edge.target === newEdge.source && edge. source=== newEdge.target);
       if (mutualEdges.length > 0) {
         newEdge.mutualEdgeCount += 1;
@@ -157,6 +160,11 @@ export class ShowHierarchyBase extends CommandBase {
     cssPath = vscode.Uri.joinPath(this.extensionContext.extensionUri, 'stylesheet', vscodyfiedFontAwesomeCssFilename);
     cssUri = webview.asWebviewUri(cssPath);
     htmlContent = htmlContent.replace(this.fontAwesomeCssFilename, cssUri.toString());
+
+    const visJsMinCss = 'vis-network.min.css';
+    const visCssPath = vscode.Uri.joinPath(this.extensionContext.extensionUri, 'stylesheet', visJsMinCss);
+    const visCssUri = webview.asWebviewUri(visCssPath);
+    htmlContent = htmlContent.replace(visJsMinCss, visCssUri.toString());
 
     const nonce = this.getNonce();
     htmlContent = htmlContent.replace('nonce-nonce', `nonce-${nonce}`);

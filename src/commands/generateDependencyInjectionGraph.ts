@@ -31,6 +31,15 @@ export class GenerateDependencyInjectionGraph extends ShowHierarchyBase {
             this.addNodesAndEdges(project, this.appendNodes, this.appendEdges);
             this.generateAndSaveJavascriptContent(() => { });
             return;
+          case 'openFile':
+            const filename = message.text;
+            if (this.fsUtils.fileExists(filename)) {
+              var openPath = vscode.Uri.parse("file:///" + filename);
+              vscode.workspace.openTextDocument(openPath).then(doc => {
+                vscode.window.showTextDocument(doc);
+              });
+            }
+            return;
         }
       },
       undefined,
@@ -106,10 +115,10 @@ export class GenerateDependencyInjectionGraph extends ShowHierarchyBase {
       let componentFilename = component.filename.replace(this.workspaceDirectory, '.');
       componentFilename = componentFilename.split('\\').join('/');
       const componentPosition = this.graphState.nodePositions[component.name];
-      appendNodes([new Node(component.name, this.generatedComponentNode(component), componentFilename, false, NodeType.component, componentPosition)]);
+      appendNodes([new Node(component.name, this.generatedComponentNode(component), componentFilename, component.filename, false, NodeType.component, componentPosition)]);
       component.dependencyInjections.forEach(injectable => {
         const injectablePosition = this.graphState.nodePositions[injectable.name];
-        appendNodes([new Node(injectable.name, injectable.name, injectable.filename.replace(this.workspaceDirectory, ''), false, NodeType.injectable, injectablePosition)]);
+        appendNodes([new Node(injectable.name, injectable.name, injectable.filename.replace(this.workspaceDirectory, ''), component.filename, false, NodeType.injectable, injectablePosition)]);
         appendEdges([new Edge((this.edges.length + 1).toString(), injectable.name, component.name, ArrowType.injectable)]);
       });
     });

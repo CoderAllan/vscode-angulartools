@@ -14,6 +14,7 @@ export class Edge {
   public target: string;
   public arrowType: ArrowType;
   public mutualEdgeCount: number = 1;
+  public showPopupsOverNodesAndEdges: boolean = true;
 
   public toJsonString(): string {
     let arrowColorAttr = `, color: "${this.getEdgeTypeColor(this.arrowType)}"`;
@@ -26,6 +27,24 @@ export class Edge {
       jsStringProperties.push(`smooth: {type: 'curvedCW', roundness: 0.2}`);
     } else {
       jsStringProperties.push(`smooth: false`);
+    }
+    if (this.showPopupsOverNodesAndEdges) {
+      switch (this.arrowType) {
+        case ArrowType.injectable:
+          jsStringProperties.push(`title: "${this.source} injected into ${this.target}"`);
+          break;
+        case ArrowType.import:
+          jsStringProperties.push(`title: "${this.target} imports ${this.source}"`);
+          break;
+        case ArrowType.export:
+          jsStringProperties.push(`title: "${this.source} exports ${this.target}"`);
+          break;
+        case ArrowType.uses:
+          jsStringProperties.push(`title: "${this.source} uses ${this.target}"`);
+          break;
+        default:
+          break;
+      }
     }
     return `{${jsStringProperties.join(', ')}}`;
   }

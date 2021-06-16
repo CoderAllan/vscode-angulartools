@@ -34,6 +34,15 @@ export class ShowComponentHierarchy extends ShowHierarchyBase {
             this.addNodesAndEdges(components, this.appendNodes, this.appendEdges);
             this.generateAndSaveJavascriptContent(() => { });
             return;
+          case 'openFile':
+            const filename = message.text;
+            if (this.fsUtils.fileExists(filename)) {
+              var openPath = vscode.Uri.parse("file:///" + filename);
+              vscode.workspace.openTextDocument(openPath).then(doc => {
+                vscode.window.showTextDocument(doc);
+              });
+            }
+            return;
         }
       },
       undefined,
@@ -88,7 +97,7 @@ export class ShowComponentHierarchy extends ShowHierarchyBase {
     let componentFilename = component.tsFilename.replace(this.directoryPath, '.');
     componentFilename = componentFilename.split('\\').join('/');
     const componentPosition = this.graphState.nodePositions[component.selector];
-    appendNodes([new Node(component.selector, component.selector, componentFilename, isRoot, isRoot ? NodeType.rootNode : NodeType.component, componentPosition)]);
+    appendNodes([new Node(component.selector, component.selector, componentFilename, component.tsFilename, isRoot, isRoot ? NodeType.rootNode : NodeType.component, componentPosition)]);
     if (components.length > 0) {
       components.forEach((subComponent) => {
         if (parentSelector !== subComponent.selector) {

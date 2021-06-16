@@ -5,6 +5,7 @@
 - When edges have the same source and target the edges no longer overlap.
 - A popup is now shown when the mouse pointer is hovered above an edge or a node.
 - It is now possible to click a node in the graphs to open the file the node is associated with.
+- Bugfix: Save as Png is now working correctly
 
 ## Version 1.8.2
 

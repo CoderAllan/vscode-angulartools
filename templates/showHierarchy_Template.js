@@ -222,7 +222,7 @@
 
   function getBoundingBox() {
     const ctx = graphCanvas.getContext('2d');
-    const imgData = ctx.getImageData(0, 0, graphCanvas.width, graphCanvas.height);
+    const imgData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
     const bytesPerPixels = 4;
     const cWidth = graphCanvas.width * bytesPerPixels;
     const cHeight = graphCanvas.height;

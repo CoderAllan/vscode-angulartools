@@ -2,7 +2,7 @@
 
 ![Visual Studio Marketplace Version](https://img.shields.io/visual-studio-marketplace/v/coderAllan.vscode-angulartools) ![Visual Studio Marketplace Installs](https://img.shields.io/visual-studio-marketplace/i/coderAllan.vscode-angulartools) ![GitHub top language](https://img.shields.io/github/languages/top/CoderAllan/vscode-angulartools.svg) ![GitHub last commit](https://img.shields.io/github/last-commit/CoderAllan/vscode-angulartools.svg) ![GitHub](https://img.shields.io/github/license/CoderAllan/vscode-angulartools.svg)
 
-AngularTools is a collection of tools for exploring an Angular project, help you with documenting, reverse engineering a project or help when refactoring.
+AngularTools is a Visual Studio Code extension with a collection of tools for exploring an Angular project, help you with documenting, reverse engineering a project or help when refactoring.
 
 Some of the tools may seem very basic, but can be a powerful help when you have them right at your fingertips.
 
@@ -26,6 +26,8 @@ Below is a detailed description of each feature.
 
 The 'Show module hierarchy' command is used for visualizing the hierarchy of the modules in an Angular application. The command scans all the *.ts files in the project to identify classes decorated with the `@NgModule` class decorator and then visualize how each module is imported by other modules. It will also visualize the classes specified in the imports and the exports section of the NgModule definition.
 
+When you click a node the file it is associated with will be opened in the editor.
+
 In the visualization the classes will be colored depending on the class decorator of each class:
 
 * Modules are red
@@ -39,13 +41,17 @@ In the visualization the classes will be colored depending on the class decorato
 
 The 'Show a graph representing the components and the injected dependencies' command generates a directed graph representing the components and the services injected into the components of an Angular application. The command scans all *.ts files of the application and for each class decorated with the @Component decorator, it analyses the constructor and each field in the class to identify all injected classes and to identify all the fields decorated with the Input, Output, ViewChild, ViewChildren, ContentChild and ContentChildren decorators.
 
+When you click a node the file it is associated with will be opened in the editor.
+
 In the visualization the components will by default be colored dark blue and the injected classes will be colored light blue.
 
 ![Show dependency injection graph](https://github.com/CoderAllan/vscode-angulartools/raw/main/images/ShowDependencyInjectionGraph.gif)
 
 ### Show the component hierarchy [#](#show-component-hierarchy- 'Show the component hierarchy')
 
-The 'Show the component hierarchy' command is used for visualizing the component hierarchy and Angular application. It analyses all the *.component.ts files and all the corresponding template files to determine how the component use each other and then generates a directed graph showing the component hierarchy.
+The 'Show the component hierarchy' command is used for visualizing the component hierarchy and Angular application. It analyses all the \*.component.ts files and all the corresponding \*.component.html template files to determine how the component use each other and then generates a directed graph showing the component hierarchy.
+
+When you click a node the file it is associated with will be opened in the editor.
 
 The command uses a vscode webview extension component to render the hierarchy using html, javascript and the [Vis.js](https://visjs.org/index.html) javascript library. This has the downside that copying the generated graph to the clipboard is not yet possible due to limitations in the vscode extension api. So to overcome this limitation the generated graph can be saved as a Png file to the root of the project you are analyzing. You can also save the graph in the Dgml format or in the GraphViz Dot format.
 

@@ -419,7 +419,7 @@
     "@typescript-eslint/parser": "^4.27.0",
     "eslint": "^7.28.0",
     "glob": "^7.1.7",
-    "mocha": "^9.0.0",
+    "mocha": "^9.0.1",
     "ts-loader": "^9.2.3",
     "typescript": "^4.3.4",
     "vscode-test": "^1.5.2",

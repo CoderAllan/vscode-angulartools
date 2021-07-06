@@ -416,7 +416,7 @@
     "@types/node": "^16.0.0",
     "@types/vscode": "^1.57.1",
     "@typescript-eslint/eslint-plugin": "^4.28.2",
-    "@typescript-eslint/parser": "^4.28.1",
+    "@typescript-eslint/parser": "^4.28.2",
     "eslint": "^7.30.0",
     "glob": "^7.1.7",
     "mocha": "^9.0.2",

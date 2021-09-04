@@ -5,7 +5,7 @@ import { Base64 } from 'js-base64';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as vscode from 'vscode';
-import * as xmldom from 'xmldom';
+import * as xmldom from '@xmldom/xmldom';
 
 const prettifyXml = require('prettify-xml');
 const xmlSerializer = require('xmlserializer');

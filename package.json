@@ -12,7 +12,7 @@
     "url": "https://github.com/CoderAllan"
   },
   "engines": {
-    "vscode": "^1.59.0"
+    "vscode": "^1.60.0"
   },
   "categories": [
     "Other",
@@ -414,7 +414,7 @@
     "@types/glob": "^7.1.4",
     "@types/mocha": "^9.0.0",
     "@types/node": "^16.7.10",
-    "@types/vscode": "^1.59.0",
+    "@types/vscode": "^1.60.0",
     "@typescript-eslint/parser": "^4.30.0",
     "@typescript-eslint/eslint-plugin": "^4.30.0",
     "eslint": "^7.32.0",
@@ -423,7 +423,7 @@
     "ts-loader": "^9.2.5",
     "typescript": "^4.4.2",
     "vscode-test": "^1.6.1",
-    "webpack": "^5.51.1",
+    "webpack": "^5.52.0",
     "webpack-cli": "^4.8.0"
   },
   "dependencies": {

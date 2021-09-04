@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 1.8.5
+
+- Security issue fixed: Now using npm package @xmldom/xmldom instead of xmldom
+
 ## Version 1.8.4
 
 - Maintenance: Bump packages to latest

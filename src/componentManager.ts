@@ -38,8 +38,8 @@ export class ComponentManager {
   private static scanWorkspaceForComponents(componentFilenames: string[]): { [selector: string]: Component; } {
     const compHash: { [selector: string]: Component; } = {};
     const componentRegex = /@Component\({/ig;
-    const templateUrlRegex = /.*templateUrl:.+\/(.+)\'/i;
-    const selectorRegex = /.*selector:.+\'(.+)\'/i;
+    const templateUrlRegex = /.*templateUrl:.+\/(.+)'/i;
+    const selectorRegex = /.*selector:.+'(.+)'/i;
     const endBracketRegex = /}\)/i;
     componentFilenames.forEach((componentFilename) => {
       let componentDefinitionFound = false;

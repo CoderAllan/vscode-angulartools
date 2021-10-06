@@ -15,16 +15,19 @@ export class ShowComponentHierarchy extends ShowHierarchyBase {
     webview.onDidReceiveMessage(
       message => {
         switch (message.command) {
-          case 'saveAsPng':
+          case 'saveAsPng': {
             this.saveAsPng(this.config.componentHierarchyPngFilename, message.text);
             return;
-          case 'saveAsDgml':
+          }
+          case 'saveAsDgml': {
             this.saveAsDgml(this.config.componentHierarchyDgmlGraphFilename, message.text, `'The component hierarchy has been analyzed and a Directed Graph Markup Language (dgml) file '${this.config.componentHierarchyDgmlGraphFilename}' has been created'`);
             return;
-          case 'saveAsDot':
+          }
+          case 'saveAsDot': {
             this.saveAsDot(this.config.componentHierarchyDotGraphFilename, message.text, 'componentHierarchy', `'The component hierarchy has been analyzed and a GraphViz (dot) file '${this.config.componentHierarchyDotGraphFilename}' has been created'`);
             return;
-          case 'setGraphState':
+          }
+          case 'setGraphState': {
             const newGraphState: GraphState = JSON.parse(message.text);
             this.graphState = newGraphState;
             this.setNewState(this.graphState);
@@ -34,7 +37,8 @@ export class ShowComponentHierarchy extends ShowHierarchyBase {
             this.addNodesAndEdges(components, this.appendNodes, this.appendEdges);
             this.generateAndSaveJavascriptContent(() => { });
             return;
-          case 'openFile':
+          }
+          case 'openFile': {
             const filename = message.text;
             if (this.fsUtils.fileExists(filename)) {
               var openPath = vscode.Uri.parse("file:///" + filename);
@@ -43,6 +47,7 @@ export class ShowComponentHierarchy extends ShowHierarchyBase {
               });
             }
             return;
+          }
         }
       },
       undefined,
@@ -61,14 +66,14 @@ export class ShowComponentHierarchy extends ShowHierarchyBase {
 
   private generateAndSaveJavascriptContent(callback: () => any) {
     const nodesJson = this.nodes
-      .map((node, index, arr) => { return node.toJsonString(); })
+      .map(node => { return node.toJsonString(); })
       .join(',\n');
     const rootNodesJson = this.nodes
       .filter(node => node.isRoot)
-      .map((node, index, arr) => { return '"' + node.id + '"'; })
+      .map(node => { return '"' + node.id + '"'; })
       .join(',\n');
     const edgesJson = this.edges
-      .map((edge, index, arr) => { return edge.toJsonString(); })
+      .map(edge => { return edge.toJsonString(); })
       .join(',\n');
 
     try {

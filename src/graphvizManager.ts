@@ -1,4 +1,4 @@
-import { Edge, NetworkNode, Node, Position } from "@model";
+import { Edge, NetworkNode, Node } from "@model";
 
 export class GraphVizManager {
 

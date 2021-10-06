@@ -1,6 +1,6 @@
 import { ShowHierarchyBase } from './showHierarchyBase';
 import { ModuleManager } from '@src';
-import { ArrowType, Component, Edge, GraphState, Node, NodeType, Position, Project } from '@model';
+import { ArrowType, Component, Edge, GraphState, Node, NodeType, Project } from '@model';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as vscode from 'vscode';
@@ -12,16 +12,19 @@ export class GenerateDependencyInjectionGraph extends ShowHierarchyBase {
     webview.onDidReceiveMessage(
       message => {
         switch (message.command) {
-          case 'saveAsPng':
+          case 'saveAsPng': {
             this.saveAsPng(this.config.dependencyInjectionPngFilename, message.text);
             return;
-          case 'saveAsDgml':
+          }
+          case 'saveAsDgml': {
             this.saveAsDgml(this.config.dependencyInjectionDgmlGraphFilename, message.text, `'The components hierarchy has been analyzed and a Directed Graph Markup Language (dgml) file '${this.config.dependencyInjectionDgmlGraphFilename}' has been created'`);
             return;
-          case 'saveAsDot':
+          }
+          case 'saveAsDot': {
             this.saveAsDot(this.config.dependencyInjectionDotGraphFilename, message.text, 'dependencyInjectionGraph', `'The components hierarchy has been analyzed and a GraphViz (dot) file '${this.config.dependencyInjectionDotGraphFilename}' has been created'`);
             return;
-          case 'setGraphState':
+          }
+          case 'setGraphState': {
             const newGraphState: GraphState = JSON.parse(message.text);
             this.graphState = newGraphState;
             this.setNewState(this.graphState);
@@ -31,7 +34,8 @@ export class GenerateDependencyInjectionGraph extends ShowHierarchyBase {
             this.addNodesAndEdges(project, this.appendNodes, this.appendEdges);
             this.generateAndSaveJavascriptContent(() => { });
             return;
-          case 'openFile':
+          }
+          case 'openFile': {
             const filename = message.text;
             if (this.fsUtils.fileExists(filename)) {
               var openPath = vscode.Uri.parse("file:///" + filename);
@@ -40,6 +44,7 @@ export class GenerateDependencyInjectionGraph extends ShowHierarchyBase {
               });
             }
             return;
+          }
         }
       },
       undefined,
@@ -61,10 +66,10 @@ export class GenerateDependencyInjectionGraph extends ShowHierarchyBase {
 
   private generateAndSaveJavascriptContent(callback: () => any) {
     const nodesJson = this.nodes
-      .map((node, index, arr) => { return node.toJsonString(); })
+      .map(node => { return node.toJsonString(); })
       .join(',\n');
     const edgesJson = this.edges
-      .map((edge, index, arr) => { return edge.toJsonString(); })
+      .map(edge => { return edge.toJsonString(); })
       .join(',\n');
 
     try {

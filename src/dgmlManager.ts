@@ -40,7 +40,7 @@ export class DgmlManager {
             (node as Element).getAttribute(attribute)?.toLowerCase() === nodeElement.getAttribute(attribute)?.toLowerCase()) {
             nodeAlreadyAdded = true;
           }
-        };
+        }
       }
       if (!nodeAlreadyAdded) {
         element.appendChild(nodeElement);

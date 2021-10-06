@@ -36,7 +36,7 @@ export class ListAllImports extends CommandBase {
           if (matchRequires) {
             key = matchRequires[1];
           }
-          if (imports.hasOwnProperty(key)) {
+          if (Object.prototype.hasOwnProperty.call(imports, key)) {
             imports[key] = imports[key] + 1;
           } else {
             imports[key] = 1;
@@ -53,6 +53,6 @@ export class ListAllImports extends CommandBase {
       angularToolsOutput.appendLine(`${key}: ${imports[key]}`);
     }
     angularToolsOutput.show();
-  };
+  }
 
 }

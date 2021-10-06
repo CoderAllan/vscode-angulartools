@@ -70,7 +70,7 @@ export class ModuleManager {
       }
     }
     regex = /@Component\s*\(\s*(\{.+?\})\s*\)\s*export\s+class\s+(\w+)\s+(.*)/ims;
-    var match = regex.exec(fileContents.toString());
+    match = regex.exec(fileContents.toString());
     if (match !== null) {
       const className = match[2];
       const component = new Component(className, filename);
@@ -79,17 +79,17 @@ export class ModuleManager {
       return component;
     }
     regex = /@Directive\s*\(\s*(\{.+?\})\s*\)\s*export\s+class\s+(\w+)\s+/ims;
-    var match = regex.exec(fileContents.toString());
+    match = regex.exec(fileContents.toString());
     if (match !== null) {
       return new Directive(match[2], filename);
     }
     regex = /@Pipe\s*\(\s*(\{.+?\})\s*\)\s*export\s+class\s+(\w+)\s+/ims;
-    var match = regex.exec(fileContents.toString());
+    match = regex.exec(fileContents.toString());
     if (match !== null) {
       return new Pipe(match[2], filename);
     }
     regex = /@Injectable\s*\(\s*(\{.+?\})\s*\)\s*export\s+class\s+(\w+)\s+/ims;
-    var match = regex.exec(fileContents.toString());
+    match = regex.exec(fileContents.toString());
     if (match !== null) {
       return new Injectable(match[2], filename);
     }
@@ -101,8 +101,10 @@ export class ModuleManager {
     if (match !== null) {
       const constructorParameters = match[1];
       regex = /\s*\w+\s+\w+\s*:\s*(\w+)[,]*/gims;
-      while (match = regex.exec(constructorParameters)) {
+      match = regex.exec(constructorParameters);
+      while (match) {
         component.dependencyInjections.push(new NamedEntity(match[1], component.filename));
+        match = regex.exec(constructorParameters);
       }
     }
     this.matchMultipleSpecificDecorator(classBody, '@Input', component.filename, component.inputs);
@@ -115,23 +117,25 @@ export class ModuleManager {
 
   private static matchMultipleSpecificDecorator(classBody: string, decorator: string, filename: string, decoratorArray: NamedEntity[]) {
     const regex =  new RegExp(decorator + '\\(\\)\\s+(?:public)?(?:protected)?(?:private)?\\s*(?:[gs]et)?\\s*(\\w+)\\s*[:=(]|' + decorator + '\\(["\'](.*?)["\']\\)', 'gms');
-    let match: RegExpExecArray | null = null;
-    while (match = regex.exec(classBody)) {
+    let match: RegExpExecArray | null = regex.exec(classBody);
+    while (match) {
       if (match[1]) {
         decoratorArray.push(new NamedEntity(match[1], filename));
       } else if (match[2]) {
         decoratorArray.push(new NamedEntity(match[2], filename));
       }
+      match = regex.exec(classBody);
     }
   }
 
   private static matchSpecificDecorator(classBody: string, decorator: string, filename: string, decoratorArray: NamedEntity[]) {
     const regex =  new RegExp(decorator + '\\s*\\(\\s*[\'"]?(\\w+)[\'"]?.*?\\)', 'gms');
-    let match: RegExpExecArray | null = null;
-    while (match = regex.exec(classBody)) {
+    let match: RegExpExecArray | null = regex.exec(classBody);
+    while (match) {
       if (match[1]) {
         decoratorArray.push(new NamedEntity(match[1], filename));
       }
+      match = regex.exec(classBody);
     }    
   }
 

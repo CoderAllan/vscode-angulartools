@@ -12,16 +12,19 @@ export class ShowModuleHierarchy extends ShowHierarchyBase {
     webview.onDidReceiveMessage(
       message => {
         switch (message.command) {
-          case 'saveAsPng':
+          case 'saveAsPng': {
             this.saveAsPng(this.config.moduleHierarchyPngFilename, message.text);
             return;
-          case 'saveAsDgml':
+          }
+          case 'saveAsDgml': {
             this.saveAsDgml(this.config.moduleHierarchyDgmlGraphFilename, message.text, `'The modules hierarchy has been analyzed and a Directed Graph Markup Language (dgml) file '${this.config.moduleHierarchyDgmlGraphFilename}' has been created'`);
             return;
-          case 'saveAsDot':
+          }
+          case 'saveAsDot': {
             this.saveAsDot(this.config.moduleHierarchyDotGraphFilename, message.text, 'moduleHierarchy', `'The modules hierarchy has been analyzed and a GraphViz (dot) file '${this.config.moduleHierarchyDotGraphFilename}' has been created'`);
             return;
-          case 'setGraphState':
+          }
+          case 'setGraphState': {
             const newGraphState: GraphState = JSON.parse(message.text);
             this.graphState = newGraphState;
             this.setNewState(this.graphState);
@@ -31,7 +34,8 @@ export class ShowModuleHierarchy extends ShowHierarchyBase {
             this.addNodesAndEdges(project, this.appendNodes, this.appendEdges);
             this.generateAndSaveJavascriptContent(() => { });
             return;
-          case 'openFile':
+          }
+          case 'openFile': {
             const filename = message.text;
             if (this.fsUtils.fileExists(filename)) {
               var openPath = vscode.Uri.parse("file:///" + filename);
@@ -40,6 +44,7 @@ export class ShowModuleHierarchy extends ShowHierarchyBase {
               });
             }
             return;
+          }
         }
       },
       undefined,
@@ -62,10 +67,10 @@ export class ShowModuleHierarchy extends ShowHierarchyBase {
 
   private generateAndSaveJavascriptContent(callback: () => any) {
     const nodesJson = this.nodes
-      .map((node, index, arr) => { return node.toJsonString(); })
+      .map(node => { return node.toJsonString(); })
       .join(',\n');
     const edgesJson = this.edges
-      .map((edge, index, arr) => { return edge.toJsonString(); })
+      .map(edge => { return edge.toJsonString(); })
       .join(',\n');
 
     try {

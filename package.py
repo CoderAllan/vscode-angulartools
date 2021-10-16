@@ -33,7 +33,7 @@ def isChangeLogUpdatedWithPackageJsonVersion(packageJsonVersion) -> bool:
 def isAllPackagesInstalledLocally() -> bool:
     process = subprocess.Popen(["cmd", "/c", "npm", "list", "--production", "--parseable", "--depth=99999", "--loglevel=error"], stderr=subprocess.PIPE)
     out = process.stderr.read()
-    success = (len(out) == 0);
+    success = (len(out) == 0)
     if (not success):
       print(f"Error while checking if all packages is installed locally: {out}")
     return success
@@ -41,7 +41,7 @@ def isAllPackagesInstalledLocally() -> bool:
 def packageExtension() -> bool:
     process = subprocess.Popen(["cmd", "/c", "vsce", "package"], stderr=subprocess.PIPE)
     out = process.stderr.read()
-    success = (len(out) == 0);
+    success = (len(out) == 0)
     if (not success):
       print(f"Error while packaging: {out}")
     return success

@@ -413,11 +413,11 @@
   "devDependencies": {
     "@types/glob": "^7.2.0",
     "@types/mocha": "^9.0.0",
-    "@types/node": "^16.11.3",
+    "@types/node": "^16.11.4",
     "@types/vscode": "^1.61.0",
     "@typescript-eslint/eslint-plugin": "^5.1.0",
     "@typescript-eslint/parser": "^5.1.0",
-    "eslint": "^8.0.1",
+    "eslint": "^8.1.0",
     "glob": "^7.2.0",
     "ts-loader": "^9.2.6",
     "typescript": "^4.4.4",

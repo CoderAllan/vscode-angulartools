@@ -6,4 +6,3 @@ showComponentHierarchy.js
 showModuleHierarchy.js
 *.vsix
 stylesheet/all.vscode.min.css
-bump.cmd

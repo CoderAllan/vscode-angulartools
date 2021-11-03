@@ -428,7 +428,7 @@
     "@types/xmldom": "^0.1.31",
     "@xmldom/xmldom": "^0.7.5",
     "bluebird": "^3.7.2",
-    "browserslist": "^4.17.5",
+    "browserslist": "^4.17.6",
     "js-base64": "^3.7.2",
     "npm-registry-fetch": "^11.0.0",
     "prettify-xml": "^1.2.0",

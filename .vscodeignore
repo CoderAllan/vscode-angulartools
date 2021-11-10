@@ -9,8 +9,14 @@ node_modules/**
 .yarnrc
 vsc-extension-quickstart.md
 **/tsconfig.json
+**/tslint.json
 **/.eslintrc.json
 **/*.map
 **/*.ts
+**/*.xcf
+**/*.bak
+**/*.py
+**/*.cmd
 showComponentHierarchy.js
 showModuleHierarchy.js
+out.txt

@@ -1,27 +1,6 @@
 import * as fs from 'fs';
 import { ArrayUtils, Config, FileSystemUtils } from "@src";
-import { Component, Directive, Injectable, NamedEntity, Pipe, Project } from '@model';
-
-export class NgModule {
-  public imports: string[] = [];
-  public exports: string[] = [];
-  public declarations: string[] = [];
-  public entryComponents: string[] = [];
-  public providers: string[] = [];
-  public bootstrap: string[] = [];
-  public filename: string = '';
-  public moduleName: string = '';
-  public moduleStats(): number[] {
-    return [
-      this.declarations === undefined ? 0 : ArrayUtils.arrayLength(this.declarations),
-      this.imports === undefined ? 0 : ArrayUtils.arrayLength(this.imports),
-      this.exports === undefined ? 0 : ArrayUtils.arrayLength(this.exports),
-      this.bootstrap === undefined ? 0 : ArrayUtils.arrayLength(this.bootstrap),
-      this.providers === undefined ? 0 : ArrayUtils.arrayLength(this.providers),
-      this.entryComponents === undefined ? 0 : ArrayUtils.arrayLength(this.entryComponents),
-    ];
-  }
-}
+import { Component, Directive, Injectable, NamedEntity, NgModule, Pipe, Project } from '@model';
 
 export class ModuleManager {
 
@@ -63,9 +42,16 @@ export class ModuleManager {
         const module: NgModule = this.parseModuleContents(moduleContents);
         module.filename = filename;
         module.moduleName = moduleName;
+
+        regex = /:\s+routes\s+=\s+\[.*?\]/ims;
+        match = regex.exec(fileContents.toString());
+        if (match !== null) {
+          module.isRoutingModule = true;
+        }
+  
         return module;
       } catch (ex) {
-        errors.push(`ModuleName: ${moduleName}\nFilename: ${filename}\nException: ${ex}\n${match[1]}\n`);
+        errors.push(`ModuleName: ${moduleName}\nFilename: ${filename}\nException: ${ex}\n${moduleContents}\n`);
         return undefined;
       }
     }

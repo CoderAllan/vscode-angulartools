@@ -96,20 +96,20 @@ export class GenerateDependencyInjectionGraph extends ShowHierarchyBase {
       const outputs = component.outputs.map(i => i.name).join(", ");
       nodeContent += `\\n<b>Outputs: </b> ${outputs}`;
     }
-    if (component.viewchilds.length > 0) {
-      const viewchilds = component.viewchilds.map(i => i.name).join(", ");
+    if (component.viewChilds.length > 0) {
+      const viewchilds = component.viewChilds.map(i => i.name).join(", ");
       nodeContent += `\\n<b>Viewchilds: </b> ${viewchilds}`;
     }
-    if (component.viewchildren.length > 0) {
-      const viewchildren = component.viewchildren.map(i => i.name).join(", ");
+    if (component.viewChildren.length > 0) {
+      const viewchildren = component.viewChildren.map(i => i.name).join(", ");
       nodeContent += `\\n<b>Viewchildren: </b> ${viewchildren}`;
     }
-    if (component.contentchilds.length > 0) {
-      const contentchilds = component.contentchilds.map(i => i.name).join(", ");
+    if (component.contentChilds.length > 0) {
+      const contentchilds = component.contentChilds.map(i => i.name).join(", ");
       nodeContent += `\\n<b>Contentchilds: </b> ${contentchilds}`;
     }
-    if (component.contentchildren.length > 0) {
-      const contentchildren = component.contentchildren.map(i => i.name).join(", ");
+    if (component.contentChildren.length > 0) {
+      const contentchildren = component.contentChildren.map(i => i.name).join(", ");
       nodeContent += `\\n<b>Contentchildren: </b> ${contentchildren}`;
     }
     return nodeContent;

@@ -1,6 +1,6 @@
 import { ShowHierarchyBase } from './showHierarchyBase';
-import { Component, ComponentManager } from '@src';
-import { ArrowType, Edge, GraphState, Node, NodeType } from '@model';
+import { ComponentManager } from '@src';
+import { ArrowType, Component, Edge, GraphState, Node, NodeType } from '@model';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as vscode from 'vscode';
@@ -99,10 +99,10 @@ export class ShowComponentHierarchy extends ShowHierarchyBase {
   }
 
   private generateDirectedGraphNodes(components: Component[], component: Component, isRoot: boolean, parentSelector: string, appendNodes: (nodeList: Node[]) => void) {
-    let componentFilename = component.tsFilename.replace(this.directoryPath, '.');
+    let componentFilename = component.filename.replace(this.directoryPath, '.');
     componentFilename = componentFilename.split('\\').join('/');
     const componentPosition = this.graphState.nodePositions[component.selector];
-    appendNodes([new Node(component.selector, component.selector, componentFilename, component.tsFilename, isRoot, isRoot ? NodeType.rootNode : NodeType.component, componentPosition)]);
+    appendNodes([new Node(component.selector, component.selector, componentFilename, component.filename, isRoot, isRoot ? NodeType.rootNode : NodeType.component, componentPosition)]);
     if (components.length > 0) {
       components.forEach((subComponent) => {
         if (parentSelector !== subComponent.selector) {

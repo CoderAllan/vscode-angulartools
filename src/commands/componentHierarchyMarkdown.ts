@@ -1,5 +1,6 @@
 import { CommandBase } from '@commands';
-import { Config, Component, ComponentManager, FileSystemUtils } from '@src';
+import { Component } from '@model';
+import { Config, ComponentManager, FileSystemUtils } from '@src';
 import * as path from 'path';
 
 export class ComponentHierarchyMarkdown extends CommandBase {

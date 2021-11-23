@@ -43,7 +43,7 @@ export class ModuleManager {
         module.filename = filename;
         module.moduleName = moduleName;
 
-        regex = /:\s+routes\s+=\s+\[.*?\]/ims;
+        regex = /:\s+Routes\s+=\s+\[.*?\]/ims;
         match = regex.exec(fileContents.toString());
         if (match !== null) {
           module.isRoutingModule = true;
@@ -58,10 +58,11 @@ export class ModuleManager {
     regex = /@Component\s*\(\s*(\{.+?\})\s*\)\s*export\s+class\s+(\w+)\s+(.*)/ims;
     match = regex.exec(fileContents.toString());
     if (match !== null) {
+      const componentBody = match[1];
       const className = match[2];
       const component = new Component(className, filename);
       const classBody = match[3];
-      this.enrichComponent(component, classBody);
+      this.enrichComponent(component, classBody, componentBody);
       return component;
     }
     regex = /@Directive\s*\(\s*(\{.+?\})\s*\)\s*export\s+class\s+(\w+)\s+/ims;
@@ -81,7 +82,7 @@ export class ModuleManager {
     }
   }
 
-  private static enrichComponent(component: Component, classBody: string): void {
+  private static enrichComponent(component: Component, classBody: string, componentBody: string): void {
     let regex = /constructor\s*\((.*?)\)/ims;
     let match = regex.exec(classBody);
     if (match !== null) {
@@ -95,10 +96,10 @@ export class ModuleManager {
     }
     this.matchMultipleSpecificDecorator(classBody, '@Input', component.filename, component.inputs);
     this.matchMultipleSpecificDecorator(classBody, '@output', component.filename, component.outputs);
-    this.matchSpecificDecorator(classBody, '@ViewChild', component.filename, component.viewchilds);
-    this.matchSpecificDecorator(classBody, '@ViewChildren', component.filename, component.viewchildren);
-    this.matchSpecificDecorator(classBody, '@ContentChild', component.filename, component.contentchilds);
-    this.matchSpecificDecorator(classBody, '@ContentChildren', component.filename, component.contentchildren);
+    this.matchSpecificDecorator(classBody, '@ViewChild', component.filename, component.viewChilds);
+    this.matchSpecificDecorator(classBody, '@ViewChildren', component.filename, component.viewChildren);
+    this.matchSpecificDecorator(classBody, '@ContentChild', component.filename, component.contentChilds);
+    this.matchSpecificDecorator(classBody, '@ContentChildren', component.filename, component.contentChildren);
   }
 
   private static matchMultipleSpecificDecorator(classBody: string, decorator: string, filename: string, decoratorArray: NamedEntity[]) {

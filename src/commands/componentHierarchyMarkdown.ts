@@ -11,7 +11,7 @@ export class ComponentHierarchyMarkdown extends CommandBase {
     this.checkForOpenWorkspace();
     const fsUtils = new FileSystemUtils();
     var workspaceDirectory: string = fsUtils.getWorkspaceFolder();
-    const components = ComponentManager.findComponents(workspaceDirectory);
+    const components = ComponentManager.scanWorkspaceForComponents(workspaceDirectory);
     
     let relations: string = '';
     const addRelation = (from: string, to: string) => {

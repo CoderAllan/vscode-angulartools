@@ -54,7 +54,7 @@ export class ShowComponentHierarchy extends ShowHierarchyBase {
       this.extensionContext.subscriptions
     );
 
-    const components = ComponentManager.findComponents(this.directoryPath);
+    const components = ComponentManager.scanWorkspaceForComponents(this.directoryPath);
 
     this.nodes = [];
     this.edges = [];

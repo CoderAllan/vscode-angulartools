@@ -11,11 +11,11 @@ export class ComponentManager {
   private static endBracketRegex = /}\)/i;
   private static routerOutletRegex = /<router-outlet.*?>.*?<\/router-outlet>/ims;
 
-  public static findComponents(directoryPath: string): { [selector: string]: Component; } {
+  public static scanWorkspaceForComponents(directoryPath: string): { [selector: string]: Component; } {
     const fsUtils = new FileSystemUtils();
     const config = new Config();
     const componentFilenames = fsUtils.listFiles(directoryPath, config.excludeDirectories, ComponentManager.isComponentFile);
-    const components = ComponentManager.scanWorkspaceForComponents(componentFilenames);
+    const components = ComponentManager.scanComponents(componentFilenames);
     ComponentManager.enrichComponentsFromComponentTemplates(components);
     return components;
   }
@@ -24,7 +24,7 @@ export class ComponentManager {
     return filename.endsWith('.component.ts');
   }
 
-  private static scanWorkspaceForComponents(componentFilenames: string[]): { [selector: string]: Component; } {
+  private static scanComponents(componentFilenames: string[]): { [selector: string]: Component; } {
     const compHash: { [selector: string]: Component; } = {};
     componentFilenames.forEach((componentFilename) => {
       let componentDefinitionFound = false;

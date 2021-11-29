@@ -43,9 +43,10 @@ export class ModuleManager {
         module.filename = filename;
         module.moduleName = moduleName;
 
-        regex = /:\s+Routes\s+=\s+\[.*?\]/ims;
+        regex = /:\s*?Routes\s*?=\s*?\[.\(*?\)\]/ims;
         match = regex.exec(fileContents.toString());
         if (match !== null) {
+          const routesBody = match[1];
           module.isRoutingModule = true;
         }
   

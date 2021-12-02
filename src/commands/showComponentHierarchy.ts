@@ -88,12 +88,12 @@ export class ShowComponentHierarchy extends ShowHierarchyBase {
     }
   }
 
-  private addNodesAndEdges(componentHash: { [selector: string]: Component; }, appendNodes: (nodeList: Node[]) => void, appendLinks: (edgeList: Edge[]) => void) {
-    for (let selector in componentHash) {
-      const component = componentHash[selector];
+  private addNodesAndEdges(componentDict: { [selector: string]: Component; }, appendNodes: (nodeList: Node[]) => void, appendEdges: (edgeList: Edge[]) => void) {
+    for (let selector in componentDict) {
+      const component = componentDict[selector];
       if (component.isRoot) {
         this.generateDirectedGraphNodes(component.subComponents, component, true, '', appendNodes);
-        this.generateDirectedGraphEdges(component.subComponents, selector, "", appendLinks);
+        this.generateDirectedGraphEdges(component.subComponents, selector, "", appendEdges);
       }
     }
   }
@@ -112,14 +112,14 @@ export class ShowComponentHierarchy extends ShowHierarchyBase {
     }
   }
 
-  private generateDirectedGraphEdges(subComponents: Component[], selector: string, parentSelector: string, appendLinks: (edgeList: Edge[]) => void) {
+  private generateDirectedGraphEdges(subComponents: Component[], selector: string, parentSelector: string, appendEdges: (edgeList: Edge[]) => void) {
     if (parentSelector.length > 0) {
       const id = this.edges.length;
-      appendLinks([new Edge(id.toString(), parentSelector, selector, ArrowType.uses)]);
+      appendEdges([new Edge(id.toString(), parentSelector, selector, ArrowType.uses)]);
     }
     if (subComponents.length > 0 && selector !== parentSelector) {
       subComponents.forEach((subComponent) => {
-        this.generateDirectedGraphEdges(subComponent.subComponents, subComponent.selector, selector, appendLinks);
+        this.generateDirectedGraphEdges(subComponent.subComponents, subComponent.selector, selector, appendEdges);
       });
     }
   }

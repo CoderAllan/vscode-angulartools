@@ -3,5 +3,6 @@ export enum ArrowType {
   import = 1,
   export = 2,
   injectable = 3,
-  uses = 4
+  uses = 4,
+  route = 5
 }

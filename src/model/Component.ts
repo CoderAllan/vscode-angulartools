@@ -12,6 +12,7 @@ export class Component extends NamedEntity {
   public selector: string = '';
   public subComponents: Component[] = [];
   public isRoot: boolean = false;
+  public componentsRoutingToThis: Component[] = [];
   public isRouterOutlet: boolean = false;
 
   constructor(className: string, filename: string, templateFilename: string = '', selector: string = '', subComponents: Component[] = [], isRoot: boolean = false) {

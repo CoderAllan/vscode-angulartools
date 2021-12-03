@@ -372,6 +372,11 @@
           "default": "#0288d1",
           "description": "The default color of the edges representing components using other components."
         },
+        "angularTools.edges.routeEdgeColor": {
+          "type": "string",
+          "default": "#FF8C00",
+          "description": "The default color of the edges representing routes."
+        },
         "angularTools.packageJsonMarkdownFilename": {
           "type": "string",
           "default": "ReadMe-PackagesJson.md",

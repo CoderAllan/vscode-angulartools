@@ -5,3 +5,4 @@ export * from './dgmlManager';
 export * from './filesystemUtils';
 export * from './graphvizManager';
 export * from './moduleManager';
+export * from './stringUtils';

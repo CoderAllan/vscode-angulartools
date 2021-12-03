@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import { ArrayUtils, Config, FileSystemUtils } from "@src";
+import { ArrayUtils, Config, FileSystemUtils, StringUtils } from "@src";
 import { Component, Directive, Injectable, NamedEntity, NgModule, Pipe, Project } from '@model';
 
 export class ModuleManager {
@@ -128,7 +128,7 @@ export class ModuleManager {
   }
 
   private static parseModuleContents(moduleContents: string): NgModule {
-    moduleContents = moduleContents.replace(/\s*?\/\/.*$/igm, () => ''); // Remove comments
+    moduleContents = StringUtils.removeComments(moduleContents);
     const module = new NgModule();
     let section = this.getSection(moduleContents, 'imports');
     if (section.length > 0) {

@@ -93,7 +93,7 @@ export class ShowComponentHierarchy extends ShowHierarchyBase {
       const component = componentDict[selector];
       if (component.isRoot) {
         this.generateDirectedGraphNodes(component.subComponents, component, true, '', appendNodes);
-        this.generateDirectedGraphEdges(component.subComponents, selector, "", appendEdges);
+        this.generateDirectedGraphEdges(componentDict, component.subComponents, component, "", appendEdges);
       }
     }
   }
@@ -112,14 +112,20 @@ export class ShowComponentHierarchy extends ShowHierarchyBase {
     }
   }
 
-  private generateDirectedGraphEdges(subComponents: Component[], selector: string, parentSelector: string, appendEdges: (edgeList: Edge[]) => void) {
+  private generateDirectedGraphEdges(componentDict: { [selector: string]: Component; }, subComponents: Component[], currentComponent: Component, parentSelector: string, appendEdges: (edgeList: Edge[]) => void) {
     if (parentSelector.length > 0) {
       const id = this.edges.length;
-      appendEdges([new Edge(id.toString(), parentSelector, selector, ArrowType.uses)]);
+      appendEdges([new Edge(id.toString(), parentSelector, currentComponent.selector, ArrowType.uses)]);
     }
-    if (subComponents.length > 0 && selector !== parentSelector) {
+    if (currentComponent.componentsRoutingToThis !== undefined && currentComponent.componentsRoutingToThis.length > 0) {
+      currentComponent.componentsRoutingToThis.forEach(componentRoutingToThis => {
+        const id = this.edges.length;
+        appendEdges([new Edge(id.toString(), componentRoutingToThis.selector, currentComponent.selector, ArrowType.route)]);
+      });
+    }
+    if (subComponents.length > 0 && currentComponent.selector !== parentSelector) {
       subComponents.forEach((subComponent) => {
-        this.generateDirectedGraphEdges(subComponent.subComponents, subComponent.selector, selector, appendEdges);
+        this.generateDirectedGraphEdges(componentDict, subComponent.subComponents, subComponent, currentComponent.selector, appendEdges);
       });
     }
   }

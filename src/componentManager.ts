@@ -147,8 +147,10 @@ export class ComponentManager {
       else {
         const loadChildrenMatch = this.loadChildrenRegex.exec(routesBodyPart);
         if (loadChildrenMatch !== null) {
-          const moduleName = loadChildrenMatch[1];
-          console.log(`${moduleComponent.name} routing to module ${moduleName}`);
+          // TODO: Add logic for adding relations to the components referenced by the module reference
+          
+          // const moduleName = loadChildrenMatch[1];
+          // console.log(`${moduleComponent.name} routing to module ${moduleName}`);
         }
       }
       const childrenMatch = this.childrenRegex.exec(routesBodyPart);

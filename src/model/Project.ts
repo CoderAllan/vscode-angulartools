@@ -1,4 +1,4 @@
-import { NgModule } from "@src";
+import { NgModule } from "@model";
 import { Component } from './Component';
 import { NamedEntity } from "./NamedEntity";
 

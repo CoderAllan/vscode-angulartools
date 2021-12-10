@@ -4,7 +4,7 @@
   "displayName": "AngularTools",
   "description": "AngularTools is a collection of tools for exploring an Angular project, help you with documenting, reverse engineering a project or help when refactoring.",
   "icon": "logo.png",
-  "version": "1.8.5",
+  "version": "1.9.0",
   "license": "MIT",
   "repository": "https://github.com/CoderAllan/vscode-angulartools",
   "author": {
@@ -12,7 +12,7 @@
     "url": "https://github.com/CoderAllan"
   },
   "engines": {
-    "vscode": "^1.62.0"
+    "vscode": "^1.63.0"
   },
   "categories": [
     "Other",
@@ -372,6 +372,11 @@
           "default": "#0288d1",
           "description": "The default color of the edges representing components using other components."
         },
+        "angularTools.edges.routeEdgeColor": {
+          "type": "string",
+          "default": "#FF8C00",
+          "description": "The default color of the edges representing routes."
+        },
         "angularTools.packageJsonMarkdownFilename": {
           "type": "string",
           "default": "ReadMe-PackagesJson.md",
@@ -419,6 +424,7 @@
     "@typescript-eslint/parser": "^5.6.0",
     "eslint": "^8.4.1",
     "glob": "^7.2.0",
+    "supports-color": "^9.2.1",
     "ts-loader": "^9.2.6",
     "typescript": "^4.5.2",
     "webpack": "^5.65.0",

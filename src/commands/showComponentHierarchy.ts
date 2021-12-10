@@ -1,6 +1,6 @@
 import { ShowHierarchyBase } from './showHierarchyBase';
-import { Component, ComponentManager } from '@src';
-import { ArrowType, Edge, GraphState, Node, NodeType } from '@model';
+import { ComponentManager } from '@src';
+import { ArrowType, Component, Edge, GraphState, Node, NodeType } from '@model';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as vscode from 'vscode';
@@ -54,7 +54,7 @@ export class ShowComponentHierarchy extends ShowHierarchyBase {
       this.extensionContext.subscriptions
     );
 
-    const components = ComponentManager.findComponents(this.directoryPath);
+    const components = ComponentManager.scanWorkspaceForComponents(this.directoryPath);
 
     this.nodes = [];
     this.edges = [];
@@ -88,21 +88,21 @@ export class ShowComponentHierarchy extends ShowHierarchyBase {
     }
   }
 
-  private addNodesAndEdges(componentHash: { [selector: string]: Component; }, appendNodes: (nodeList: Node[]) => void, appendLinks: (edgeList: Edge[]) => void) {
-    for (let selector in componentHash) {
-      const component = componentHash[selector];
+  private addNodesAndEdges(componentDict: { [selector: string]: Component; }, appendNodes: (nodeList: Node[]) => void, appendEdges: (edgeList: Edge[]) => void) {
+    for (let selector in componentDict) {
+      const component = componentDict[selector];
       if (component.isRoot) {
         this.generateDirectedGraphNodes(component.subComponents, component, true, '', appendNodes);
-        this.generateDirectedGraphEdges(component.subComponents, selector, "", appendLinks);
+        this.generateDirectedGraphEdges(componentDict, component.subComponents, component, "", appendEdges);
       }
     }
   }
 
   private generateDirectedGraphNodes(components: Component[], component: Component, isRoot: boolean, parentSelector: string, appendNodes: (nodeList: Node[]) => void) {
-    let componentFilename = component.tsFilename.replace(this.directoryPath, '.');
+    let componentFilename = component.filename.replace(this.directoryPath, '.');
     componentFilename = componentFilename.split('\\').join('/');
     const componentPosition = this.graphState.nodePositions[component.selector];
-    appendNodes([new Node(component.selector, component.selector, componentFilename, component.tsFilename, isRoot, isRoot ? NodeType.rootNode : NodeType.component, componentPosition)]);
+    appendNodes([new Node(component.selector, component.selector, componentFilename, component.filename, isRoot, isRoot ? NodeType.rootNode : NodeType.component, componentPosition)]);
     if (components.length > 0) {
       components.forEach((subComponent) => {
         if (parentSelector !== subComponent.selector) {
@@ -112,14 +112,20 @@ export class ShowComponentHierarchy extends ShowHierarchyBase {
     }
   }
 
-  private generateDirectedGraphEdges(subComponents: Component[], selector: string, parentSelector: string, appendLinks: (edgeList: Edge[]) => void) {
+  private generateDirectedGraphEdges(componentDict: { [selector: string]: Component; }, subComponents: Component[], currentComponent: Component, parentSelector: string, appendEdges: (edgeList: Edge[]) => void) {
     if (parentSelector.length > 0) {
       const id = this.edges.length;
-      appendLinks([new Edge(id.toString(), parentSelector, selector, ArrowType.uses)]);
+      appendEdges([new Edge(id.toString(), parentSelector, currentComponent.selector, ArrowType.uses)]);
     }
-    if (subComponents.length > 0 && selector !== parentSelector) {
+    if (currentComponent.componentsRoutingToThis !== undefined && currentComponent.componentsRoutingToThis.length > 0) {
+      currentComponent.componentsRoutingToThis.forEach(componentRoutingToThis => {
+        const id = this.edges.length;
+        appendEdges([new Edge(id.toString(), componentRoutingToThis.selector, currentComponent.selector, ArrowType.route)]);
+      });
+    }
+    if (subComponents.length > 0 && currentComponent.selector !== parentSelector) {
       subComponents.forEach((subComponent) => {
-        this.generateDirectedGraphEdges(subComponent.subComponents, subComponent.selector, selector, appendLinks);
+        this.generateDirectedGraphEdges(componentDict, subComponent.subComponents, subComponent, currentComponent.selector, appendEdges);
       });
     }
   }

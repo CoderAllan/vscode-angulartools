@@ -26,17 +26,28 @@ export class FileSystemUtils {
   }
 
   public fileExists(filename: string): boolean {
-    try{
+    try {
       return fs.lstatSync(filename).isFile();
     } catch {
       return false;
     }
   }
-  
+
+  public static componentFileExtension = '.component.ts';
+  public static isComponentFile(filename: string): boolean {
+    return filename.toLowerCase().endsWith(FileSystemUtils.componentFileExtension);
+  }
+  public static isModuleFile(filename: string): boolean {
+    return filename.toLowerCase().endsWith('.module.ts');
+  }
+  public static routingModuleFileExtension = '-routing.module.ts';
+  public static isRoutingModuleFile(filename: string): boolean {
+    return filename.toLowerCase().endsWith(FileSystemUtils.routingModuleFileExtension);
+  }
+
   private isDirectory(directoryName: any): boolean {
     return fs.lstatSync(directoryName).isDirectory();
   }
-
   public listDirectories(
     dir: string,
     excludeDirectories: string[]

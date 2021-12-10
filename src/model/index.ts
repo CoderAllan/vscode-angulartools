@@ -7,6 +7,7 @@ export * from './Edge';
 export * from './GraphState';
 export * from './NamedEntity';
 export * from './NetworkNode';
+export * from './NgModule';
 export * from './Node';
 export * from './NodeType';
 export * from './Position';

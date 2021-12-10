@@ -42,6 +42,9 @@ export class Edge {
         case ArrowType.uses:
           jsStringProperties.push(`title: "${this.source} uses ${this.target}"`);
           break;
+        case ArrowType.route:
+          jsStringProperties.push(`title: "${this.source} routes to ${this.target}"`);
+          break;
         default:
           break;
       }
@@ -79,6 +82,9 @@ export class Edge {
         break;
       case ArrowType.uses:
         edgeTypeColor = this.config.usesEdgeColor;
+        break;
+      case ArrowType.route:
+        edgeTypeColor = this.config.routeEdgeColor;
         break;
       default:
         edgeTypeColor = '';

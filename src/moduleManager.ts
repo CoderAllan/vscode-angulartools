@@ -1,27 +1,6 @@
 import * as fs from 'fs';
-import { ArrayUtils, Config, FileSystemUtils } from "@src";
-import { Component, Directive, Injectable, NamedEntity, Pipe, Project } from '@model';
-
-export class NgModule {
-  public imports: string[] = [];
-  public exports: string[] = [];
-  public declarations: string[] = [];
-  public entryComponents: string[] = [];
-  public providers: string[] = [];
-  public bootstrap: string[] = [];
-  public filename: string = '';
-  public moduleName: string = '';
-  public moduleStats(): number[] {
-    return [
-      this.declarations === undefined ? 0 : ArrayUtils.arrayLength(this.declarations),
-      this.imports === undefined ? 0 : ArrayUtils.arrayLength(this.imports),
-      this.exports === undefined ? 0 : ArrayUtils.arrayLength(this.exports),
-      this.bootstrap === undefined ? 0 : ArrayUtils.arrayLength(this.bootstrap),
-      this.providers === undefined ? 0 : ArrayUtils.arrayLength(this.providers),
-      this.entryComponents === undefined ? 0 : ArrayUtils.arrayLength(this.entryComponents),
-    ];
-  }
-}
+import { ArrayUtils, Config, FileSystemUtils, StringUtils } from "@src";
+import { Component, Directive, Injectable, NamedEntity, NgModule, Pipe, Project } from '@model';
 
 export class ModuleManager {
 
@@ -63,19 +42,28 @@ export class ModuleManager {
         const module: NgModule = this.parseModuleContents(moduleContents);
         module.filename = filename;
         module.moduleName = moduleName;
+
+        regex = /:\s*?Routes\s*?=\s*?\[.\(*?\)\]/ims;
+        match = regex.exec(fileContents.toString());
+        if (match !== null) {
+          const routesBody = match[1];
+          module.isRoutingModule = true;
+        }
+  
         return module;
       } catch (ex) {
-        errors.push(`ModuleName: ${moduleName}\nFilename: ${filename}\nException: ${ex}\n${match[1]}\n`);
+        errors.push(`ModuleName: ${moduleName}\nFilename: ${filename}\nException: ${ex}\n${moduleContents}\n`);
         return undefined;
       }
     }
     regex = /@Component\s*\(\s*(\{.+?\})\s*\)\s*export\s+class\s+(\w+)\s+(.*)/ims;
     match = regex.exec(fileContents.toString());
     if (match !== null) {
+      const componentBody = match[1];
       const className = match[2];
       const component = new Component(className, filename);
       const classBody = match[3];
-      this.enrichComponent(component, classBody);
+      this.enrichComponent(component, classBody, componentBody);
       return component;
     }
     regex = /@Directive\s*\(\s*(\{.+?\})\s*\)\s*export\s+class\s+(\w+)\s+/ims;
@@ -95,7 +83,7 @@ export class ModuleManager {
     }
   }
 
-  private static enrichComponent(component: Component, classBody: string): void {
+  private static enrichComponent(component: Component, classBody: string, componentBody: string): void {
     let regex = /constructor\s*\((.*?)\)/ims;
     let match = regex.exec(classBody);
     if (match !== null) {
@@ -109,10 +97,10 @@ export class ModuleManager {
     }
     this.matchMultipleSpecificDecorator(classBody, '@Input', component.filename, component.inputs);
     this.matchMultipleSpecificDecorator(classBody, '@output', component.filename, component.outputs);
-    this.matchSpecificDecorator(classBody, '@ViewChild', component.filename, component.viewchilds);
-    this.matchSpecificDecorator(classBody, '@ViewChildren', component.filename, component.viewchildren);
-    this.matchSpecificDecorator(classBody, '@ContentChild', component.filename, component.contentchilds);
-    this.matchSpecificDecorator(classBody, '@ContentChildren', component.filename, component.contentchildren);
+    this.matchSpecificDecorator(classBody, '@ViewChild', component.filename, component.viewChilds);
+    this.matchSpecificDecorator(classBody, '@ViewChildren', component.filename, component.viewChildren);
+    this.matchSpecificDecorator(classBody, '@ContentChild', component.filename, component.contentChilds);
+    this.matchSpecificDecorator(classBody, '@ContentChildren', component.filename, component.contentChildren);
   }
 
   private static matchMultipleSpecificDecorator(classBody: string, decorator: string, filename: string, decoratorArray: NamedEntity[]) {
@@ -140,7 +128,7 @@ export class ModuleManager {
   }
 
   private static parseModuleContents(moduleContents: string): NgModule {
-    moduleContents = moduleContents.replace(/\s*?\/\/.*$/igm, () => ''); // Remove comments
+    moduleContents = StringUtils.removeComments(moduleContents);
     const module = new NgModule();
     let section = this.getSection(moduleContents, 'imports');
     if (section.length > 0) {

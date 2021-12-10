@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 1.9.0
+
+- Routing relations between components are now visualized. Notice that routes defined with module destinations are not yet visualized.
+
 ## Version 1.8.5
 
 - Security issue fixed: Now using npm package @xmldom/xmldom instead of xmldom

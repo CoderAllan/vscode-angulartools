@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 1.9.1
+
+- Maintenance: Bump packages to latest
+
 ## Version 1.9.0
 
 - Routing relations between components are now visualized. Notice that routes defined with module destinations are not yet visualized.

@@ -19,14 +19,22 @@ export class ModuleManager {
         project.components.set(file.name, file);
       }
       else if (file instanceof Pipe) {
-        project.pipes.set(file.name, new NamedEntity(file.name, filename));
+        project.pipes.set(file.name, file);
       }
       else if (file instanceof Directive) {
-        project.directives.set(file.name, new NamedEntity(file.name, filename));
+        project.directives.set(file.name, file);
       }
       else if (file instanceof Injectable) {
-        project.directives.set(file.name, new NamedEntity(file.name, filename));
+        project.injectables.set(file.name, file);
       }
+    });
+    project.components.forEach(component => {
+        component.dependencyInjections.forEach(injectable => {
+            const filename = project.injectables.get(injectable.name)?.filename;
+            if (filename !== undefined) {
+                injectable.filename = filename;
+            }
+        });
     });
     return project;
   }
@@ -59,31 +67,30 @@ export class ModuleManager {
     regex = /@Component\s*\(\s*(\{.+?\})\s*\)\s*export\s+class\s+(\w+)\s+(.*)/ims;
     match = regex.exec(fileContents.toString());
     if (match !== null) {
-      const componentBody = match[1];
       const className = match[2];
       const component = new Component(className, filename);
       const classBody = match[3];
-      this.enrichComponent(component, classBody, componentBody);
+      this.enrichComponent(component, classBody);
       return component;
     }
-    regex = /@Directive\s*\(\s*(\{.+?\})\s*\)\s*export\s+class\s+(\w+)\s+/ims;
+    regex = /@Directive\s*\(.*?\)\s*export\s+class\s+(\w+)\s+/ims;
     match = regex.exec(fileContents.toString());
     if (match !== null) {
-      return new Directive(match[2], filename);
+      return new Directive(match[1], filename);
     }
-    regex = /@Pipe\s*\(\s*(\{.+?\})\s*\)\s*export\s+class\s+(\w+)\s+/ims;
+    regex = /@Pipe\s*\(.*?\)\s*export\s+class\s+(\w+)\s+/ims;
     match = regex.exec(fileContents.toString());
     if (match !== null) {
-      return new Pipe(match[2], filename);
+      return new Pipe(match[1], filename);
     }
-    regex = /@Injectable\s*\(\s*(\{.+?\})\s*\)\s*export\s+class\s+(\w+)\s+/ims;
+    regex = /@Injectable\s*\(.*?\)\s*export\s+class\s+(\w+)\s+/ims;
     match = regex.exec(fileContents.toString());
     if (match !== null) {
-      return new Injectable(match[2], filename);
+      return new Injectable(match[1], filename);
     }
   }
 
-  private static enrichComponent(component: Component, classBody: string, componentBody: string): void {
+  private static enrichComponent(component: Component, classBody: string): void {
     let regex = /constructor\s*\((.*?)\)/ims;
     let match = regex.exec(classBody);
     if (match !== null) {
@@ -91,7 +98,7 @@ export class ModuleManager {
       regex = /\s*\w+\s+\w+\s*:\s*(\w+)[,]*/gims;
       match = regex.exec(constructorParameters);
       while (match) {
-        component.dependencyInjections.push(new NamedEntity(match[1], component.filename));
+        component.dependencyInjections.push(new NamedEntity(match[1], ''));
         match = regex.exec(constructorParameters);
       }
     }

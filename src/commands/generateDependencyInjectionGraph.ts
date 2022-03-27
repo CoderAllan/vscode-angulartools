@@ -123,7 +123,7 @@ export class GenerateDependencyInjectionGraph extends ShowHierarchyBase {
       appendNodes([new Node(component.name, this.generatedComponentNode(component), componentFilename, component.filename, false, NodeType.component, componentPosition)]);
       component.dependencyInjections.forEach(injectable => {
         const injectablePosition = this.graphState.nodePositions[injectable.name];
-        appendNodes([new Node(injectable.name, injectable.name, injectable.filename.replace(this.workspaceDirectory, ''), component.filename, false, NodeType.injectable, injectablePosition)]);
+        appendNodes([new Node(injectable.name, injectable.name, injectable.filename.replace(this.workspaceDirectory, ''), injectable.filename, false, NodeType.injectable, injectablePosition)]);
         appendEdges([new Edge((this.edges.length + 1).toString(), injectable.name, component.name, ArrowType.injectable)]);
       });
     });

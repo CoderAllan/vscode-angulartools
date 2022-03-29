@@ -2,6 +2,9 @@
 export class NamedEntity {
   public name: string = '';
   public filename: string = '';
+
+  public dependencies: NamedEntity[] = [];
+
   public constructor(name: string, filename: string) {
     this.name = name;
     this.filename = filename;

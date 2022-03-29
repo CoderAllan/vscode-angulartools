@@ -121,10 +121,17 @@ export class GenerateDependencyInjectionGraph extends ShowHierarchyBase {
       componentFilename = componentFilename.split('\\').join('/');
       const componentPosition = this.graphState.nodePositions[component.name];
       appendNodes([new Node(component.name, this.generatedComponentNode(component), componentFilename, component.filename, false, NodeType.component, componentPosition)]);
-      component.dependencyInjections.forEach(injectable => {
-        const injectablePosition = this.graphState.nodePositions[injectable.name];
-        appendNodes([new Node(injectable.name, injectable.name, injectable.filename.replace(this.workspaceDirectory, ''), injectable.filename, false, NodeType.injectable, injectablePosition)]);
-        appendEdges([new Edge((this.edges.length + 1).toString(), injectable.name, component.name, ArrowType.injectable)]);
+      component.dependencies.forEach(injectable => {
+            const injectablePosition = this.graphState.nodePositions[injectable.name];
+            appendNodes([new Node(injectable.name, injectable.name, injectable.filename.replace(this.workspaceDirectory, ''), injectable.filename, false, NodeType.injectable, injectablePosition)]);
+            appendEdges([new Edge((this.edges.length + 1).toString(), injectable.name, component.name, ArrowType.injectable)]);
+        });
+    });
+    project.injectables.forEach(injectable=> {
+        injectable.dependencies.forEach(dependency => {
+            const dependencyPosition = this.graphState.nodePositions[dependency.name];
+            appendNodes([new Node(dependency.name, dependency.name, dependency.filename.replace(this.workspaceDirectory, ''), dependency.filename, false, NodeType.injectable, dependencyPosition)]);
+            appendEdges([new Edge((this.edges.length + 1).toString(), dependency.name, injectable.name, ArrowType.injectable)]);
       });
     });
   }

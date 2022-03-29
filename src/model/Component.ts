@@ -1,7 +1,6 @@
 import { NamedEntity } from "./NamedEntity";
 
 export class Component extends NamedEntity {
-  public dependencyInjections: NamedEntity[] = [];
   public inputs: NamedEntity[] = [];
   public outputs: NamedEntity[] = [];
   public viewChilds: NamedEntity[] = [];

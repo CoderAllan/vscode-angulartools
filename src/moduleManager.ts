@@ -34,6 +34,12 @@ export class ModuleManager {
     project.injectables.forEach(injectable => {
         this.setFilenames(injectable.dependencies, project);
     });
+    project.directives.forEach(directive => {
+        this.setFilenames(directive.dependencies, project);
+    });
+    project.pipes.forEach(pipe => {
+        this.setFilenames(pipe.dependencies, project);
+    });
     return project;
   }
 

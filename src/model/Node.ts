@@ -155,7 +155,7 @@ export class Node {
       case NodeType.directive:
         return 'Directive';
       case NodeType.injectable:
-        return 'Injectable';
+        return 'Service';
       case NodeType.module:
         return 'Module';
       case NodeType.pipe:

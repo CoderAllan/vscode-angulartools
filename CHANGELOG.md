@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 1.10.0
+
+- In the dependency injection graph, now all injected entities are shown.
+
 ## Version 1.9.1
 
 - Maintenance: Bump packages to latest

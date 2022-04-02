@@ -1,5 +1,10 @@
 # Change Log
 
+## Version 1.10.1
+
+- Adding label to links in generated dgml file.
+- Bugfix: TsFilename path in generated dgml file are now correct for injected services.
+
 ## Version 1.10.0
 
 - In the dependency injection graph, now all injected entities are shown.

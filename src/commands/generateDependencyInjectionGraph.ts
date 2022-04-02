@@ -126,16 +126,20 @@ export class GenerateDependencyInjectionGraph extends ShowHierarchyBase {
 
     private addNamedEntityNodeAndEdges(namedEntityMap: Map<string, Component | NamedEntity>, noteType: NodeType, arrowType: ArrowType) {
         namedEntityMap.forEach(namedEntity => {
-            let namedEntityFilename = namedEntity.filename.replace(this.workspaceDirectory, '.');
-            namedEntityFilename = namedEntityFilename.split('\\').join('/');
             const entityPosition = this.graphState.nodePositions[namedEntity.name];
-            this.appendNodes([new Node(namedEntity.name, this.getNodeLabel(namedEntity), namedEntityFilename, namedEntity.filename, false, noteType, entityPosition)]);
+            this.appendNodes([new Node(namedEntity.name, this.getNodeLabel(namedEntity), this.fixTsFilename(namedEntity.filename), namedEntity.filename, false, noteType, entityPosition)]);
             namedEntity.dependencies.forEach(dependency => {
                 const dependencyPosition = this.graphState.nodePositions[dependency.name];
-                this.appendNodes([new Node(dependency.name, dependency.name, dependency.filename.replace(this.workspaceDirectory, ''), dependency.filename, false, NodeType.injectable, dependencyPosition)]);
+                this.appendNodes([new Node(dependency.name, dependency.name, this.fixTsFilename(dependency.filename), dependency.filename, false, NodeType.injectable, dependencyPosition)]);
                 this.appendEdges([new Edge((this.edges.length + 1).toString(), dependency.name, namedEntity.name, arrowType)]);
             });
         });
+    }
+
+    private fixTsFilename(filename: string): string {
+        let entityFilename = filename.replace(this.workspaceDirectory, '.');
+        entityFilename = entityFilename.split('\\').join('/');
+        return entityFilename;
     }
 
     private generateJavascriptContent(nodesJson: string, edgesJson: string) {

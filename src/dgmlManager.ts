@@ -48,7 +48,7 @@ export class DgmlManager {
     }
   }
 
-  private addLinkNode(xmlDoc: Document, element: Element | null, source: string, target: string, categoryId: string) {
+  private addLinkNode(xmlDoc: Document, element: Element | null, source: string, target: string, categoryId: string, label: string | undefined) {
     if (element !== null) {
       let nodeAlreadyAdded = false;
       if (element.childNodes.length > 0) {
@@ -68,6 +68,9 @@ export class DgmlManager {
         linkElement.setAttribute("Source", source);
         linkElement.setAttribute("Target", target);
         linkElement.setAttribute("Category", categoryId);
+        if (label !== undefined) {
+            linkElement.setAttribute("Label", label);
+        }
         element.appendChild(linkElement);
       }
     }
@@ -84,7 +87,7 @@ export class DgmlManager {
       this.generateDirectedGraphNodesXml(xmlDoc, node, nodesElement);
       const categoryId = NodeType[node.nodeType];
       if (!(categoryId in categoryDictionary)) {
-        categoryDictionary[categoryId] = new Category(categoryId, categoryId, node.getNodeTypeColor(node.nodeType), '', '');
+        categoryDictionary[categoryId] = new Category(categoryId, node.getNodeTypeTitle(), node.getNodeTypeColor(node.nodeType), '', '');
       }
       if (!('File' in categoryDictionary)) {
         categoryDictionary['File'] = new Category('File', '', '', '', 'File');
@@ -142,7 +145,7 @@ export class DgmlManager {
 
   private generateDirectedGraphLinksXml(xmlDoc: Document, edge: Edge, linksElement: Element | null) {
     const categoryId = ArrowType[edge.arrowType];
-    this.addLinkNode(xmlDoc, linksElement, edge.source, edge.target, categoryId);
+    this.addLinkNode(xmlDoc, linksElement, edge.source, edge.target, categoryId, edge.getEdgeTitle());
   }
 
   private addCategoryRef(xmlDoc: Document, node: Element, categoryRef: string) {

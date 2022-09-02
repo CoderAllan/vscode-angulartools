@@ -416,12 +416,12 @@
     "test": "node ./out/test/runTest.js"
   },
   "devDependencies": {
-    "@types/glob": "^7.2.0",
+    "@types/glob": "^8.0.0",
     "@types/mocha": "^9.1.1",
-    "@types/node": "^18.7.13",
-    "@types/vscode": "^1.70.0",
-    "@typescript-eslint/eslint-plugin": "^5.35.1",
-    "@typescript-eslint/parser": "^5.35.1",
+    "@types/node": "^18.7.14",
+    "@types/vscode": "^1.71.0",
+    "@typescript-eslint/eslint-plugin": "^5.36.1",
+    "@typescript-eslint/parser": "^5.36.1",
     "eslint": "^8.23.0",
     "glob": "^8.0.3",
     "supports-color": "^9.2.2",

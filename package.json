@@ -418,14 +418,14 @@
   "devDependencies": {
     "@types/glob": "^8.0.0",
     "@types/mocha": "^9.1.1",
-    "@types/node": "^18.7.18",
+    "@types/node": "^18.7.21",
     "@types/vscode": "^1.71.0",
     "@typescript-eslint/eslint-plugin": "^5.38.0",
     "@typescript-eslint/parser": "^5.38.0",
-    "eslint": "^8.23.1",
+    "eslint": "^8.24.0",
     "glob": "^8.0.3",
     "supports-color": "^9.2.3",
-    "ts-loader": "^9.4.0",
+    "ts-loader": "^9.4.1",
     "typescript": "^4.8.3",
     "webpack": "^5.74.0",
     "webpack-cli": "^4.10.0"

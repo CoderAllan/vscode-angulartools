@@ -418,7 +418,7 @@
   "devDependencies": {
     "@types/glob": "^8.0.0",
     "@types/mocha": "^10.0.0",
-    "@types/node": "^18.11.0",
+    "@types/node": "^18.11.3",
     "@types/vscode": "^1.72.0",
     "@typescript-eslint/eslint-plugin": "^5.40.1",
     "@typescript-eslint/parser": "^5.40.1",
@@ -436,7 +436,7 @@
     "bluebird": "^3.7.2",
     "browserslist": "^4.21.4",
     "js-base64": "^3.7.2",
-    "npm-registry-fetch": "^14.0.1",
+    "npm-registry-fetch": "^14.0.2",
     "prettify-xml": "^1.2.0",
     "xmlserializer": "^0.6.1"
   }

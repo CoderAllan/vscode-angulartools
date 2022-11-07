@@ -432,7 +432,7 @@
   },
   "dependencies": {
     "@types/xmldom": "^0.1.31",
-    "@xmldom/xmldom": "^0.8.5",
+    "@xmldom/xmldom": "^0.8.6",
     "bluebird": "^3.7.2",
     "browserslist": "^4.21.4",
     "js-base64": "^3.7.2",

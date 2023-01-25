@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 1.10.2
+
+- Maintenance: Bump packages to latest
+
 ## Version 1.10.1
 
 - Adding label to links in generated dgml file.

@@ -12,7 +12,7 @@
     "url": "https://github.com/CoderAllan"
   },
   "engines": {
-    "vscode": "^1.74.0"
+    "vscode": "^1.79.0"
   },
   "categories": [
     "Other",
@@ -24,16 +24,6 @@
     "typescript",
     "markdown",
     "tools"
-  ],
-  "activationEvents": [
-    "onCommand:angulartools.listAllImports",
-    "onCommand:angulartools.projectDirectoryStructure",
-    "onCommand:angulartools.modulesToMarkdown",
-    "onCommand:angulartools.packageJsonToMarkdown",
-    "onCommand:angulartools.showComponentHierarchy",
-    "onCommand:angulartools.showModuleHierarchy",
-    "onCommand:angulartools.componentHierarchyMarkdown",
-    "onCommand:angulartools.generateDependencyInjectionGraph"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -420,9 +410,9 @@
     "@types/mocha": "^10.0.1",
     "@types/node": "^20.3.1",
     "@types/vscode": "^1.79.1",
-    "@typescript-eslint/eslint-plugin": "^5.59.11",
-    "@typescript-eslint/parser": "^5.59.11",
-    "eslint": "^8.42.0",
+    "@typescript-eslint/eslint-plugin": "^5.60.0",
+    "@typescript-eslint/parser": "^5.60.0",
+    "eslint": "^8.43.0",
     "glob": "^10.2.7",
     "supports-color": "^9.3.1",
     "ts-loader": "^9.4.3",

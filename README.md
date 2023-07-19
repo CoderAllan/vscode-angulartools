@@ -108,6 +108,24 @@ This command will analyse all Angular components in the project and collect all 
 
 ## Settings
 
+### Project settings
+
+You can place a file named ".vscodeangulartools" in the workspace root folder where you can specify folders to exclude or include in json format.
+
+Only the two parameters "includeFolders" and "excludeFolders" are used at the moment. They are both semicolon separated list of folder names.
+
+If you add a includeFolders parameter, then only child folders of the folders in the list will be included. If you add a folder to the excludeFolders parameter then no files from the folder or its child-folders will be included.
+
+Example:
+```json
+{
+    "includeFolders": "D:\\Src\\Angular-Examples\\angular8-example-app\\src",
+    "excludeFolders": "D:\\Src\\Angular-Examples\\angular8-example-app\\src\\app\\shared"
+}
+```
+
+### Global settings
+
 In the Visual Studio Code settings you find under File --> Preferences --> Settings, under Extensions, there is a section with all the settings for AngularTools. It is possible to change the default filenames used when the extension saves a file to the workspace folder. You can change how the component hierarchy graph nodes are rendered, the edge endings, the color of the root nodes and a lot more.
 
 See the full list of settings below the screenshot.

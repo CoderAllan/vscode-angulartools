@@ -1,5 +1,10 @@
 # Change Log
 
+## Version 1.11.0
+
+- It is now possible to include or exclude folders by placing a .vscodeangulartools config file in the project folder
+- Bugfix: Mermaid markdown graph representing the component hierarchy now shows unrelated components correctly.
+
 ## Version 1.10.2
 
 - Maintenance: Bump packages to latest

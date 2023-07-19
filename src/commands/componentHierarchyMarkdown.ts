@@ -1,52 +1,57 @@
 import { CommandBase } from '@commands';
-import { Component } from '@model';
+import { Component, Settings } from '@model';
 import { Config, ComponentManager, FileSystemUtils } from '@src';
 import * as path from 'path';
 
 export class ComponentHierarchyMarkdown extends CommandBase {
-  private config = new Config();
-  public static get commandName(): string { return 'componentHierarchyMarkdown'; }
+    private config = new Config();
+    public static get commandName(): string { return 'componentHierarchyMarkdown'; }
 
-  public execute() {
-    this.checkForOpenWorkspace();
-    const fsUtils = new FileSystemUtils();
-    var workspaceDirectory: string = fsUtils.getWorkspaceFolder();
-    const components = ComponentManager.scanWorkspaceForComponents(workspaceDirectory);
-    
-    let relations: string = '';
-    const addRelation = (from: string, to: string) => {
-      relations = relations + `    ${from}-->${to}\n`;
-    };
-    try {
-      this.addMermaidRelations(components, addRelation);
-      const markdownContent = '# Component hierarchy\n\n' +
-      '```mermaid\n' +
-      'graph TD;\n'+
-      relations+
-      '```\n';
-      fsUtils.writeFileAndOpen(path.join(workspaceDirectory, this.config.componentHierarchyMarkdownFilename), markdownContent);
-    } catch (ex) {
-      console.log('exception:' + ex);
-    }
-  }
+    public execute() {
+        this.checkForOpenWorkspace();
+        const fsUtils = new FileSystemUtils();
+        var workspaceFolder: string = fsUtils.getWorkspaceFolder();
+        const settings: Settings = fsUtils.readProjectSettings(this.config);
+        const components = ComponentManager.scanWorkspaceForComponents(workspaceFolder, settings);
 
-  private addMermaidRelations(componentHash: { [selector: string]: Component; }, addRelation: (from: string, to: string) => void) {
-    for (let selector in componentHash) {
-      const component = componentHash[selector];
-      if (component.isRoot) {
-        this.generateMermaidRelation(component.subComponents, selector, "", addRelation);
-      }
+        let relations: string = '';
+        const addRelation = (from: string, to: string, visible: boolean) => {
+            const relationType = visible ? "-->" : "~~~";
+            relations = relations + `    ${from}${relationType}${to}\n`;
+        };
+        try {
+            this.addMermaidRelations(components, addRelation);
+            const markdownContent = '# Component hierarchy\n\n' +
+                '```mermaid\n' +
+                'graph TD;\n' +
+                relations +
+                '```\n';
+            fsUtils.writeFileAndOpen(path.join(workspaceFolder, this.config.componentHierarchyMarkdownFilename), markdownContent);
+        } catch (ex) {
+            console.log('Angular Tools Exception: ' + ex);
+        }
     }
-  }
 
-  private generateMermaidRelation(subComponents: Component[], displayName: string, parentDisplayName: string, addRelation: (from: string, to: string) => void) {
-    if (parentDisplayName.length > 0) {
-      addRelation(parentDisplayName, displayName);
+    private addMermaidRelations(componentHash: { [selector: string]: Component; }, addRelation: (from: string, to: string, visible: boolean) => void) {
+        for (let selector in componentHash) {
+            const component = componentHash[selector];
+            if (component.isRoot) {
+                this.generateMermaidRelation(component.subComponents, selector, "", addRelation);
+            }
+        }
     }
-    if (subComponents.length > 0) {
-      subComponents.forEach((subComponent) => {
-        this.generateMermaidRelation(subComponent.subComponents, subComponent.selector, displayName, addRelation);
-      });
+
+    private generateMermaidRelation(subComponents: Component[], displayName: string, parentDisplayName: string, addRelation: (from: string, to: string, visible: boolean) => void) {
+        if (parentDisplayName.length > 0) {
+            addRelation(parentDisplayName, displayName, true);
+        }
+        else {
+            addRelation(displayName, displayName, false);
+        }
+        if (subComponents.length > 0) {
+            subComponents.forEach((subComponent) => {
+                this.generateMermaidRelation(subComponent.subComponents, subComponent.selector, displayName, addRelation);
+            });
+        }
     }
-  }
 }

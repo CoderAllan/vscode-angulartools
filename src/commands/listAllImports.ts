@@ -3,6 +3,7 @@ import * as vscode from 'vscode';
 
 import { ArrayUtils, Config, FileSystemUtils } from '@src';
 import { CommandBase } from '@commands';
+import { Settings } from '@model';
 
 export class ListAllImports extends CommandBase {
   private config = new Config();
@@ -11,9 +12,10 @@ export class ListAllImports extends CommandBase {
   public execute() {
     this.checkForOpenWorkspace();
     const fsUtils = new FileSystemUtils();
-    var directoryPath: string = fsUtils.getWorkspaceFolder();
-    const files = fsUtils.listFiles(directoryPath, this.config.excludeDirectories, this.isTypescriptFile);
-    this.writeResult(directoryPath, files);
+    var workspaceFolder: string = fsUtils.getWorkspaceFolder();
+    const settings: Settings = fsUtils.readProjectSettings(this.config);
+    const files = fsUtils.listFiles(workspaceFolder, settings, this.isTypescriptFile);
+    this.writeResult(workspaceFolder, files);
   }
 
   private writeResult(workspaceDirectory: string, results: string[]) {

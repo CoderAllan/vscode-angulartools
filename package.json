@@ -45,16 +45,16 @@
         "title": "AngularTools: Generate a Markdown file from package.json files in the workspace."
       },
       {
+        "command": "angulartools.componentHierarchyMarkdown",
+        "title": "AngularTools: Generate a Mermaid Markdown file representing the component hierarchy.."
+      },
+      {
         "command": "angulartools.showComponentHierarchy",
         "title": "AngularTools: Show a graph representing the component hierarchy."
       },
       {
         "command": "angulartools.showModuleHierarchy",
         "title": "AngularTools: Show a graph representing the module hierarchy."
-      },
-      {
-        "command": "angulartools.componentHierarchyMarkdown",
-        "title": "AngularTools: Generate a directed graph in Mermaid Markdown format."
       },
       {
         "command": "angulartools.generateDependencyInjectionGraph",

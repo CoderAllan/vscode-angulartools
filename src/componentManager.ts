@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import path = require('path');
 
 import { Config, FileSystemUtils, StringUtils } from '@src';
-import { Component } from '@model';
+import { Component, Settings } from '@model';
 
 export class ComponentManager {
   private static componentRegex = /@Component\({/ig;
@@ -18,10 +18,9 @@ export class ComponentManager {
   private static childrenRegex = /children\s*?:\s*?\[(.*?)\]/ims;
 
 
-  public static scanWorkspaceForComponents(directoryPath: string): { [selector: string]: Component; } {
-    const config = new Config();
+  public static scanWorkspaceForComponents(directoryPath: string, settings: Settings): { [selector: string]: Component; } {
     const fsUtils = new FileSystemUtils();
-    const componentOrModuleFilenames = fsUtils.listFiles(directoryPath, config.excludeDirectories, this.isComponentOrModuleFile);
+    const componentOrModuleFilenames = fsUtils.listFiles(directoryPath, settings, this.isComponentOrModuleFile);
     const componentFilenames = componentOrModuleFilenames.filter(FileSystemUtils.isComponentFile);
     const components = ComponentManager.scanComponents(componentFilenames);
     ComponentManager.enrichComponentsFromComponentTemplates(components);

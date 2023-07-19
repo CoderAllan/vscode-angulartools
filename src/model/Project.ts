@@ -1,4 +1,4 @@
-import { NgModule } from "@model";
+import { NgModule, Settings } from "@model";
 import { Component } from './Component';
 import { NamedEntity } from "./NamedEntity";
 
@@ -9,4 +9,5 @@ export class Project {
   public pipes: Map<string, NamedEntity> = new Map<string, NamedEntity>();
   public directives: Map<string, NamedEntity> = new Map<string, NamedEntity>();
   public injectables: Map<string, NamedEntity> = new Map<string, NamedEntity>();
+  public settings: Settings = new Settings();
 }

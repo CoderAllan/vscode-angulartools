@@ -12,3 +12,4 @@ export * from './Node';
 export * from './NodeType';
 export * from './Position';
 export * from './Project';
+export * from './Settings';

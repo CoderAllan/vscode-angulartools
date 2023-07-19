@@ -1,6 +1,6 @@
 import { ShowHierarchyBase } from './showHierarchyBase';
-import { ComponentManager } from '@src';
-import { ArrowType, Component, Edge, GraphState, Node, NodeType } from '@model';
+import { ComponentManager, FileSystemUtils } from '@src';
+import { ArrowType, Component, Edge, GraphState, Node, NodeType, Settings } from '@model';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as vscode from 'vscode';
@@ -8,7 +8,7 @@ import * as vscode from 'vscode';
 export class ShowComponentHierarchy extends ShowHierarchyBase {
   public static get commandName(): string { return 'showComponentHierarchy'; }
 
-  private directoryPath: string = this.fsUtils.getWorkspaceFolder();
+  private workspaceFolder: string = this.fsUtils.getWorkspaceFolder();
 
   public execute(webview: vscode.Webview) {
     this.checkForOpenWorkspace();
@@ -54,7 +54,9 @@ export class ShowComponentHierarchy extends ShowHierarchyBase {
       this.extensionContext.subscriptions
     );
 
-    const components = ComponentManager.scanWorkspaceForComponents(this.directoryPath);
+    const fsUtils = new FileSystemUtils();
+    const settings: Settings = fsUtils.readProjectSettings(this.config);
+    const components = ComponentManager.scanWorkspaceForComponents(this.workspaceFolder, settings);
 
     this.nodes = [];
     this.edges = [];
@@ -99,7 +101,7 @@ export class ShowComponentHierarchy extends ShowHierarchyBase {
   }
 
   private generateDirectedGraphNodes(components: Component[], component: Component, isRoot: boolean, parentSelector: string, appendNodes: (nodeList: Node[]) => void) {
-    let componentFilename = component.filename.replace(this.directoryPath, '.');
+    let componentFilename = component.filename.replace(this.workspaceFolder, '.');
     componentFilename = componentFilename.split('\\').join('/');
     const componentPosition = this.graphState.nodePositions[component.selector];
     appendNodes([new Node(component.selector, component.selector, componentFilename, component.filename, isRoot, isRoot ? NodeType.rootNode : NodeType.component, componentPosition)]);

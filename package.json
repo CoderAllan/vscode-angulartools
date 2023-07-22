@@ -25,8 +25,7 @@
     "markdown",
     "tools"
   ],
-  "activationEvents": [
-  ],  
+  "activationEvents": [],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
@@ -410,21 +409,21 @@
   "devDependencies": {
     "@types/glob": "^8.1.0",
     "@types/mocha": "^10.0.1",
-    "@types/node": "^20.4.2",
+    "@types/node": "^20.4.3",
     "@types/vscode": "^1.80.0",
-    "@typescript-eslint/eslint-plugin": "^6.0.0",
-    "@typescript-eslint/parser": "^6.0.0",
-    "eslint": "^8.44.0",
+    "@typescript-eslint/eslint-plugin": "^6.1.0",
+    "@typescript-eslint/parser": "^6.1.0",
+    "eslint": "^8.45.0",
     "glob": "^10.3.3",
     "supports-color": "^9.4.0",
     "ts-loader": "^9.4.4",
     "typescript": "^5.1.6",
-    "webpack": "^5.88.1",
+    "webpack": "^5.88.2",
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
     "@types/xmldom": "^0.1.31",
-    "@xmldom/xmldom": "^0.8.8",
+    "@xmldom/xmldom": "^0.8.10",
     "bluebird": "^3.7.2",
     "browserslist": "^4.21.9",
     "js-base64": "^3.7.5",

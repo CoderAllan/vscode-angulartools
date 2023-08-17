@@ -409,10 +409,10 @@
   "devDependencies": {
     "@types/glob": "^8.1.0",
     "@types/mocha": "^10.0.1",
-    "@types/node": "^20.4.10",
+    "@types/node": "^20.5.0",
     "@types/vscode": "^1.81.0",
-    "@typescript-eslint/eslint-plugin": "^6.3.0",
-    "@typescript-eslint/parser": "^6.3.0",
+    "@typescript-eslint/eslint-plugin": "^6.4.0",
+    "@typescript-eslint/parser": "^6.4.0",
     "eslint": "^8.47.0",
     "glob": "^10.3.3",
     "supports-color": "^9.4.0",
@@ -427,7 +427,7 @@
     "bluebird": "^3.7.2",
     "browserslist": "^4.21.10",
     "js-base64": "^3.7.5",
-    "npm-registry-fetch": "^15.0.0",
+    "npm-registry-fetch": "^16.0.0",
     "prettify-xml": "^1.2.0",
     "xmlserializer": "^0.6.1"
   }

@@ -409,12 +409,12 @@
   "devDependencies": {
     "@types/glob": "^8.1.0",
     "@types/mocha": "^10.0.1",
-    "@types/node": "^20.5.6",
+    "@types/node": "^20.5.7",
     "@types/vscode": "^1.81.0",
-    "@typescript-eslint/eslint-plugin": "^6.4.1",
-    "@typescript-eslint/parser": "^6.4.1",
+    "@typescript-eslint/eslint-plugin": "^6.5.0",
+    "@typescript-eslint/parser": "^6.5.0",
     "eslint": "^8.48.0",
-    "glob": "^10.3.3",
+    "glob": "^10.3.4",
     "supports-color": "^9.4.0",
     "ts-loader": "^9.4.4",
     "typescript": "^5.2.2",
@@ -422,7 +422,7 @@
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
-    "@types/xmldom": "^0.1.31",
+    "@types/xmldom": "^0.1.32",
     "@xmldom/xmldom": "^0.8.10",
     "bluebird": "^3.7.2",
     "browserslist": "^4.21.10",

@@ -1,5 +1,10 @@
 # Change Log
 
+## Version 1.12.0
+
+- Updated vis-network.min.js to latest v9.1.7
+- Maintenance: Bump packages to latest
+
 ## Version 1.11.0
 
 - It is now possible to include or exclude folders by placing a .vscodeangulartools config file in the project folder

@@ -3,12 +3,14 @@ import json
 import re
 from git import Repo, TagReference
 
+
 def readVersionFromPackageJson() -> None:
     packageJson = open("package.json", "r")
     contentRaw = packageJson.read()
     contentJson = json.loads(contentRaw)
     packageJson.close()
     return contentJson["version"]
+
 
 def isPackageJsonVersionTagged(repo, packageJsonVersion) -> bool:
     packageJsonVersionTagFound = False
@@ -17,6 +19,7 @@ def isPackageJsonVersionTagged(repo, packageJsonVersion) -> bool:
             packageJsonVersionTagFound = True
             break
     return packageJsonVersionTagFound
+
 
 def isChangeLogUpdatedWithPackageJsonVersion(packageJsonVersion) -> bool:
     packageJsonVersionChangeLogEntryFound = False
@@ -30,21 +33,24 @@ def isChangeLogUpdatedWithPackageJsonVersion(packageJsonVersion) -> bool:
             break
     return packageJsonVersionChangeLogEntryFound
 
+
 def isAllPackagesInstalledLocally() -> bool:
     process = subprocess.Popen(["cmd", "/c", "npm", "list", "--production", "--parseable", "--depth=99999", "--loglevel=error"], stderr=subprocess.PIPE)
     out = process.stderr.read()
     success = (len(out) == 0)
     if (not success):
-      print(f"Error while checking if all packages is installed locally: {out}")
+        print(f"Error while checking if all packages is installed locally: {out}")
     return success
+
 
 def packageExtension() -> bool:
     process = subprocess.Popen(["cmd", "/c", "vsce", "package"], stderr=subprocess.PIPE)
     out = process.stderr.read()
     success = (len(out) == 0)
     if (not success):
-      print(f"Error while packaging: {out}")
+        print(f"Error while packaging: {out}")
     return success
+
 
 def main():
     packageJsonVersion = readVersionFromPackageJson()
@@ -71,5 +77,6 @@ def main():
                     print(f"New version found in package.json: {packageJsonVersion}.")
                     print("Creating tag in Git...")
                     repo.create_tag(packageJsonVersion)
+
 
 main()

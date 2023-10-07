@@ -4,7 +4,7 @@
   "displayName": "AngularTools",
   "description": "AngularTools is a collection of tools for exploring an Angular project, help you with documenting, reverse engineering a project or help when refactoring.",
   "icon": "logo.png",
-  "version": "1.11.0",
+  "version": "1.12.0",
   "license": "MIT",
   "repository": "https://github.com/CoderAllan/vscode-angulartools",
   "author": {
@@ -12,7 +12,7 @@
     "url": "https://github.com/CoderAllan"
   },
   "engines": {
-    "vscode": "^1.80.0"
+    "vscode": "^1.83.0"
   },
   "categories": [
     "Other",
@@ -409,11 +409,11 @@
   "devDependencies": {
     "@types/glob": "^8.1.0",
     "@types/mocha": "^10.0.2",
-    "@types/node": "^20.8.2",
+    "@types/node": "^20.8.3",
     "@types/vscode": "^1.83.0",
     "@typescript-eslint/eslint-plugin": "^6.7.4",
     "@typescript-eslint/parser": "^6.7.4",
-    "eslint": "^8.50.0",
+    "eslint": "^8.51.0",
     "glob": "^10.3.10",
     "supports-color": "^9.4.0",
     "ts-loader": "^9.4.4",

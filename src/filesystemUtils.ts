@@ -64,12 +64,11 @@ export class FileSystemUtils {
         let result: string[] = [];
         if (directories && directories.length > 0) {
             directories.forEach(directory => {
-                directory = directory.toLowerCase();
                 if (!settings.excludeDirectories.includes(path.basename(directory))) {
                     let excludeDirectory = false;
                     for (let i = 0; i < settings.excludeDirectories.length; i++) {
                         let excludeDir = settings.excludeDirectories[i];
-                        if (directory.indexOf(excludeDir.toLowerCase()) >= 0) {
+                        if (directory.indexOf(excludeDir) >= 0) {
                             excludeDirectory = true;
                             break;
                         }
@@ -81,7 +80,7 @@ export class FileSystemUtils {
                             } else {
                                 for (let i = 0; i < settings.includeDirectories.length; i++) {
                                     let includeDir = settings.includeDirectories[i];
-                                    if (directory.indexOf(includeDir.toLowerCase()) >= 0) {
+                                    if (directory.indexOf(includeDir) >= 0) {
                                         result.push(directory);
                                     }
                                 }

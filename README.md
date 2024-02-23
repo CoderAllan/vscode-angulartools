@@ -116,11 +116,14 @@ Only the two parameters "includeFolders" and "excludeFolders" are used at the mo
 
 If you add a includeFolders parameter, then only child folders of the folders in the list will be included. If you add a folder to the excludeFolders parameter then no files from the folder or its child-folders will be included.
 
+Notice that the filename comparison from v1.13.0 is case-sensitive. This may affect Windows user because the Windows filesystem is not case sensitive and if you previously added a path then it may not work anymore. So if you experience that your graph is no longer rendered as it used to be, then it may be because your includeFolders paths have the wrong casing in the settings file.
+
 Example:
+
 ```json
 {
-    "includeFolders": "D:\\Src\\Angular-Examples\\angular8-example-app\\src",
-    "excludeFolders": "D:\\Src\\Angular-Examples\\angular8-example-app\\src\\app\\shared"
+    "includeFolders": "d:\\Src\\Angular-Examples\\angular8-example-app\\src",
+    "excludeFolders": "d:\\Src\\Angular-Examples\\angular8-example-app\\src\\app\\shared"
 }
 ```
 

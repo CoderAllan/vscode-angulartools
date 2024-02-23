@@ -1,5 +1,11 @@
 # Change Log
 
+## Version 1.13.0
+
+- Fixed issue with case sensitive filenames when using the .vscodeangulartools setting file.
+- Updated vis-network.min.js to latest v9.1.9
+- Maintenance: Bump packages to latest
+
 ## Version 1.12.0
 
 - Updated vis-network.min.js to latest v9.1.7

@@ -427,7 +427,7 @@
     "bluebird": "^3.7.2",
     "browserslist": "^4.23.0",
     "js-base64": "^3.7.7",
-    "npm-registry-fetch": "^16.2.0",
+    "npm-registry-fetch": "^16.2.1",
     "prettify-xml": "^1.2.0",
     "xmlserializer": "^0.6.1"
   }

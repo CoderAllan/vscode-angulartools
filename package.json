@@ -413,7 +413,7 @@
     "@types/vscode": "^1.88.0",
     "@typescript-eslint/eslint-plugin": "^7.7.0",
     "@typescript-eslint/parser": "^7.7.0",
-    "eslint": "^9.0.0",
+    "eslint": "^9.1.0",
     "glob": "^10.3.12",
     "supports-color": "^9.4.0",
     "ts-loader": "^9.5.1",

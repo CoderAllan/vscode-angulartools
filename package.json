@@ -410,10 +410,10 @@
     "@types/glob": "^8.1.0",
     "@types/mocha": "^10.0.6",
     "@types/node": "^20.12.8",
-    "@types/vscode": "^1.88.0",
+    "@types/vscode": "^1.89.0",
     "@typescript-eslint/eslint-plugin": "^7.8.0",
     "@typescript-eslint/parser": "^7.8.0",
-    "eslint": "^9.1.1",
+    "eslint": "^9.2.0",
     "glob": "^10.3.12",
     "supports-color": "^9.4.0",
     "ts-loader": "^9.5.1",
@@ -427,7 +427,7 @@
     "bluebird": "^3.7.2",
     "browserslist": "^4.23.0",
     "js-base64": "^3.7.7",
-    "npm-registry-fetch": "^17.0.0",
+    "npm-registry-fetch": "^17.0.1",
     "prettify-xml": "^1.2.0",
     "xmlserializer": "^0.6.1"
   }

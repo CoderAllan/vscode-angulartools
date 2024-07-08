@@ -414,7 +414,7 @@
     "@typescript-eslint/eslint-plugin": "^7.15.0",
     "@typescript-eslint/parser": "^7.15.0",
     "eslint": "^9.6.0",
-    "glob": "^10.4.2",
+    "glob": "^10.4.3",
     "supports-color": "^9.4.0",
     "ts-loader": "^9.5.1",
     "typescript": "^5.5.3",

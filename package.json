@@ -412,7 +412,7 @@
     "@types/node": "^20.14.10",
     "@types/vscode": "^1.90.0",
     "@typescript-eslint/eslint-plugin": "^7.16.0",
-    "@typescript-eslint/parser": "^7.15.0",
+    "@typescript-eslint/parser": "^7.16.0",
     "eslint": "^9.6.0",
     "glob": "^11.0.0",
     "supports-color": "^9.4.0",

@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 1.13.1
+
+- Maintenance: Bump packages to latest
+
 ## Version 1.13.0
 
 - Fixed issue with case sensitive filenames when using the .vscodeangulartools setting file.

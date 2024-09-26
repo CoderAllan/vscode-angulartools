@@ -409,13 +409,13 @@
   "devDependencies": {
     "@types/glob": "^8.1.0",
     "@types/mocha": "^10.0.8",
-    "@types/node": "^22.7.0",
+    "@types/node": "^22.7.2",
     "@types/vscode": "^1.93.0",
     "glob": "^11.0.0",
     "supports-color": "^9.4.0",
     "ts-loader": "^9.5.1",
     "typescript": "^5.6.2",
-    "webpack": "^5.94.0",
+    "webpack": "^5.95.0",
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {

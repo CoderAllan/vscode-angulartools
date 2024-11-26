@@ -1,5 +1,10 @@
 # Change Log
 
+## Version 1.14.0
+
+- Fixed bug in regex to account for comments before class definitions. Thanks @FBosito for the error report and bugfix suggestion.
+- Bump Packages to latest
+
 ## Version 1.13.1
 
 - Maintenance: Bump packages to latest

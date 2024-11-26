@@ -1,9 +1,10 @@
 import { ArrowType, BoundingBox, Category, Edge, NetworkNode, Node, NodeType, Position } from "@model";
+import * as xmldom from '@xmldom/xmldom';
 
 export class DgmlManager {
 
-  public createNewDirectedGraph(domImpl: DOMImplementation, direction: string, layout: string, zoomLevel: string): Document {
-    let xmlDoc: Document = domImpl.createDocument('', null, null);
+  public createNewDirectedGraph(domImpl: xmldom.DOMImplementation, direction: string, layout: string, zoomLevel: string): xmldom.Document {
+    let xmlDoc: xmldom.Document = domImpl.createDocument('', '', null);
     const root = xmlDoc.createElement("DirectedGraph");
     if (direction.length > 0) {
       root.setAttribute("GraphDirection", direction);
@@ -15,50 +16,50 @@ export class DgmlManager {
     return xmlDoc;
   }
 
-  private addNodeToRoot(xmlDoc: Document, tagName: string): Element | null {
+  private addNodeToRoot(xmlDoc: xmldom.Document, tagName: string): xmldom.Element | undefined | null {
     const root = xmlDoc.documentElement;
-    const elements = root.getElementsByTagName(tagName);
-    let nodeElement: Element;
-    if (elements.length === 0) {
+    const elements = root?.getElementsByTagName(tagName);
+    let nodeElement: xmldom.Element;
+    if (elements?.length === 0) {
       nodeElement = xmlDoc.createElement(tagName);
-      root.appendChild(nodeElement);
+      root?.appendChild(nodeElement);
       return nodeElement;
     }
     else {
-      const exitingNode = elements.item(0);
+      const exitingNode = elements?.item(0);
       return exitingNode;
     }
   }
 
-  private addNode(element: Element | null, nodeElement: Element, attribute: string = 'Id') {
+  private addNode(element: xmldom.Element | undefined | null, nodeElement: xmldom.Element, attribute: string = 'Id') {
     if (element !== null) {
       let nodeAlreadyAdded = false;
-      if (element.childNodes.length > 0) {
+      if (element != undefined && element.childNodes.length > 0) {
         for (let i = 0; i < element.childNodes.length; i++) {
           let node = element.childNodes[i];
-          if (node.nodeType === 1 && (node as Element).hasAttribute(attribute) &&
-            (node as Element).getAttribute(attribute)?.toLowerCase() === nodeElement.getAttribute(attribute)?.toLowerCase()) {
+          if (node.nodeType === 1 && (node as xmldom.Element).hasAttribute(attribute) &&
+            (node as xmldom.Element).getAttribute(attribute)?.toLowerCase() === nodeElement.getAttribute(attribute)?.toLowerCase()) {
             nodeAlreadyAdded = true;
           }
         }
       }
       if (!nodeAlreadyAdded) {
-        element.appendChild(nodeElement);
+        element?.appendChild(nodeElement);
       }
     }
   }
 
-  private addLinkNode(xmlDoc: Document, element: Element | null, source: string, target: string, categoryId: string, label: string | undefined) {
+  private addLinkNode(xmlDoc: xmldom.Document, element: xmldom.Element | undefined | null, source: string, target: string, categoryId: string, label: string | undefined) {
     if (element !== null) {
       let nodeAlreadyAdded = false;
-      if (element.childNodes.length > 0) {
-        for (let i = 0; i < element.childNodes.length; i++) {
-          let node = element.childNodes[i];
+      if (element != undefined && element.childNodes.length > 0) {
+        for (let i = 0; i < element?.childNodes.length; i++) {
+          let node = element?.childNodes[i];
           if (node.nodeType === 1 &&
-            (node as Element).hasAttribute("Source") &&
-            (node as Element).hasAttribute("Target") &&
-            (node as Element).getAttribute("Source")?.toLowerCase() === source.toLowerCase() &&
-            (node as Element).getAttribute("Target")?.toLowerCase() === target.toLowerCase()) {
+            (node as xmldom.Element).hasAttribute("Source") &&
+            (node as xmldom.Element).hasAttribute("Target") &&
+            (node as xmldom.Element).getAttribute("Source")?.toLowerCase() === source.toLowerCase() &&
+            (node as xmldom.Element).getAttribute("Target")?.toLowerCase() === target.toLowerCase()) {
             nodeAlreadyAdded = true;
           }
         }
@@ -71,12 +72,12 @@ export class DgmlManager {
         if (label !== undefined) {
             linkElement.setAttribute("Label", label);
         }
-        element.appendChild(linkElement);
+        element?.appendChild(linkElement);
       }
     }
   }
 
-  public addNodesAndLinks(xmlDoc: Document, nodes: Node[], nodeInfoDictionary: { [id: string]: NetworkNode }, edges: Edge[]) {
+  public addNodesAndLinks(xmlDoc: xmldom.Document, nodes: Node[], nodeInfoDictionary: { [id: string]: NetworkNode }, edges: Edge[]) {
     const nodesElement = this.addNodeToRoot(xmlDoc, "Nodes");
     const linksElement = this.addNodeToRoot(xmlDoc, "Links");
     const categoryDictionary: { [nodeType: string]: Category } = {};
@@ -116,7 +117,7 @@ export class DgmlManager {
     }
   }
 
-  private generateDirectedGraphNodesXml(xmlDoc: Document, node: Node, nodesElement: Element | null) {
+  private generateDirectedGraphNodesXml(xmlDoc: xmldom.Document, node: Node, nodesElement: xmldom.Element | undefined |null) {
     const nodeElement = xmlDoc.createElement("Node");
     nodeElement.setAttribute("Label", node.name);
     nodeElement.setAttribute("Id", node.id);
@@ -143,18 +144,18 @@ export class DgmlManager {
     return `${position.x},${position.y},${width},${height}`;
   }
 
-  private generateDirectedGraphLinksXml(xmlDoc: Document, edge: Edge, linksElement: Element | null) {
+  private generateDirectedGraphLinksXml(xmlDoc: xmldom.Document, edge: Edge, linksElement: xmldom.Element | undefined | null) {
     const categoryId = ArrowType[edge.arrowType];
     this.addLinkNode(xmlDoc, linksElement, edge.source, edge.target, categoryId, edge.getEdgeTitle());
   }
 
-  private addCategoryRef(xmlDoc: Document, node: Element, categoryRef: string) {
+  private addCategoryRef(xmlDoc: xmldom.Document, node: xmldom.Element, categoryRef: string) {
     const categoryElement = xmlDoc.createElement("Category");
     categoryElement.setAttribute("Ref", categoryRef);
     node.appendChild(categoryElement);
   }
 
-  private addCategory(xmlDoc: Document, categoriesElement: Element | null, category: Category) {
+  private addCategory(xmlDoc: xmldom.Document, categoriesElement: xmldom.Element | undefined | null, category: Category) {
     if (categoriesElement !== null && (category.backgroundColor || category.stroke || category.icon)) {
       const categoryElement = xmlDoc.createElement("Category");
       categoryElement.setAttribute("Id", category.id);
@@ -175,14 +176,14 @@ export class DgmlManager {
     }
   }
 
-  private addCategoriesAndStyles(xmlDoc: Document, categories: { [nodeType: string]: Category }) {
+  private addCategoriesAndStyles(xmlDoc: xmldom.Document, categories: { [nodeType: string]: Category }) {
     const categoriesElement = this.addNodeToRoot(xmlDoc, "Categories");
     Object.keys(categories).forEach(nodeType => {
       this.addCategory(xmlDoc, categoriesElement, categories[nodeType]);
     });
   }
 
-  private addProperties(xmlDoc: Document) {
+  private addProperties(xmlDoc: xmldom.Document) {
     const propertiesElement = this.addNodeToRoot(xmlDoc, "Properties");
     this.addProperty(xmlDoc, propertiesElement, "TypescriptFilepath", "System.String", "Typescript filepath", true);
     this.addProperty(xmlDoc, propertiesElement, "Background", "System.Windows.Media.Brush");
@@ -194,7 +195,7 @@ export class DgmlManager {
     this.addProperty(xmlDoc, propertiesElement, "Bounds", "System.Windows.Rect");
   }
 
-  private addProperty(xmlDoc: Document, propertiesElement: Element | null, idValue: string, datatypeValue: string, label: string | undefined = undefined, isReference: boolean | undefined = undefined) {
+  private addProperty(xmlDoc: xmldom.Document, propertiesElement: xmldom.Element | undefined | null, idValue: string, datatypeValue: string, label: string | undefined = undefined, isReference: boolean | undefined = undefined) {
     const propertyElement = xmlDoc.createElement("Property");
     propertyElement.setAttribute("Id", idValue);
     propertyElement.setAttribute("DataType", datatypeValue);

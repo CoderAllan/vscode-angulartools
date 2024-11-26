@@ -55,7 +55,7 @@ export class ModuleManager {
 
     private static readTypescriptFile(filename: string, errors: string[]): NgModule | Component | Directive | Pipe | Injectable | undefined {
         const fileContents = fs.readFileSync(filename).toString();
-        let regex: RegExp = /@NgModule\s*\(\s*(\{.+?\})\s*\)\s*export\s+class\s+(\w+)\s+/ims;
+        let regex: RegExp = /@NgModule\s*\(\s*(\{.+?\})\s*\).+export\s+class\s+(\w+)\s+/ims;
         var match = regex.exec(fileContents);
         if (match !== null) {
             const moduleName = match[2];
@@ -78,7 +78,7 @@ export class ModuleManager {
                 return undefined;
             }
         }
-        regex = /@Component\s*\(\s*(\{.+?\})\s*\)\s*export\s+class\s+(\w+)\s+(.*)/ims;
+        regex = /@Component\s*\(\s*(\{.+?\})\s*\).+export\s+class\s+(\w+)\s+(.*)/ims;
         match = regex.exec(fileContents);
         if (match !== null) {
             const className = match[2];
@@ -87,17 +87,17 @@ export class ModuleManager {
             this.enrichComponent(component, classBody);
             return component;
         }
-        regex = /@Directive\s*\(.*?\)\s*export\s+class\s+(\w+)\s+(.*)/ims;
+        regex = /@Directive\s*\(.*?\).+export\s+class\s+(\w+)\s+(.*)/ims;
         const newDirective = this.parseNamedEntity(Directive, filename, fileContents, regex);
         if (newDirective !== undefined) {
             return newDirective;
         }
-        regex = /@Pipe\s*\(.*?\)\s*export\s+class\s+(\w+)\s+(.*)/ims;
+        regex = /@Pipe\s*\(.*?\).+export\s+class\s+(\w+)\s+(.*)/ims;
         const newPipe = this.parseNamedEntity(Pipe, filename, fileContents, regex);
         if (newPipe !== undefined) {
             return newPipe;
         }
-        regex = /@Injectable\s*\(.*?\)\s*export\s+class\s+(\w+)\s+(.*)/ims;
+        regex = /@Injectable\s*\(.*?\).+export\s+class\s+(\w+)\s+(.*)/ims;
         const newInjectable = this.parseNamedEntity(Injectable, filename, fileContents, regex);
         if (newInjectable !== undefined) {
             return newInjectable;

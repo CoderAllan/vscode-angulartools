@@ -415,12 +415,12 @@
     "supports-color": "^9.4.0",
     "ts-loader": "^9.5.1",
     "typescript": "^5.7.2",
-    "webpack": "^5.97.0",
+    "webpack": "^5.97.1",
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
     "@types/xmldom": "^0.1.34",
-    "@xmldom/xmldom": "^0.9.5",
+    "@xmldom/xmldom": "^0.9.6",
     "bluebird": "^3.7.2",
     "browserslist": "^4.24.2",
     "js-base64": "^3.7.7",

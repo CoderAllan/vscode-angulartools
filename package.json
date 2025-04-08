@@ -410,12 +410,12 @@
     "@types/glob": "^8.1.0",
     "@types/mocha": "^10.0.10",
     "@types/node": "^22.14.0",
-    "@types/vscode": "^1.99.0",
+    "@types/vscode": "^1.99.1",
     "glob": "^11.0.1",
     "supports-color": "^10.0.0",
     "ts-loader": "^9.5.2",
     "typescript": "^5.8.3",
-    "webpack": "^5.99.1",
+    "webpack": "^5.99.3",
     "webpack-cli": "^6.0.1"
   },
   "dependencies": {

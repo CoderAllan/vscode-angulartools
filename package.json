@@ -409,7 +409,7 @@
   "devDependencies": {
     "@types/glob": "^8.1.0",
     "@types/mocha": "^10.0.10",
-    "@types/node": "^22.14.1",
+    "@types/node": "^22.15.0",
     "@types/vscode": "^1.99.1",
     "glob": "^11.0.2",
     "supports-color": "^10.0.0",

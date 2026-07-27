@@ -412,7 +412,7 @@
     "@types/node": "^26.1.1",
     "@types/vscode": "^1.125.0",
     "glob": "^13.0.6",
-    "supports-color": "^10.2.2",
+    "supports-color": "^11.0.0",
     "ts-loader": "^9.6.2",
     "typescript": "^7.0.2",
     "webpack": "^5.109.0",

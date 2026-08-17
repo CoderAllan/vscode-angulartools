@@ -420,10 +420,10 @@
   },
   "dependencies": {
     "@types/xmldom": "^0.1.34",
-    "@xmldom/xmldom": "^0.9.10",
+    "@xmldom/xmldom": "^0.9.11",
     "bluebird": "^3.7.2",
     "browserslist": "^4.28.8",
-    "js-base64": "^3.9.2",
+    "js-base64": "^3.9.3",
     "npm-registry-fetch": "^20.0.1",
     "prettify-xml": "^1.2.0",
     "xmlserializer": "^0.6.1"

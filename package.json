@@ -410,7 +410,7 @@
     "@types/glob": "^9.0.0",
     "@types/mocha": "^10.0.10",
     "@types/node": "^26.2.0",
-    "@types/vscode": "^1.125.0",
+    "@types/vscode": "^1.134.0",
     "glob": "^13.0.6",
     "supports-color": "^11.0.0",
     "ts-loader": "^9.6.2",
